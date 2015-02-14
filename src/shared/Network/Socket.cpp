@@ -257,11 +257,14 @@ void Socket::on_read_complete( const boost::system::error_code& error,
 		// TEST
         //m_ReadBuffer->wr_ptr( bytes_transferred );
 
-        if( !process_incoming_data() )
-        {
-            CloseSocket();
-            return;
-        }
+        //if( !process_incoming_data() )
+        //{
+        //    CloseSocket();
+        //    return;
+        //}
+
+		m_pNetClientBuffer->m_recvSocketDynBuffer->setSize(bytes_transferred);
+		m_pNetClientBuffer->moveRecvSocketDyn2RecvSocket();		// 放入接收消息处理缓冲区
     }
 
     start_async_read();
