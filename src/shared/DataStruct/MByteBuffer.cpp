@@ -1,5 +1,4 @@
-#include "MyProject.h"
-#include "ByteBuffer.h"
+#include "MByteBuffer.h"
 
 #include <sstream>
 
@@ -8,7 +7,7 @@ void ByteBufferException::PrintPosError() const
 	
 }
 
-void ByteBuffer::print_storage() const
+void MByteBuffer::print_storage() const
 {
     std::ostringstream ss;
     ss <<  "STORAGE_SIZE: " << size() << "\n";
@@ -18,7 +17,7 @@ void ByteBuffer::print_storage() const
         ss << uint32(read<uint8>(i)) << " - ";
 }
 
-void ByteBuffer::textlike() const
+void MByteBuffer::textlike() const
 {
     std::ostringstream ss;
     ss <<  "STORAGE_SIZE: " << size() << "\n";
@@ -29,7 +28,7 @@ void ByteBuffer::textlike() const
         ss << read<uint8>(i);
 }
 
-void ByteBuffer::hexlike() const
+void MByteBuffer::hexlike() const
 {
     std::ostringstream ss;
     ss <<  "STORAGE_SIZE: " << size() << "\n";
@@ -61,7 +60,7 @@ void ByteBuffer::hexlike() const
     }
 }
 
-void ByteBuffer::writeFile(FILE* file)
+void MByteBuffer::writeFile(FILE* file)
 {
 	fwrite((void*)&_storage[0], sizeof(char), this->size(), file);
 }

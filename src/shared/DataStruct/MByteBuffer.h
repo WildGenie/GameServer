@@ -6,11 +6,11 @@
 #include <string>
 #include <map>
 
-#include "MyProject.h"
 #include "ByteConverter.h"
 #include "Error.h"
 #include "SystemEndian.h"
 #include "System.h"
+#include "Platform/Define.h"
 
 
 class ByteBufferException
@@ -36,7 +36,7 @@ struct Unused
     Unused() {}
 };
 
-class ByteBuffer
+class MByteBuffer
 {
 protected:
 	SysEndian m_sysEndian;
@@ -50,14 +50,14 @@ public:
   //  }
 
     // constructor
-    ByteBuffer(size_t res): _rpos(0), _wpos(0)
+	MByteBuffer(size_t res) : _rpos(0), _wpos(0)
     {
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
         _storage.reserve(res);
     }
 
     // copy constructor
-    ByteBuffer(const ByteBuffer& buf): _rpos(buf._rpos), _wpos(buf._wpos), _storage(buf._storage) 
+	MByteBuffer(const MByteBuffer& buf) : _rpos(buf._rpos), _wpos(buf._wpos), _storage(buf._storage)
 	{
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
 	}
@@ -79,70 +79,70 @@ public:
         put(pos, (uint8*)&value, sizeof(value));
     }
 
-	ByteBuffer& writeUnsignedInt8(uint8 value)
+	MByteBuffer& writeUnsignedInt8(uint8 value)
     {
         append<uint8>(value);
         return *this;
     }
 
-	ByteBuffer& writeUnsignedInt16(uint16 value)
+	MByteBuffer& writeUnsignedInt16(uint16 value)
     {
         append<uint16>(value);
         return *this;
     }
 
-	ByteBuffer& writeUnsignedInt32(uint32 value)
+	MByteBuffer& writeUnsignedInt32(uint32 value)
     {
         append<uint32>(value);
         return *this;
     }
 
-	ByteBuffer& writeUnsignedInt64(uint64 value)
+	MByteBuffer& writeUnsignedInt64(uint64 value)
     {
         append<uint64>(value);
         return *this;
     }
 
     // signed as in 2e complement
-	ByteBuffer& writeInt8(int8 value)
+	MByteBuffer& writeInt8(int8 value)
     {
         append<int8>(value);
         return *this;
     }
 
-	ByteBuffer& writeInt16(int16 value)
+	MByteBuffer& writeInt16(int16 value)
     {
         append<int16>(value);
         return *this;
     }
 
-	ByteBuffer& writeInt32(int32 value)
+	MByteBuffer& writeInt32(int32 value)
     {
         append<int32>(value);
         return *this;
     }
 
-	ByteBuffer& writeInt64(int64 value)
+	MByteBuffer& writeInt64(int64 value)
     {
         append<int64>(value);
         return *this;
     }
 
     // floating points
-	ByteBuffer& writeFloat(float value)
+	MByteBuffer& writeFloat(float value)
     {
         append<float>(value);
         return *this;
     }
 
-	ByteBuffer& writeDouble(double value)
+	MByteBuffer& writeDouble(double value)
     {
         append<double>(value);
         return *this;
     }
 
 	// 写入 UTF-8 字符串，并且字符串中有 '\0' ，自己不用单独添加
-	ByteBuffer& writeMultiByte(const std::string& value, size_t len)
+	MByteBuffer& writeMultiByte(const std::string& value, size_t len)
     {
 		if (len > value.length())
 		{
@@ -157,7 +157,7 @@ public:
         return *this;
     }
 
-	ByteBuffer& writeMultiByte(const char* str, size_t len)
+	MByteBuffer& writeMultiByte(const char* str, size_t len)
     {
         //append((uint8 const*)str, str ? strlen(str) : 0);
         // append((uint8)0);
@@ -181,74 +181,74 @@ public:
         return *this;
     }
 
-	ByteBuffer& readBoolean(bool& value)
+	MByteBuffer& readBoolean(bool& value)
     {
         value = read<char>() > 0 ? true : false;
         return *this;
     }
 
-	ByteBuffer& readUnsigneduint8(uint8& value)
+	MByteBuffer& readUnsigneduint8(uint8& value)
     {
         value = read<uint8>();
         return *this;
     }
 
-	ByteBuffer& readUnsigneduint16(uint16& value)
+	MByteBuffer& readUnsigneduint16(uint16& value)
     {
         value = read<uint16>();
         return *this;
     }
 
-	ByteBuffer& readUnsignedInt32(uint32& value)
+	MByteBuffer& readUnsignedInt32(uint32& value)
     {
         value = read<uint32>();
         return *this;
     }
 
-	ByteBuffer& readUnsignedInt64(uint64& value)
+	MByteBuffer& readUnsignedInt64(uint64& value)
     {
         value = read<uint64>();
         return *this;
     }
 
     // signed as in 2e complement
-	ByteBuffer& readInt8(int8& value)
+	MByteBuffer& readInt8(int8& value)
     {
         value = read<int8>();
         return *this;
     }
 
-	ByteBuffer& readInt16(int16& value)
+	MByteBuffer& readInt16(int16& value)
     {
         value = read<int16>();
         return *this;
     }
 
-	ByteBuffer& readInt32(int32& value)
+	MByteBuffer& readInt32(int32& value)
     {
         value = read<int32>();
         return *this;
     }
 
-	ByteBuffer& readInt64(int64& value)
+	MByteBuffer& readInt64(int64& value)
     {
         value = read<int64>();
         return *this;
     }
 
-	ByteBuffer& readFloat(float& value)
+	MByteBuffer& readFloat(float& value)
     {
         value = read<float>();
         return *this;
     }
 
-	ByteBuffer& readDouble(double& value)
+	MByteBuffer& readDouble(double& value)
     {
         value = read<double>();
         return *this;
     }
 
-	ByteBuffer& readMultiByte(std::string& value, size_t len)
+	MByteBuffer& readMultiByte(std::string& value, size_t len)
     {
         //value.clear();
         //while (rpos() < size())                         // prevent crash at wrong string format in packet
@@ -285,7 +285,7 @@ public:
     }
 
     template<class T>
-	ByteBuffer& readUnused(Unused<T> const&)
+	MByteBuffer& readUnused(Unused<T> const&)
     {
         read_skip<T>();
         return *this;
@@ -427,7 +427,7 @@ public:
 		_wpos += cnt;
 	}
 
-    void append(const ByteBuffer& buffer)
+	void append(const MByteBuffer& buffer)
     {
         if (buffer.wpos())
             append(buffer.contents(), buffer.wpos());
@@ -465,7 +465,7 @@ protected:
 };
 
 template <typename T>
-inline ByteBuffer& operator<<(ByteBuffer& b, std::vector<T> const& v)
+inline MByteBuffer& operator<<(MByteBuffer& b, std::vector<T> const& v)
 {
     b << (uint32)v.size();
     for (typename std::vector<T>::iterator i = v.begin(); i != v.end(); ++i)
@@ -476,7 +476,7 @@ inline ByteBuffer& operator<<(ByteBuffer& b, std::vector<T> const& v)
 }
 
 template <typename T>
-inline ByteBuffer& operator>>(ByteBuffer& b, std::vector<T>& v)
+inline MByteBuffer& operator>>(MByteBuffer& b, std::vector<T>& v)
 {
     uint32 vsize;
     b >> vsize;
@@ -491,7 +491,7 @@ inline ByteBuffer& operator>>(ByteBuffer& b, std::vector<T>& v)
 }
 
 template <typename T>
-inline ByteBuffer& operator<<(ByteBuffer& b, std::list<T> const& v)
+inline MByteBuffer& operator<<(MByteBuffer& b, std::list<T> const& v)
 {
     b << (uint32)v.size();
     for (typename std::list<T>::iterator i = v.begin(); i != v.end(); ++i)
@@ -502,7 +502,7 @@ inline ByteBuffer& operator<<(ByteBuffer& b, std::list<T> const& v)
 }
 
 template <typename T>
-inline ByteBuffer& operator>>(ByteBuffer& b, std::list<T>& v)
+inline MByteBuffer& operator>>(MByteBuffer& b, std::list<T>& v)
 {
     uint32 vsize;
     b >> vsize;
@@ -517,7 +517,7 @@ inline ByteBuffer& operator>>(ByteBuffer& b, std::list<T>& v)
 }
 
 template <typename K, typename V>
-inline ByteBuffer& operator<<(ByteBuffer& b, std::map<K, V>& m)
+inline MByteBuffer& operator<<(MByteBuffer& b, std::map<K, V>& m)
 {
     b << (uint32)m.size();
     for (typename std::map<K, V>::iterator i = m.begin(); i != m.end(); ++i)
@@ -528,7 +528,7 @@ inline ByteBuffer& operator<<(ByteBuffer& b, std::map<K, V>& m)
 }
 
 template <typename K, typename V>
-inline ByteBuffer& operator>>(ByteBuffer& b, std::map<K, V>& m)
+inline MByteBuffer& operator>>(MByteBuffer& b, std::map<K, V>& m)
 {
     uint32 msize;
     b >> msize;
@@ -544,7 +544,7 @@ inline ByteBuffer& operator>>(ByteBuffer& b, std::map<K, V>& m)
 }
 
 template<>
-inline void ByteBuffer::read_skip<char*>()
+inline void MByteBuffer::read_skip<char*>()
 {
     std::string temp;
     //*this >> temp;
@@ -552,13 +552,13 @@ inline void ByteBuffer::read_skip<char*>()
 }
 
 template<>
-inline void ByteBuffer::read_skip<char const*>()
+inline void MByteBuffer::read_skip<char const*>()
 {
     read_skip<char*>();
 }
 
 template<>
-inline void ByteBuffer::read_skip<std::string>()
+inline void MByteBuffer::read_skip<std::string>()
 {
     read_skip<char*>();
 }

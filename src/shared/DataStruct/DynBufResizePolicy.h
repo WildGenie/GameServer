@@ -1,6 +1,7 @@
 #ifndef __DYNBUFRESIZEPOLICY_H
 #define __DYNBUFRESIZEPOLICY_H
 
+#include "Platform/Define.h"
 
 class DynBufResizePolicy
 {

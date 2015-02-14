@@ -1,4 +1,3 @@
-#include "MyProject.h"
 #include "DynBufResizePolicy.h"
 #include "BufferDefaultValue.h"
 

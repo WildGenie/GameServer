@@ -5,7 +5,7 @@
  *@brief ByteConverter reverse your byte order.  This is use for cross platform where they have different endians.
  */
 #include <algorithm>
-#include "MyProject.h"
+#include "Platform/Define.h"
 
 namespace ByteConverter
 {

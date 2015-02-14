@@ -1,4 +1,3 @@
-#include "MyProject.h"
 #include "System.h"
 #include "SystemEndian.h"
 

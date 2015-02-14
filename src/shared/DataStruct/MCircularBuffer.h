@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Platform/Define.h"
+
 class MCircularBuffer
 {
 private:

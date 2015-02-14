@@ -22,6 +22,9 @@
     <Filter Include="Network">
       <UniqueIdentifier>{6735a7b4-e8c2-4f55-8dc8-74fdae001d90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataStruct">
+      <UniqueIdentifier>{97f63232-c5d9-44a6-a91c-03c5a2066b7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\shared\Database\Database.cpp">
@@ -95,6 +98,30 @@
     </ClCompile>
     <ClCompile Include="..\..\src\shared\Network\NetworkManager.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MsgBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\NetClientBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\BufferUtil.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\DynBuffer.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\DynBufResizePolicy.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\MCircularBuffer.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\System.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\MByteBuffer.cpp">
+      <Filter>DataStruct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +229,45 @@
     </ClInclude>
     <ClInclude Include="..\..\src\shared\Network\NetworkManager.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MsgBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\NetClientBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\BufferDefaultValue.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\BufferUtil.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\ByteConverter.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\DynBuffer.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\DynBufResizePolicy.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\Error.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MCircularBuffer.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\System.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\SystemEndian.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\Singleton.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MByteBuffer.h">
+      <Filter>DataStruct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

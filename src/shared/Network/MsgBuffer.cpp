@@ -1,14 +1,13 @@
-#include "MyProject.h"
 #include "MsgBuffer.h"
 #include "MCircularBuffer.h"
-#include "ByteBuffer.h"
+#include "MByteBuffer.h"
 #include "BufferDefaultValue.h"
 
 MsgBuffer::MsgBuffer()
 {
 	m_pMCircularBuffer = new MCircularBuffer(INITCAPACITY);
-	m_pHeaderBA = new ByteBuffer(MSGHEADERSIZE);
-	m_pMsgBA = new ByteBuffer(INITCAPACITY);
+	m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);
+	m_pMsgBA = new MByteBuffer(INITCAPACITY);
 }
 
 MsgBuffer::~MsgBuffer()

@@ -1,8 +1,8 @@
-#include "MyProject.h"
 #include "MCircularBuffer.h"
 #include "DynBufResizePolicy.h"
 #include "BufferUtil.h"
 #include <string.h>
+#include "Platform/Define.h"
 
 /**
  * @brief ¹¹Ôìº¯Êý
