@@ -123,6 +123,15 @@
     <ClCompile Include="..\..\src\shared\DataStruct\MByteBuffer.cpp">
       <Filter>DataStruct</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MClient.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MClientManager.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MClientThread.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\shared\Database\Database.h">
@@ -268,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\MByteBuffer.h">
       <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MClientManager.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MClientThread.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

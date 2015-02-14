@@ -121,7 +121,6 @@ WorldSocket::~WorldSocket(void)
 
 void WorldSocket::CloseSocket(void)
 {
-
     {
         GuardType Guard( m_SessionLock );
 

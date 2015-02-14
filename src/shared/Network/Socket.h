@@ -70,6 +70,9 @@ public:
     /// Get underlying socket object
     protocol::Socket& socket() { return m_socket; }
 
+	// 获取消息数据
+	NetClientBuffer* getNetClientBuffer();
+
 protected:
 
     /// Called on open ,the void* is the acceptor.

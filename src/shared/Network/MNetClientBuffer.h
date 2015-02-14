@@ -12,7 +12,7 @@ class Mutex;
 /**
 * @brief 消息缓冲区
 */
-class NetClientBuffer
+class MNetClientBuffer
 {
 public:
 	// 接收的 Buffer
@@ -30,18 +30,24 @@ public:
 	DynBuffer* m_pMsgBA;		// 发送消息临时缓冲区，减小加锁粒度
 
 	boost::mutex* m_pMutex;
+	bool m_canSend;		// 异步发送的过程中，当前发送的数据是否发送完成
 
 public:
 	NetClientBuffer();
 	~NetClientBuffer();
 
-	void moveRecvSocketDyn2RecvSocket();
+	// 接收
+	void moveRecvSocketDyn2RecvSocket(size_t dynLen);
 	void moveRecvSocket2RecvClient();
 	MByteBuffer* getMsg();
+	void onReadComplete(size_t dynLen);
 
+	// 发送
 	void sendMsg();
 	void moveSendClient2SendSocket();
 	void setRecvMsgSize(size_t len);
+	bool startAsyncSend();
+	void onWriteComplete(size_t len);
 };
 
 #endif				// __NETCLIENTBUFFER_H

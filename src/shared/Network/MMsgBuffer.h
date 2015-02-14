@@ -9,7 +9,7 @@ class MByteBuffer;
 /**
  * @brief ÏûÏ¢»º³åÇø
  */
-class MsgBuffer
+class MMsgBuffer
 {
 	friend class NetClientBuffer;
 

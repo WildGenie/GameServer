@@ -176,7 +176,7 @@ void Socket::start_async_send()
         return;
     
     //if ( m_OutBuffer->length() == 0 )
-	if (m_pNetClientBuffer->m_sendSocketBuffer->size() == 0)
+	if (!m_pNetClientBuffer->startAsyncSend())	// 如果 Client 不能发送数据
     {
         m_OutActive = false;
         return;
@@ -213,15 +213,7 @@ void Socket::on_write_complete( const boost::system::error_code& error,
 
     //reset( *m_OutBuffer ); 
 
-	if (bytes_transferred < m_pNetClientBuffer->m_sendSocketBuffer->size())		// 如果数据没有发送完成
-	{
-		m_pNetClientBuffer->m_sendSocketBuffer->popFrontLenNoData(bytes_transferred);
-	}
-	else				// 如果全部发送完成
-	{
-		m_pNetClientBuffer->m_sendSocketBuffer->clear();	// 清理数据
-		m_pNetClientBuffer->moveSendClient2SendSocket();	// 移动数据到发送缓冲区
-	}
+	m_pNetClientBuffer->onWriteComplete(bytes_transferred);
 
     start_async_send();
 }
@@ -263,8 +255,7 @@ void Socket::on_read_complete( const boost::system::error_code& error,
         //    return;
         //}
 
-		m_pNetClientBuffer->m_recvSocketDynBuffer->setSize(bytes_transferred);
-		m_pNetClientBuffer->moveRecvSocketDyn2RecvSocket();		// 放入接收消息处理缓冲区
+		m_pNetClientBuffer->onReadComplete(bytes_transferred);		// 放入接收消息处理缓冲区
     }
 
     start_async_read();
@@ -317,4 +308,9 @@ std::string Socket::obtain_remote_address() const
     }
 
     return UNKNOWN_NETWORK_ADDRESS;
+}
+
+NetClientBuffer* Socket::getNetClientBuffer()
+{
+	return m_pNetClientBuffer;
 }

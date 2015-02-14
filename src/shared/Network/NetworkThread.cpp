@@ -79,5 +79,13 @@ void NetworkThread::svc()
 
     LoginDatabase.ThreadEnd();
 
+	// ·¢ËÍÏûÏ¢
+	SocketSet::iterator itBegin = m_Sockets.begin();
+	SocketSet::iterator itEnd = m_Sockets.end();
+	for (; itBegin != itEnd; ++itBegin)
+	{
+		(*itBegin)->start_async_send();
+	}
+
     DEBUG_LOG("Network Thread Exitting");
 }

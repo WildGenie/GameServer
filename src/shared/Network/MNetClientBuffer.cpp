@@ -6,6 +6,7 @@
 #include "BufferDefaultValue.h"
 
 NetClientBuffer::NetClientBuffer()
+	： m_canSend(true)
 {
 	m_recvSocketBuffer = new MsgBuffer();
 	m_recvClientBuffer = new MsgBuffer();
@@ -42,8 +43,9 @@ void NetClientBuffer::setRecvMsgSize(size_t len)
 	m_recvSocketDynBuffer->setCapacity(len);
 }
 
-void NetClientBuffer::moveRecvSocketDyn2RecvSocket()
+void NetClientBuffer::moveRecvSocketDyn2RecvSocket(size_t dynLen)
 {
+	m_recvSocketDynBuffer->setSize(dynLen);
 	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->m_storage, 0, m_recvSocketDynBuffer->size());
 }
 
@@ -70,6 +72,11 @@ MByteBuffer* NetClientBuffer::getMsg()
 	}
 
 	return nullptr;
+}
+
+void NetClientBuffer::onReadComplete(size_t dynLen)
+{
+	moveRecvSocketDyn2RecvSocket(dynLen);		// 放入接收消息处理缓冲区
 }
 
 void NetClientBuffer::sendMsg()
@@ -99,4 +106,30 @@ void NetClientBuffer::moveSendClient2SendSocket()
 
 	m_sendSocketBuffer->pushBack(m_pMsgBA->getStorage(), 0, m_pMsgBA->size());
 	m_sendClientBuffer->clear(); // 清理，这样环形缓冲区又可以从 0 索引开始了
+}
+
+bool NetClientBuffer::startAsyncSend()
+{
+	if (!m_canSend || m_sendClientBuffer->size() == 0)
+	{
+		return false;
+	}
+
+	m_canSend = false;		// 设置不能发送标志
+	moveSendClient2SendSocket();		// 处理消息数据，等待发送
+
+	return true;
+}
+
+void NetClientBuffer::onWriteComplete(size_t len)
+{
+	if (len < m_pNetClientBuffer->m_sendSocketBuffer->size())		// 如果数据没有发送完成
+	{
+		m_pNetClientBuffer->m_sendSocketBuffer->popFrontLenNoData(len);
+	}
+	else				// 如果全部发送完成
+	{
+		m_canSend = true;		// 设置不能发送标志
+		m_pNetClientBuffer->m_sendSocketBuffer->clear();	// 清理数据
+	}
 }
