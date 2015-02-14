@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-void ByteBufferException::PrintPosError() const
+void MByteBufferException::PrintPosError() const
 {
 	
 }

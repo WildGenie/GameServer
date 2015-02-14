@@ -37,6 +37,11 @@ NetClientBuffer::~NetClientBuffer()
 	delete m_pMutex;
 }
 
+void NetClientBuffer::setRecvMsgSize(size_t len)
+{
+	m_recvSocketDynBuffer->setCapacity(len);
+}
+
 void NetClientBuffer::moveRecvSocketDyn2RecvSocket()
 {
 	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->m_storage, 0, m_recvSocketDynBuffer->size());

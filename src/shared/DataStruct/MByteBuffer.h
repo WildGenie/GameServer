@@ -13,10 +13,10 @@
 #include "Platform/Define.h"
 
 
-class ByteBufferException
+class MByteBufferException
 {
     public:
-        ByteBufferException(bool _add, size_t _pos, size_t _esize, size_t _size)
+		MByteBufferException(bool _add, size_t _pos, size_t _esize, size_t _size)
             : add(_add), pos(_pos), esize(_esize), size(_size)
         {
             PrintPosError();
@@ -320,7 +320,7 @@ public:
     void read_skip(size_t skip)
     {
         if (_rpos + skip > size())
-            throw ByteBufferException(false, _rpos, skip, size());
+			throw MByteBufferException(false, _rpos, skip, size());
         _rpos += skip;
     }
 
@@ -346,7 +346,7 @@ public:
 	T read(size_t pos) const
     {
         if (pos + sizeof(T) > size())
-            throw ByteBufferException(false, pos, sizeof(T), size());
+			throw MByteBufferException(false, pos, sizeof(T), size());
         T val = *((T const*)&_storage[pos]);
 		if (System::getSingletonPtr()->isEndianDiffFromSys(m_sysEndian))
 		{
@@ -358,7 +358,7 @@ public:
     void read(uint8* dest, size_t len)
     {
         if (_rpos  + len > size())
-            throw ByteBufferException(false, _rpos, len, size());
+			throw MByteBufferException(false, _rpos, len, size());
         memcpy(dest, &_storage[_rpos], len);
         _rpos += len;
     }
@@ -436,7 +436,7 @@ public:
     void put(size_t pos, const uint8* src, size_t cnt)
     {
         if (pos + cnt > size())
-            throw ByteBufferException(true, pos, cnt, size());
+			throw MByteBufferException(true, pos, cnt, size());
         memcpy(&_storage[pos], src, cnt);
     }
 

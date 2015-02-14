@@ -27,6 +27,10 @@
 #include "NetworkThread.h"
 #include "NetworkManager.h"
 
+#include "NetClientBuffer.h"
+#include "DynBuffer.h"
+#include "MCircularBuffer.h"
+
 const std::string Socket::UNKNOWN_NETWORK_ADDRESS = "<unknown>";
 
 Socket::Socket( NetworkManager& socketMrg, 
@@ -37,7 +41,9 @@ Socket::Socket( NetworkManager& socketMrg,
     m_OutBufferSize(protocol::SEND_BUFFER_SIZE),
     m_OutActive(false),
     m_closing(true),
-    m_Address(UNKNOWN_NETWORK_ADDRESS)
+    m_Address(UNKNOWN_NETWORK_ADDRESS),
+	m_bSocketOpened(false),
+	m_pNetClientBuffer(new NetClientBuffer())
 {
 
 }
@@ -70,8 +76,13 @@ const std::string& Socket::GetRemoteAddress(void) const
 bool Socket::open()
 {
     // Prevent double call to this func.
-    if ( m_OutBuffer.get() )
-        return false;
+    //if ( m_OutBuffer.get() )
+	if (m_bSocketOpened)
+	{
+		return false;
+	}
+
+	m_bSocketOpened = true;
 
     // Store peer address.
     m_Address = obtain_remote_address();
@@ -85,8 +96,9 @@ bool Socket::open()
     m_closing = false;
 
     // Allocate buffers.
-    m_OutBuffer.reset( new NetworkBuffer(m_OutBufferSize) );
-    m_ReadBuffer.reset( new NetworkBuffer( protocol::READ_BUFFER_SIZE ) );
+    //m_OutBuffer.reset( new NetworkBuffer(m_OutBufferSize) );
+    //m_ReadBuffer.reset( new NetworkBuffer( protocol::READ_BUFFER_SIZE ) );
+	m_pNetClientBuffer->setRecvMsgSize(protocol::READ_BUFFER_SIZE);
 
     // Start reading data from client
     start_async_read();
@@ -164,7 +176,7 @@ void Socket::start_async_send()
         return;
     
     //if ( m_OutBuffer->length() == 0 )
-	if (m_OutBuffer->size() == 0)
+	if (m_pNetClientBuffer->m_sendSocketBuffer->size() == 0)
     {
         m_OutActive = false;
         return;
@@ -176,6 +188,10 @@ void Socket::start_async_send()
     //m_socket.async_write_some( boost::asio::buffer( m_OutBuffer->rd_ptr(), m_OutBuffer->length() ),
     //                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
     //                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
+
+	m_socket.async_write_some(boost::asio::buffer(m_pNetClientBuffer->m_sendSocketBuffer->getStorage(), m_pNetClientBuffer->m_sendSocketBuffer->size()),
+	                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
+	                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
 }
 
 void Socket::on_write_complete( const boost::system::error_code& error,
@@ -195,7 +211,17 @@ void Socket::on_write_complete( const boost::system::error_code& error,
     //m_OutBuffer->rd_ptr( bytes_transferred );
 	//m_OutBuffer->advance(bytes_transferred);
 
-    reset( *m_OutBuffer ); 
+    //reset( *m_OutBuffer ); 
+
+	if (bytes_transferred < m_pNetClientBuffer->m_sendSocketBuffer->size())		// 如果数据没有发送完成
+	{
+		m_pNetClientBuffer->m_sendSocketBuffer->popFrontLenNoData(bytes_transferred);
+	}
+	else				// 如果全部发送完成
+	{
+		m_pNetClientBuffer->m_sendSocketBuffer->clear();	// 清理数据
+		m_pNetClientBuffer->moveSendClient2SendSocket();	// 移动数据到发送缓冲区
+	}
 
     start_async_send();
 }
@@ -205,12 +231,16 @@ void Socket::start_async_read()
     if( IsClosed() )
         return;
 
-    reset( *m_ReadBuffer );
+    //reset( *m_ReadBuffer );
 
 	// TEST
     //m_socket.async_read_some( boost::asio::buffer( m_ReadBuffer->wr_ptr(), m_ReadBuffer->space() ),
     //                          boost::bind( &Socket::on_read_complete, shared_from_this(), 
     //                                       boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
+
+	m_socket.async_read_some(boost::asio::buffer(m_pNetClientBuffer->m_recvSocketDynBuffer->getStorage(), m_pNetClientBuffer->m_recvSocketDynBuffer->capacity()),
+	                          boost::bind( &Socket::on_read_complete, shared_from_this(), 
+	                                       boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
 }
 
 void Socket::on_read_complete( const boost::system::error_code& error,

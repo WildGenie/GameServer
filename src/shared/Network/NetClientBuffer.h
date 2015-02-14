@@ -14,7 +14,7 @@ class Mutex;
 */
 class NetClientBuffer
 {
-protected:
+public:
 	// 接收的 Buffer
 	MsgBuffer* m_recvSocketBuffer;		// 直接从服务器接收到的原始的数据，可能压缩和加密过
 	MsgBuffer* m_recvClientBuffer;		// 解压解密后可以使用的缓冲区
@@ -41,6 +41,7 @@ public:
 
 	void sendMsg();
 	void moveSendClient2SendSocket();
+	void setRecvMsgSize(size_t len);
 };
 
 #endif				// __NETCLIENTBUFFER_H

@@ -35,6 +35,7 @@
 
 class NetworkThread;
 class NetworkManager;
+class NetClientBuffer;
 
 class Socket : public boost::enable_shared_from_this<Socket>
 {
@@ -89,10 +90,16 @@ protected:
     LockType m_OutBufferLock;
 
     /// Buffer used for writing output.
-    std::auto_ptr<NetworkBuffer> m_OutBuffer;
+    //std::auto_ptr<NetworkBuffer> m_OutBuffer;
 
     /// Buffer used for receiving input
-    std::auto_ptr<NetworkBuffer> m_ReadBuffer;
+    //std::auto_ptr<NetworkBuffer> m_ReadBuffer;
+
+	// socket 是否打开
+	bool m_bSocketOpened;
+
+	// 消息缓冲区
+	NetClientBuffer* m_pNetClientBuffer;
 
 private:
 
