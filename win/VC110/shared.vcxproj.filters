@@ -99,12 +99,6 @@
     <ClCompile Include="..\..\src\shared\Network\NetworkManager.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\shared\Network\MsgBuffer.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\shared\Network\NetClientBuffer.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\shared\DataStruct\BufferUtil.cpp">
       <Filter>DataStruct</Filter>
     </ClCompile>
@@ -130,6 +124,12 @@
       <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\shared\Network\MClientThread.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MMsgBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MNetClientBuffer.cpp">
       <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
@@ -239,12 +239,6 @@
     <ClInclude Include="..\..\src\shared\Network\NetworkManager.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\shared\Network\MsgBuffer.h">
-      <Filter>Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\Network\NetClientBuffer.h">
-      <Filter>Network</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\BufferDefaultValue.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
@@ -285,6 +279,12 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\shared\Network\MClientThread.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MMsgBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MNetClientBuffer.h">
       <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
