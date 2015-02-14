@@ -191,23 +191,26 @@ int Master::Run()
     }
 
     ///- Start the databases
-    if (!_StartDB())
-    {
-        Log::WaitBeforeContinueIfNeed();
-        return 1;
-    }
+	// TESTMODIFY
+    //if (!_StartDB())
+    //{
+    //    Log::WaitBeforeContinueIfNeed();
+    //    return 1;
+    //}
 
     ///- Initialize the World
-    sWorld.SetInitialWorldSettings();
+	// TESTMODIFY
+    //sWorld.SetInitialWorldSettings();
 
 #ifndef WIN32
     detachDaemon();
 #endif
     // server loaded successfully => enable async DB requests
     // this is done to forbid any async transactions during server startup!
-    CharacterDatabase.AllowAsyncTransactions();
-    WorldDatabase.AllowAsyncTransactions();
-    LoginDatabase.AllowAsyncTransactions();
+	// TESTMODIFY
+    //CharacterDatabase.AllowAsyncTransactions();
+    //WorldDatabase.AllowAsyncTransactions();
+    //LoginDatabase.AllowAsyncTransactions();
 
     ///- Catch termination signals
     _HookSignals();
@@ -217,11 +220,12 @@ int Master::Run()
     world_thread.setPriority(MaNGOS::Priority_Highest);
 
     // set realmbuilds depend on mangosd expected builds, and set server online
-    {
-        std::string builds = AcceptableClientBuildsListStr();
-        LoginDatabase.escape_string(builds);
-        LoginDatabase.DirectPExecute("UPDATE realmlist SET realmflags = realmflags & ~(%u), population = 0, realmbuilds = '%s'  WHERE id = '%u'", REALM_FLAG_OFFLINE, builds.c_str(), realmID);
-    }
+	// TESTMODIFY
+    //{
+    //    std::string builds = AcceptableClientBuildsListStr();
+    //    LoginDatabase.escape_string(builds);
+    //    LoginDatabase.DirectPExecute("UPDATE realmlist SET realmflags = realmflags & ~(%u), population = 0, realmbuilds = '%s'  WHERE id = '%u'", REALM_FLAG_OFFLINE, builds.c_str(), realmID);
+    //}
 
     MaNGOS::Thread* cliThread = NULL;
 
@@ -309,6 +313,10 @@ int Master::Run()
     ///- Launch the world listener socket
     uint16 wsport = sWorld.getConfig(CONFIG_UINT32_PORT_WORLD);
     std::string bind_ip = sConfig.GetStringDefault("BindIP", "0.0.0.0");
+
+	// TESTMODIFY
+	wsport = 10002;
+	bind_ip = "127.0.0.1";
 
     if ( !sWorldSocketMgr.StartNetwork(wsport, bind_ip) )
     {

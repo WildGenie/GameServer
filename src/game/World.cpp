@@ -1502,37 +1502,38 @@ void World::Update(uint32 diff)
     ///- Update the game time and check for shutdown time
     _UpdateGameTime();
 
-    ///-Update mass mailer tasks if any
-    sMassMailMgr.Update();
+	// TESTMODIFY
+    /////-Update mass mailer tasks if any
+    //sMassMailMgr.Update();
 
-    /// Handle daily quests reset time
-    if (m_gameTime > m_NextDailyQuestReset)
-        ResetDailyQuests();
+    ///// Handle daily quests reset time
+    //if (m_gameTime > m_NextDailyQuestReset)
+    //    ResetDailyQuests();
 
-    /// Handle weekly quests reset time
-    if (m_gameTime > m_NextWeeklyQuestReset)
-        ResetWeeklyQuests();
+    ///// Handle weekly quests reset time
+    //if (m_gameTime > m_NextWeeklyQuestReset)
+    //    ResetWeeklyQuests();
 
-    /// Handle monthly quests reset time
-    if (m_gameTime > m_NextMonthlyQuestReset)
-        ResetMonthlyQuests();
+    ///// Handle monthly quests reset time
+    //if (m_gameTime > m_NextMonthlyQuestReset)
+    //    ResetMonthlyQuests();
 
-    /// <ul><li> Handle auctions when the timer has passed
-    if (m_timers[WUPDATE_AUCTIONS].Passed())
-    {
-        m_timers[WUPDATE_AUCTIONS].Reset();
+    ///// <ul><li> Handle auctions when the timer has passed
+    //if (m_timers[WUPDATE_AUCTIONS].Passed())
+    //{
+    //    m_timers[WUPDATE_AUCTIONS].Reset();
 
-        ///- Update mails (return old mails with item, or delete them)
-        //(tested... works on win)
-        if (++mail_timer > mail_timer_expires)
-        {
-            mail_timer = 0;
-            sObjectMgr.ReturnOrDeleteOldMails(true);
-        }
+    //    ///- Update mails (return old mails with item, or delete them)
+    //    //(tested... works on win)
+    //    if (++mail_timer > mail_timer_expires)
+    //    {
+    //        mail_timer = 0;
+    //        sObjectMgr.ReturnOrDeleteOldMails(true);
+    //    }
 
-        ///- Handle expired auctions
-        sAuctionMgr.Update();
-    }
+    //    ///- Handle expired auctions
+    //    sAuctionMgr.Update();
+    //}
 
     /// <li> Handle AHBot operations
     if (m_timers[WUPDATE_AHBOT].Passed())
@@ -1544,58 +1545,59 @@ void World::Update(uint32 diff)
     /// <li> Handle session updates
     UpdateSessions(diff);
 
-    /// <li> Handle weather updates when the timer has passed
-    if (m_timers[WUPDATE_WEATHERS].Passed())
-    {
-        ///- Send an update signal to Weather objects
-        for (WeatherMap::iterator itr = m_weathers.begin(); itr != m_weathers.end();)
-        {
-            ///- and remove Weather objects for zones with no player
-            // As interval > WorldTick
-            if (!itr->second->Update(m_timers[WUPDATE_WEATHERS].GetInterval()))
-            {
-                delete itr->second;
-                m_weathers.erase(itr++);
-            }
-            else
-                ++itr;
-        }
+	// TESTMODIFY
+    ///// <li> Handle weather updates when the timer has passed
+    //if (m_timers[WUPDATE_WEATHERS].Passed())
+    //{
+    //    ///- Send an update signal to Weather objects
+    //    for (WeatherMap::iterator itr = m_weathers.begin(); itr != m_weathers.end();)
+    //    {
+    //        ///- and remove Weather objects for zones with no player
+    //        // As interval > WorldTick
+    //        if (!itr->second->Update(m_timers[WUPDATE_WEATHERS].GetInterval()))
+    //        {
+    //            delete itr->second;
+    //            m_weathers.erase(itr++);
+    //        }
+    //        else
+    //            ++itr;
+    //    }
 
-        m_timers[WUPDATE_WEATHERS].SetCurrent(0);
-    }
-    /// <li> Update uptime table
-    if (m_timers[WUPDATE_UPTIME].Passed())
-    {
-        uint32 tmpDiff = uint32(m_gameTime - m_startTime);
-        uint32 maxClientsNum = GetMaxActiveSessionCount();
+    //    m_timers[WUPDATE_WEATHERS].SetCurrent(0);
+    //}
+    ///// <li> Update uptime table
+    //if (m_timers[WUPDATE_UPTIME].Passed())
+    //{
+    //    uint32 tmpDiff = uint32(m_gameTime - m_startTime);
+    //    uint32 maxClientsNum = GetMaxActiveSessionCount();
 
-        m_timers[WUPDATE_UPTIME].Reset();
-        LoginDatabase.PExecute("UPDATE uptime SET uptime = %u, maxplayers = %u WHERE realmid = %u AND starttime = " UI64FMTD, tmpDiff, maxClientsNum, realmID, uint64(m_startTime));
-    }
+    //    m_timers[WUPDATE_UPTIME].Reset();
+    //    LoginDatabase.PExecute("UPDATE uptime SET uptime = %u, maxplayers = %u WHERE realmid = %u AND starttime = " UI64FMTD, tmpDiff, maxClientsNum, realmID, uint64(m_startTime));
+    //}
 
-    /// <li> Handle all other objects
-    ///- Update objects (maps, transport, creatures,...)
-    sMapMgr.Update(diff);
-    sBattleGroundMgr.Update(diff);
-    sOutdoorPvPMgr.Update(diff);
+    ///// <li> Handle all other objects
+    /////- Update objects (maps, transport, creatures,...)
+    //sMapMgr.Update(diff);
+    //sBattleGroundMgr.Update(diff);
+    //sOutdoorPvPMgr.Update(diff);
 
-    ///- Delete all characters which have been deleted X days before
-    if (m_timers[WUPDATE_DELETECHARS].Passed())
-    {
-        m_timers[WUPDATE_DELETECHARS].Reset();
-        Player::DeleteOldCharacters();
-    }
+    /////- Delete all characters which have been deleted X days before
+    //if (m_timers[WUPDATE_DELETECHARS].Passed())
+    //{
+    //    m_timers[WUPDATE_DELETECHARS].Reset();
+    //    Player::DeleteOldCharacters();
+    //}
 
-    // execute callbacks from sql queries that were queued recently
-    UpdateResultQueue();
+    //// execute callbacks from sql queries that were queued recently
+    //UpdateResultQueue();
 
-    ///- Erase corpses once every 20 minutes
-    if (m_timers[WUPDATE_CORPSES].Passed())
-    {
-        m_timers[WUPDATE_CORPSES].Reset();
+    /////- Erase corpses once every 20 minutes
+    //if (m_timers[WUPDATE_CORPSES].Passed())
+    //{
+    //    m_timers[WUPDATE_CORPSES].Reset();
 
-        sObjectAccessor.RemoveOldCorpses();
-    }
+    //    sObjectAccessor.RemoveOldCorpses();
+    //}
 
     ///- Process Game events when necessary
     if (m_timers[WUPDATE_EVENTS].Passed())
@@ -1606,18 +1608,20 @@ void World::Update(uint32 diff)
         m_timers[WUPDATE_EVENTS].Reset();
     }
 
+	// TESTMODIFY
     /// </ul>
-    ///- Move all creatures with "delayed move" and remove and delete all objects with "delayed remove"
-    sMapMgr.RemoveAllObjectsInRemoveList();
+    /////- Move all creatures with "delayed move" and remove and delete all objects with "delayed remove"
+    //sMapMgr.RemoveAllObjectsInRemoveList();
 
-    // update the instance reset times
-    sMapPersistentStateMgr.Update();
+    //// update the instance reset times
+    //sMapPersistentStateMgr.Update();
 
     // And last, but not least handle the issued cli commands
     ProcessCliCommands();
 
-    // cleanup unused GridMap objects as well as VMaps
-    sTerrainMgr.Update(diff);
+	// TESTMODIFY
+    //// cleanup unused GridMap objects as well as VMaps
+    //sTerrainMgr.Update(diff);
 }
 
 namespace MaNGOS

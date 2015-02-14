@@ -26,7 +26,9 @@
 //#include <ace/INET_Addr.h>
 #include <boost/xpressive/xpressive_dynamic.hpp>
 
-static boost::thread_specific_ptr<MTRand> mtRand;
+// TESTMODIFY
+//static boost::thread_specific_ptr<MTRand> mtRand;
+static MTRand* mtRand = new MTRand();
 
 //static ACE_Time_Value g_SystemTickTime = ACE_OS::gettimeofday();
 static boost::posix_time::ptime g_SystemTickTime = boost::posix_time::microsec_clock::universal_time();
