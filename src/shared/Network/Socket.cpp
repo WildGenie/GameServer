@@ -261,26 +261,26 @@ void Socket::on_read_complete( const boost::system::error_code& error,
     start_async_read();
 }
 
-void Socket::reset( NetworkBuffer& buffer )
-{
-    //if( buffer.length() == 0 )
-    //{
-    //    buffer.reset();
-    //}
-    //else
-    //{
-    //    buffer.crunch();
-    //}
-
-	if (buffer.size() == 0)
-	{
-		buffer.clear();
-	}
-	else
-	{
-		buffer.clear();
-	}
-}
+//void Socket::reset( NetworkBuffer& buffer )
+//{
+//    //if( buffer.length() == 0 )
+//    //{
+//    //    buffer.reset();
+//    //}
+//    //else
+//    //{
+//    //    buffer.crunch();
+//    //}
+//
+//	if (buffer.size() == 0)
+//	{
+//		buffer.clear();
+//	}
+//	else
+//	{
+//		buffer.clear();
+//	}
+//}
 
 void Socket::OnError( const boost::system::error_code& error )
 {

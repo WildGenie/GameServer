@@ -40,7 +40,7 @@ namespace protocol
 }
 
 //typedef ACE_Message_Block NetworkBuffer;
-//typedef boost::circular_buffer<char> NetworkBuffer;
+typedef boost::circular_buffer<char> NetworkBuffer;
 
 class Socket;
 typedef boost::shared_ptr<Socket> SocketPtr;

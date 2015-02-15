@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-#include "ByteConverter.h"
+#include "MByteConverter.h"
 #include "Error.h"
 #include "SystemEndian.h"
 #include "System.h"
@@ -31,9 +31,9 @@ class MByteBufferException
 };
 
 template<class T>
-struct Unused
+struct MUnused
 {
-    Unused() {}
+    MUnused() {}
 };
 
 class MByteBuffer
@@ -285,7 +285,7 @@ public:
     }
 
     template<class T>
-	MByteBuffer& readUnused(Unused<T> const&)
+	MByteBuffer& readUnused(MUnused<T> const&)
     {
         read_skip<T>();
         return *this;
@@ -350,7 +350,7 @@ public:
         T val = *((T const*)&_storage[pos]);
 		if (System::getSingletonPtr()->isEndianDiffFromSys(m_sysEndian))
 		{
-			EndianConvert(val);
+			MEndianConvert(val);
 		}
         return val;
     }
@@ -453,7 +453,7 @@ private:
     {
 		if (System::getSingletonPtr()->isEndianDiffFromSys(m_sysEndian))
 		{
-			EndianConvert(value);
+			MEndianConvert(value);
 		}
         append((uint8*)&value, sizeof(value));
     }

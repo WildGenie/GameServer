@@ -25,6 +25,12 @@
     <Filter Include="DataStruct">
       <UniqueIdentifier>{97f63232-c5d9-44a6-a91c-03c5a2066b7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FastDelegate">
+      <UniqueIdentifier>{db97dcc0-5605-43ba-b3ab-f371144a9ede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetMsgHandle">
+      <UniqueIdentifier>{0b9c0aaa-a9e9-444c-a8ef-a9089c62ce78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\shared\Database\Database.cpp">
@@ -134,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\shared\Network\MClientThreadSafeData.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\NetMsgHandle\NetCmdHandleBase.cpp">
+      <Filter>NetMsgHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\NetMsgHandle\NetDispHandle.cpp">
+      <Filter>NetMsgHandle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +260,6 @@
     <ClInclude Include="..\..\src\shared\DataStruct\BufferUtil.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\ByteConverter.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\DynBuffer.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
@@ -292,6 +301,21 @@
     </ClInclude>
     <ClInclude Include="..\..\src\shared\Network\MClientThreadSafeData.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MByteConverter.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegate.h">
+      <Filter>FastDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegateBind.h">
+      <Filter>FastDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\NetMsgHandle\NetCmdHandleBase.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\NetMsgHandle\NetDispHandle.h">
+      <Filter>NetMsgHandle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

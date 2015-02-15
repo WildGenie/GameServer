@@ -116,7 +116,7 @@ private:
     void on_read_complete( const boost::system::error_code& error, 
         size_t bytes_transferred );
 
-    void reset( NetworkBuffer& buffer );
+    //void reset( NetworkBuffer& buffer );
 
     void OnError( const boost::system::error_code& error );
 

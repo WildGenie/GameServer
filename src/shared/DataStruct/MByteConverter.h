@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "Platform/Define.h"
 
-namespace ByteConverter
+namespace MByteConverter
 {
 	template<size_t T>
 	inline void convert(char* val)
@@ -26,10 +26,10 @@ namespace ByteConverter
 	}
 }
 
-template<typename T> inline void EndianConvert(T& val) { ByteConverter::apply<T>(&val); }
-template<typename T> void EndianConvert(T*);         // will generate link error
+template<typename T> inline void MEndianConvert(T& val) { MByteConverter::apply<T>(&val); }
+template<typename T> void MEndianConvert(T*);         // will generate link error
 
-inline void EndianConvert(uint8&) { }
-inline void EndianConvert(int8&)  { }
+inline void MEndianConvert(uint8&) { }
+inline void MEndianConvert(int8&)  { }
 
 #endif
