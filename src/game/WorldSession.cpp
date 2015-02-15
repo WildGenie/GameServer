@@ -41,6 +41,7 @@
 #include "zlib/zlib.h"
 #include "MByteBuffer.h"
 #include "MNetClientBuffer.h"
+#include "NetMsgHandle/NetMsgHandleManager.h"
 
 // select opcodes appropriate for processing in Map::Update context for current session state
 static bool MapSessionFilterHelper(WorldSession* session, OpcodeHandler const& opHandle)
@@ -209,6 +210,7 @@ bool WorldSession::Update(PacketFilter& updater)
 		if (nullptr != pMsgBA)
 		{
 			// 进行处理消息
+			sNetMsgHandleManager.m_pNetDispHandle->handleMsg(pMsgBA, this);
 		}
 
 

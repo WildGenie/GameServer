@@ -2,10 +2,11 @@
 #define __NETMSGHANDLEMANAGER_H
 
 #include "Policies/Singleton.h"
+#include "NetDispHandle.h"
 
 class MByteBuffer;
 class WorldSession;
-class NetDispHandle;
+template<class T> class NetDispHandle;
 
 class NetMsgHandleManager
 {
@@ -14,7 +15,6 @@ public:
 
 public:
 	NetMsgHandleManager();
-	void handleMsg(MByteBuffer* pMsgBA, WorldSession* pWorldSession);
 };
 
 #define sNetMsgHandleManager MaNGOS::Singleton<NetMsgHandleManager>::Instance()

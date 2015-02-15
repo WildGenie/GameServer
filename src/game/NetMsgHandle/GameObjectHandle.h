@@ -5,11 +5,12 @@
 
 class WorldSession;
 
-class GameObjectHandle : public NetDispHandle<OneNetDispDelegate>
+class GameObjectHandle : public NetDispHandle<TWONetDispDelegate>
 {
 public:
 	GameObjectHandle();
 	void handleObject(MByteBuffer* pMsgBA, int bCmd, int bParam, WorldSession* pWorldSession);
+	void psstObjectBasicCmd(MByteBuffer* pMsgBA, WorldSession* pWorldSession);
 };
 
 
