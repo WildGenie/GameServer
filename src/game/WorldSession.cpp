@@ -204,13 +204,16 @@ bool WorldSession::Update(PacketFilter& updater)
     /// not process packets if socket already closed
     WorldPacket* packet = NULL;
     //while (m_Socket && !m_Socket->IsClosed() && _recvQueue.next(packet, updater))
-	while (m_Socket && !m_Socket->IsClosed())
+	if (m_Socket && !m_Socket->IsClosed())
     {
-		MByteBuffer* pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取一个消息
+		MByteBuffer* pMsgBA;
+		pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取一个消息
 		if (nullptr != pMsgBA)
 		{
 			// 进行处理消息
 			sNetMsgHandleManager.m_pNetDispHandle->handleMsg(pMsgBA, this);
+
+			pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取下一个消息
 		}
 
 

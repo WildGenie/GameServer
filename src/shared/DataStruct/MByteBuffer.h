@@ -363,7 +363,11 @@ public:
         _rpos += len;
     }
 
-    const uint8* contents() const { return &_storage[0]; }
+    const uint8* contents() const 
+	{
+		((MByteBuffer*)this)->writeInt32(0);		// 必须先写进入，否则就会在 [] 的时候报错
+		return &_storage[0]; 
+	}
 
     size_t size() const { return _storage.size(); }
     bool empty() const { return _storage.empty(); }

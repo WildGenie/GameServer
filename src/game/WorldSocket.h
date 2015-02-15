@@ -82,80 +82,81 @@ class WorldSocketMgr;
  */
 class WorldSocket : public Socket
 {
-    public:
-        /// Close the socket.
-        virtual void CloseSocket(void) override;
+public:
+    /// Close the socket.
+    virtual void CloseSocket(void) override;
 
-        /// Send A packet on the socket, this function is reentrant.
-        /// @param pct packet to send
-        /// @return false of failure
-        bool SendPacket(const WorldPacket& pct);
+    /// Send A packet on the socket, this function is reentrant.
+    /// @param pct packet to send
+    /// @return false of failure
+    bool SendPacket(const WorldPacket& pct);
 
-        /// Return the session key
-        BigNumber& GetSessionKey() { return m_s; }
+    /// Return the session key
+    BigNumber& GetSessionKey() { return m_s; }
 
-        WorldSocket( NetworkManager& socketMrg, 
-                     NetworkThread& owner );
+    WorldSocket( NetworkManager& socketMrg, 
+                    NetworkThread& owner );
 
-        virtual ~WorldSocket(void);
+    virtual ~WorldSocket(void);
+
+	// Test
+	void addSession();
 
 protected:
 
-    /// Called on open ,the void* is the acceptor.
-    virtual bool open() override;
+/// Called on open ,the void* is the acceptor.
+virtual bool open() override;
 
-    virtual bool process_incoming_data() override;
+virtual bool process_incoming_data() override;
 
-    private:
-        /// Helper functions for processing incoming data.
-        int handle_input_header(void);
-        int handle_input_payload(void);
+private:
+    /// Helper functions for processing incoming data.
+    int handle_input_header(void);
+    int handle_input_payload(void);
 
-        /// process one incoming packet.
-        /// @param new_pct received packet ,note that you need to delete it.
-        int ProcessIncoming(WorldPacket* new_pct);
+    /// process one incoming packet.
+    /// @param new_pct received packet ,note that you need to delete it.
+    int ProcessIncoming(WorldPacket* new_pct);
 
-        /// Called by ProcessIncoming() on CMSG_AUTH_SESSION.
-        int HandleAuthSession(WorldPacket& recvPacket);
+    /// Called by ProcessIncoming() on CMSG_AUTH_SESSION.
+    int HandleAuthSession(WorldPacket& recvPacket);
 
-        /// Called by ProcessIncoming() on CMSG_PING.
-        int HandlePing(WorldPacket& recvPacket);
+    /// Called by ProcessIncoming() on CMSG_PING.
+    int HandlePing(WorldPacket& recvPacket);
 
-    private:
+private:
+    /// Time in which the last ping was received
+    //ACE_Time_Value m_LastPingTime;
+	// TEST
+	boost::posix_time::ptime m_LastPingTime;
+	bool m_bTimeInited;
 
-        /// Time in which the last ping was received
-        //ACE_Time_Value m_LastPingTime;
-		// TEST
-		boost::posix_time::ptime m_LastPingTime;
-		bool m_bTimeInited;
+    /// Keep track of over-speed pings ,to prevent ping flood.
+    uint32 m_OverSpeedPings;
 
-        /// Keep track of over-speed pings ,to prevent ping flood.
-        uint32 m_OverSpeedPings;
+    /// Class used for managing encryption of the headers
+    AuthCrypt m_Crypt;
 
-        /// Class used for managing encryption of the headers
-        AuthCrypt m_Crypt;
+    /// Mutex lock to protect m_Session
+    LockType m_SessionLock;
 
-        /// Mutex lock to protect m_Session
-        LockType m_SessionLock;
+    /// Session to which received packets are routed
+    WorldSession* m_Session;
 
-        /// Session to which received packets are routed
-        WorldSession* m_Session;
+    /// here are stored the fragments of the received data
+    WorldPacket* m_RecvWPct;
 
-        /// here are stored the fragments of the received data
-        WorldPacket* m_RecvWPct;
+    /// This block actually refers to m_RecvWPct contents,
+    /// which allows easy and safe writing to it.
+    /// It wont free memory when its deleted. m_RecvWPct takes care of freeing.
+    NetworkBuffer m_RecvPct;
 
-        /// This block actually refers to m_RecvWPct contents,
-        /// which allows easy and safe writing to it.
-        /// It wont free memory when its deleted. m_RecvWPct takes care of freeing.
-        NetworkBuffer m_RecvPct;
+    /// Fragment of the received header.
+    NetworkBuffer m_Header;
 
-        /// Fragment of the received header.
-        NetworkBuffer m_Header;
+    uint32 m_Seed;
 
-        uint32 m_Seed;
-
-        BigNumber m_s;
-
+    BigNumber m_s;
 };
 
 typedef boost::shared_ptr<WorldSocket> WorldSocketPtr;

@@ -50,10 +50,10 @@ void MMsgBuffer::moveOutOneMsg()
 
 void MMsgBuffer::setHeaderBATSData(MClientThreadSafeData* tsData)
 {
-
+	m_pHeaderBA = tsData->m_pHeaderBA;
 }
 
 void MMsgBuffer::setMsgBATSData(MClientThreadSafeData* tsData)
 {
-
+	m_pMsgBA = tsData->m_pMsgBA;
 }

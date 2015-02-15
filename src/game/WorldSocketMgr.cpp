@@ -30,6 +30,8 @@
 
 #include <boost/system/error_code.hpp>
 
+#include "Verify/VerifyThread.h"
+
 #define CLASS_LOCK MaNGOS::ClassLevelLockable<WorldSocketMgr, boost::recursive_mutex>
 INSTANTIATE_SINGLETON_2(WorldSocketMgr, CLASS_LOCK);
 INSTANTIATE_CLASS_MUTEX(WorldSocketMgr, boost::recursive_mutex);
@@ -37,9 +39,10 @@ INSTANTIATE_CLASS_MUTEX(WorldSocketMgr, boost::recursive_mutex);
 WorldSocketMgr::WorldSocketMgr():
     m_SockOutKBuff(-1),
     m_SockOutUBuff(protocol::SEND_BUFFER_SIZE),
-    m_UseNoDelay(true)
+    m_UseNoDelay(true),
+	m_pVerifyThread(new VerifyThread())
 {
-    
+	m_pVerifyThread->Start();
 }
 
 WorldSocketMgr::~WorldSocketMgr()
@@ -89,10 +92,17 @@ bool WorldSocketMgr::OnSocketOpen( const SocketPtr& sock )
 
     sock->SetOutgoingBufferSize( static_cast<size_t>(m_SockOutUBuff) );
 
+	m_pVerifyThread->AddSocket(sock);
+
     return NetworkManager::OnSocketOpen( sock );
 }
 
 SocketPtr WorldSocketMgr::CreateSocket( NetworkThread& owner )
 {
     return SocketPtr( new WorldSocket( *this, owner ) );
+}
+
+void WorldSocketMgr::verifySocket(const SocketPtr& sock)
+{
+	m_pVerifyThread->AddSocket(sock);
 }

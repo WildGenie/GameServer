@@ -48,6 +48,8 @@ void MNetClientBuffer::moveRecvSocketDyn2RecvSocket(size_t dynLen)
 {
 	m_recvSocketDynBuffer->setSize(dynLen);
 	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->m_storage, 0, m_recvSocketDynBuffer->size());
+
+	moveRecvSocket2RecvClient();
 }
 
 // 有可能一个数据包有多个消息，这个地方没有处理，如果有多个消息，需要处理，否则会丢失消息

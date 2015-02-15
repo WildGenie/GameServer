@@ -683,3 +683,18 @@ int WorldSocket::HandlePing(WorldPacket& recvPacket)
 
     return 0;
 }
+
+// Test สนำร
+void WorldSocket::addSession()
+{
+	WorldSocketPtr this_session = boost::static_pointer_cast<WorldSocket>(shared_from_this());
+	// NOTE ATM the socket is single-threaded, have this in mind ...
+	m_Session = new WorldSession(1, this_session, AccountTypes(1), 1, 1, LocaleConstant(1));
+
+	m_Session->LoadGlobalAccountData();
+	m_Session->LoadTutorialsData();
+
+	boost::this_thread::sleep(boost::posix_time::milliseconds(10));
+
+	sWorld.AddSession(m_Session);
+}

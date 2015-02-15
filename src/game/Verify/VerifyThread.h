@@ -42,6 +42,8 @@ private:
 
 	SocketSet m_Sockets;
 	boost::mutex m_SocketsLock;
+
+	bool m_exitFlag;
 };
 
 

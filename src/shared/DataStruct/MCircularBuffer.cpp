@@ -270,7 +270,7 @@ bool MCircularBuffer::popFront(char* pItem, std::size_t startPos, std::size_t le
 */
 bool MCircularBuffer::front(char* pItem, std::size_t startPos, std::size_t len)
 {
-	if (len <= size())
+	if (len > size())
 	{
 		return false;
 	}

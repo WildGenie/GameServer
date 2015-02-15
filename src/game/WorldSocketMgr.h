@@ -32,27 +32,34 @@
 #include "Policies/Singleton.h"
 #include "Network/NetworkManager.h"
 
+class VerifyThread;
 
 /// Manages all sockets connected to peers and network threads
 class WorldSocketMgr : public NetworkManager, public MaNGOS::Singleton<WorldSocketMgr, MaNGOS::ClassLevelLockable<WorldSocketMgr, boost::recursive_mutex> > 
 {
-    public:
-        friend class WorldSocket;
-        friend class MaNGOS::OperatorNew<WorldSocketMgr>;
+public:
+    friend class WorldSocket;
+    friend class MaNGOS::OperatorNew<WorldSocketMgr>;
 
-    private:
-        virtual bool OnSocketOpen( const SocketPtr& sock ) override;
+private:
+    virtual bool OnSocketOpen( const SocketPtr& sock ) override;
 
-        virtual bool StartNetworkIO( boost::uint16_t port, const char* address ) override;
+    virtual bool StartNetworkIO( boost::uint16_t port, const char* address ) override;
 
-        WorldSocketMgr();
-        virtual ~WorldSocketMgr();
+    WorldSocketMgr();
+    virtual ~WorldSocketMgr();
 
-        virtual SocketPtr CreateSocket( NetworkThread& owner ) override;
+    virtual SocketPtr CreateSocket( NetworkThread& owner ) override;
 
-        int m_SockOutKBuff;
-        int m_SockOutUBuff;
-        bool m_UseNoDelay;
+    int m_SockOutKBuff;
+    int m_SockOutUBuff;
+    bool m_UseNoDelay;
+
+protected:
+	VerifyThread* m_pVerifyThread;
+
+protected:
+	void verifySocket(const SocketPtr& sock);			// 校验本次链接是否有效
 };
 
 #define sWorldSocketMgr WorldSocketMgr::Instance()

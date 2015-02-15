@@ -3,9 +3,10 @@
 #include "Socket.h"
 #include "MClientThreadSafeData.h"
 #include "MNetClientBuffer.h"
+#include "WorldSocket.h"
 
 VerifyThread::VerifyThread() :
-	m_Connections(0)
+	m_Connections(0), m_exitFlag(false)
 {
 
 }
@@ -23,11 +24,12 @@ void VerifyThread::Stop()
 
 void VerifyThread::Start()
 {
-	m_thread.reset(new boost::thread(boost::bind(&NetworkThread::svc, this)));
+	m_thread.reset(new boost::thread(boost::bind(&VerifyThread::svc, this)));
 }
 
 void VerifyThread::Wait()
 {
+	m_exitFlag = true;
 	if (m_thread.get())
 	{
 		m_thread->join();
@@ -53,11 +55,43 @@ void VerifyThread::RemoveSocket(const SocketPtr& sock)
 
 void VerifyThread::svc()
 {
-	// 发送消息
-	SocketSet::iterator itBegin = m_Sockets.begin();
-	SocketSet::iterator itEnd = m_Sockets.end();
-	for (; itBegin != itEnd; ++itBegin)
+	while (!m_exitFlag)
 	{
-		(*itBegin)->start_async_send();
+		if (m_Sockets.size())
+		{
+			SocketSet removeList;
+			// 发送消息
+			SocketSet::iterator itBegin = m_Sockets.begin();
+			SocketSet::iterator itEnd = m_Sockets.end();
+			for (; itBegin != itEnd; ++itBegin)
+			{
+				MByteBuffer* pMsgBA;
+				pMsgBA = (*itBegin)->getNetClientBuffer()->getMsg();
+				while (pMsgBA)
+				{
+					((WorldSocket*)(itBegin->get()))->addSession();
+					// Test 接收到第一个消息就进入场景
+					removeList.insert(*itBegin);
+					//RemoveSocket(*itBegin);
+					break;
+					//pMsgBA = (*itBegin)->getNetClientBuffer()->getMsg();
+				}
+			}
+
+			if (removeList.size())
+			{
+				itBegin = removeList.begin();
+				itEnd = removeList.end();
+
+				for (; itBegin != itEnd; ++itBegin)
+				{
+					RemoveSocket(*itBegin);
+				}
+
+				removeList.clear();
+			}
+		}
+
+		MaNGOS::Thread::Sleep(1000);
 	}
 }
