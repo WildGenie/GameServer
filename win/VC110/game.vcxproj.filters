@@ -37,6 +37,9 @@
     <Filter Include="BattleGround">
       <UniqueIdentifier>{0af4d063-6d01-4546-a429-59bd828ab270}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetMsgHandle">
+      <UniqueIdentifier>{71a8472a-7438-4365-942d-57a7b85dee26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\game\AccountMgr.cpp">
@@ -556,6 +559,12 @@
     <ClCompile Include="..\..\src\game\BattleGround\BattleGroundWS.cpp">
       <Filter>BattleGround</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\game\NetMsgHandle\GameObjectHandle.cpp">
+      <Filter>NetMsgHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\NetMsgHandle\NetMsgHandleManager.cpp">
+      <Filter>NetMsgHandle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h">
@@ -1056,6 +1065,27 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game\BattleGround\BattleGroundSA.h">
       <Filter>BattleGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\GameObjectHandle.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NetMsgHandleManager.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NetDispHandle.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\CmdType.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NullUserCmd.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\ByCmdMsg.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\ObjectCmd.h">
+      <Filter>NetMsgHandle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

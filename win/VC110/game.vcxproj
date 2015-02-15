@@ -186,7 +186,7 @@
     <ClCompile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\game\vmap;..\..\dep\ACE_wrappers;$(BOOST_ROOT);..\..\dep\include\g3dlite;..\..\src\game;..\..\src\shared\Network;..\..\src\shared\DataStruct;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\game\vmap;..\..\dep\ACE_wrappers;$(BOOST_ROOT);..\..\dep\include\g3dlite;..\..\src\game;..\..\src\shared\Network;..\..\src\shared\DataStruct;..\..\src\shared\NetMsgHandle;..\..\src\shared\FastDelegate;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;MANGOS_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -433,6 +433,8 @@
     <ClCompile Include="..\..\src\game\movement\packet_builder.cpp" />
     <ClCompile Include="..\..\src\game\movement\spline.cpp" />
     <ClCompile Include="..\..\src\game\movement\util.cpp" />
+    <ClCompile Include="..\..\src\game\NetMsgHandle\GameObjectHandle.cpp" />
+    <ClCompile Include="..\..\src\game\NetMsgHandle\NetMsgHandleManager.cpp" />
     <ClCompile Include="..\..\src\game\NPCHandler.cpp" />
     <ClCompile Include="..\..\src\game\NullCreatureAI.cpp" />
     <ClCompile Include="..\..\src\game\Object.cpp" />
@@ -609,6 +611,13 @@
     <ClInclude Include="..\..\src\game\movement\spline.h" />
     <ClInclude Include="..\..\src\game\movement\spline.impl.h" />
     <ClInclude Include="..\..\src\game\movement\typedefs.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\ByCmdMsg.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\CmdType.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\ObjectCmd.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\GameObjectHandle.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NetDispHandle.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NetMsgHandleManager.h" />
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NullUserCmd.h" />
     <ClInclude Include="..\..\src\game\NPCHandler.h" />
     <ClInclude Include="..\..\src\game\NullCreatureAI.h" />
     <ClInclude Include="..\..\src\game\Object.h" />

@@ -6,14 +6,15 @@
 using namespace fastdelegate;
 
 class MByteBuffer;
+class WorldSession;
 
-typedef FastDelegate3<MByteBuffer*, int, int> ThreeNetDispDelegate;
+typedef FastDelegate4<MByteBuffer*, int, int, WorldSession*> FourNetDispDelegate;
 typedef FastDelegate1<MByteBuffer*> OneNetDispDelegate;
 
 template<class T>
 class NetDispHandle
 {
-protected:
+public:
 	T* m_pNetDispDelegateArr;
 
 public:
@@ -22,7 +23,7 @@ public:
 		m_pNetDispDelegateArr = new T[len];
 	}
 
-	void addOneDelegate(int idx, T dele)
+	void addOneDelegate(int idx, T* dele)
 	{
 		m_pNetDispDelegateArr[idx] = dele;
 	}
