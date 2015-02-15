@@ -7,11 +7,10 @@
 #include <map>
 
 #include "MByteConverter.h"
-#include "Error.h"
 #include "SystemEndian.h"
 #include "System.h"
 #include "Platform/Define.h"
-
+#include "DynBufResizePolicy.h"
 
 class MByteBufferException
 {
@@ -42,37 +41,30 @@ protected:
 	SysEndian m_sysEndian;
 
 public:
-  //  // constructor
-  //  ByteBuffer(): _rpos(0), _wpos(0)
-  //  {
-		//m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
-		//_storage.reserve(INITCAPACITY);
-  //  }
-
     // constructor
-	MByteBuffer(size_t res) : _rpos(0), _wpos(0)
+	MByteBuffer(size_t res) : m_pos(0)
     {
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
-        _storage.reserve(res);
+		m_storage = new char[res];
     }
 
     // copy constructor
-	MByteBuffer(const MByteBuffer& buf) : _rpos(buf._rpos), _wpos(buf._wpos), _storage(buf._storage)
+	MByteBuffer(const MByteBuffer& buf) : m_pos(buf.m_pos), m_storage(buf.m_storage)
 	{
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
 	}
 
     void clear()
     {
-        _storage.clear();
-        _rpos = _wpos = 0;
+		m_size = 0;
+		m_pos = 0;
     }
 
 	// 放入的值一定和系统大小端一样的
     template <typename T>
 	void put(size_t pos, T value)
     {
-		if (System::getSingletonPtr()->isEndianDiffFromSys(m_sysEndian))
+		if (sSysEndian != m_sysEndian)
 		{
 			EndianConvert(value);
 		}
@@ -263,7 +255,7 @@ public:
 		if (len)		// 如果不为 0 ，就读取指定数量
 		{
 			size_t readNum = 0;	// 已经读取的数量
-			while (rpos() < size() && readNum < len)                         // prevent crash at wrong string format in packet
+			while (pos() < size() && readNum < len)                         // prevent crash at wrong string format in packet
 			{
 				char c = read<char>();
 				value += c;
@@ -272,7 +264,7 @@ public:
 		}
 		else				// 如果为 0 ，就一直读取，直到遇到第一个 '\0'
 		{
-			while (rpos() < size())                         // prevent crash at wrong string format in packet
+			while (pos() < size())                         // prevent crash at wrong string format in packet
 			{
 				char c = read<char>();
 				if (c == 0)
@@ -296,20 +288,12 @@ public:
         return read<uint8>(pos);
     }
 
-    size_t rpos() const { return _rpos; }
+	size_t pos() const { return m_pos; }
 
-    size_t rpos(size_t rpos_)
+    size_t pos(size_t pos_)
     {
-        _rpos = rpos_;
-        return _rpos;
-    }
-
-    size_t wpos() const { return _wpos; }
-
-    size_t wpos(size_t wpos_)
-    {
-        _wpos = wpos_;
-        return _wpos;
+		m_pos = pos_;
+		return m_pos;
     }
 
 	// 根据类型跳过
@@ -319,9 +303,9 @@ public:
 	// 根据大小跳过
     void read_skip(size_t skip)
     {
-        if (_rpos + skip > size())
-			throw MByteBufferException(false, _rpos, skip, size());
-        _rpos += skip;
+		if (m_pos + skip > size())
+			throw MByteBufferException(false, m_pos, skip, size());
+		m_pos += skip;
     }
 
 	template<typename T>
@@ -336,8 +320,8 @@ public:
     template <typename T>
 	T read()
     {
-        T r = read<T>(_rpos);
-        _rpos += sizeof(T);
+		T r = read<T>(m_pos);
+		m_pos += sizeof(T);
         return r;
     }
 
@@ -347,8 +331,8 @@ public:
     {
         if (pos + sizeof(T) > size())
 			throw MByteBufferException(false, pos, sizeof(T), size());
-        T val = *((T const*)&_storage[pos]);
-		if (System::getSingletonPtr()->isEndianDiffFromSys(m_sysEndian))
+        T val = *((T const*)&m_storage[pos]);
+		if (sSysEndian != m_sysEndian)
 		{
 			MEndianConvert(val);
 		}
@@ -357,36 +341,67 @@ public:
 
     void read(uint8* dest, size_t len)
     {
-        if (_rpos  + len > size())
-			throw MByteBufferException(false, _rpos, len, size());
-        memcpy(dest, &_storage[_rpos], len);
-        _rpos += len;
+		if (m_pos + len > size())
+			throw MByteBufferException(false, m_pos, len, size());
+		memcpy(dest, &m_storage[m_pos], len);
+		readAddPos(len);
     }
 
     const uint8* contents() const 
 	{
-		((MByteBuffer*)this)->writeInt32(0);		// 必须先写进入，否则就会在 [] 的时候报错
-		return &_storage[0]; 
+		return (uint8*)m_storage;
 	}
 
-    size_t size() const { return _storage.size(); }
-    bool empty() const { return _storage.empty(); }
+	size_t size() const { return m_size; }
+	bool empty() const { return m_size == 0; }
 
-    void resize(size_t newsize)
-    {
-		if (newsize > size())
+	size_t capacity()
+	{
+		return m_iCapacity;
+	}
+
+	void readAddPos(int delta)
+	{
+		m_pos += delta;
+	}
+
+	void writeAddPos(int delta)
+	{
+		m_pos += delta;
+		m_size += delta;
+	}
+
+	void setCapacity(std::size_t newCapacity)
+	{
+		if (newCapacity == capacity())
 		{
-			_storage.resize(newsize);
-			_rpos = 0;
-			_wpos = size();
+			return;
 		}
-    }
+		if (newCapacity < size())       // 不能分配比当前已经占有的空间还小的空间
+		{
+			return;
+		}
+		char* tmpbuff = new char[newCapacity];   // 分配新的空间
+		std::memcpy(tmpbuff, m_storage, m_size);
 
-    void reserve(size_t ressize)
-    {
-        if (ressize > size())
-            _storage.reserve(ressize);
-    }
+		m_iCapacity = newCapacity;
+
+		delete[] m_storage;
+		m_storage = tmpbuff;
+	}
+
+	/**
+	*@brief 能否添加 num 长度的数据
+	*/
+	bool canAddData(uint32 num)
+	{
+		if (m_iCapacity - m_size > num)
+		{
+			return true;
+		}
+
+		return false;
+	}
 
 	// 在最后添加
     void append(const std::string& str)
@@ -407,41 +422,49 @@ public:
 
     void append(const uint8* src, size_t cnt)
     {
-        if (!cnt)
-            return;
+		if (!cnt)
+		{
+			return;
+		}
 
-		assert(size() < 10000000);
-
-        if (_storage.size() < _wpos + cnt)
-            _storage.resize(_wpos + cnt);
-        memcpy(&_storage[_wpos], src, cnt);
-        _wpos += cnt;
+		if (!canAddData(cnt))
+		{
+			uint32 closeSize = DynBufResizePolicy::getCloseSize(cnt + size(), capacity());
+			setCapacity(closeSize);
+		}
+        memcpy(&m_storage[m_pos], src, cnt);
+		writeAddPos(cnt);
     }
 
 	// 仅仅移动写指针，并不添加内容
 	void append(size_t cnt)
 	{
 		if (!cnt)
+		{
 			return;
+		}
 
-		assert(size() < 10000000);
-
-		if (_storage.size() < _wpos + cnt)
-			_storage.resize(_wpos + cnt);
-		_wpos += cnt;
+		if (!canAddData(cnt))
+		{
+			uint32 closeSize = DynBufResizePolicy::getCloseSize(cnt + size(), capacity());
+			setCapacity(closeSize);
+		}
+		writeAddPos(cnt);
 	}
 
 	void append(const MByteBuffer& buffer)
     {
-        if (buffer.wpos())
-            append(buffer.contents(), buffer.wpos());
+        if (buffer.pos())
+            append(buffer.contents(), buffer.pos());
     }
 
     void put(size_t pos, const uint8* src, size_t cnt)
     {
-        if (pos + cnt > size())
+		if (!canAddData(cnt))
+		{
 			throw MByteBufferException(true, pos, cnt, size());
-        memcpy(&_storage[pos], src, cnt);
+		}
+        memcpy(&m_storage[pos], src, cnt);
     }
 
     void print_storage() const;
@@ -455,7 +478,7 @@ private:
     template <typename T>
 	void append(T value)
     {
-		if (System::getSingletonPtr()->isEndianDiffFromSys(m_sysEndian))
+		if (sSysEndian != m_sysEndian)
 		{
 			MEndianConvert(value);
 		}
@@ -463,9 +486,10 @@ private:
     }
 
 protected:
-	size_t _rpos;		// 读取位置
-	size_t _wpos;		// 写入位置
-    std::vector<uint8> _storage;		// 存储空间
+	size_t m_pos;		// 读取写入位置
+	size_t m_size;		// 数据大小
+	size_t m_iCapacity;	// 分配的空间大小
+	char* m_storage;	// 存储空间
 };
 
 template <typename T>

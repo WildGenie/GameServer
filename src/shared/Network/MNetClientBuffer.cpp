@@ -61,7 +61,7 @@ void MNetClientBuffer::moveRecvSocket2RecvClient()
 		//m_recvSocketBuffer->m_pMsgBA->uncompress();
 		m_unCompressHeaderBA->clear();
 		m_unCompressHeaderBA->writeUnsignedInt32(m_recvSocketBuffer->m_pMsgBA->size());
-		m_unCompressHeaderBA->rpos(0);
+		m_unCompressHeaderBA->pos(0);
 		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_unCompressHeaderBA->contents(), 0, MSGHEADERSIZE);             // 保存消息大小字段
 		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_recvSocketBuffer->m_pMsgBA->contents(), 0, m_recvSocketBuffer->m_pMsgBA->size());      // 保存消息大小字段
 	}

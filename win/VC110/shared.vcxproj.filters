@@ -117,9 +117,6 @@
     <ClCompile Include="..\..\src\shared\DataStruct\MCircularBuffer.cpp">
       <Filter>DataStruct</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\shared\DataStruct\System.cpp">
-      <Filter>DataStruct</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\shared\DataStruct\MByteBuffer.cpp">
       <Filter>DataStruct</Filter>
     </ClCompile>
@@ -260,19 +257,10 @@
     <ClInclude Include="..\..\src\shared\DataStruct\DynBufResizePolicy.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\Error.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\MCircularBuffer.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\System.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\SystemEndian.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\Singleton.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\MByteBuffer.h">

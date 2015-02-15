@@ -227,7 +227,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\dep\ACE_wrappers;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\dep\ACE_wrappers;$(BOOST_ROOT);..\..\src\shared\DataStruct;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;MANGOS_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -457,7 +457,6 @@
     <ClCompile Include="..\..\src\shared\DataStruct\DynBuffer.cpp" />
     <ClCompile Include="..\..\src\shared\DataStruct\DynBufResizePolicy.cpp" />
     <ClCompile Include="..\..\src\shared\DataStruct\MCircularBuffer.cpp" />
-    <ClCompile Include="..\..\src\shared\DataStruct\System.cpp" />
     <ClCompile Include="..\..\src\shared\Log.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MClient.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MClientManager.cpp" />
@@ -489,10 +488,7 @@
     <ClInclude Include="..\..\src\shared\DataStruct\MByteConverter.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\DynBuffer.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\DynBufResizePolicy.h" />
-    <ClInclude Include="..\..\src\shared\DataStruct\Error.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\MCircularBuffer.h" />
-    <ClInclude Include="..\..\src\shared\DataStruct\Singleton.h" />
-    <ClInclude Include="..\..\src\shared\DataStruct\System.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\SystemEndian.h" />
     <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegate.h" />
     <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegateBind.h" />

@@ -42,7 +42,7 @@ void MMsgBuffer::moveOutOneMsg()
 {
 	m_pMCircularBuffer->popFrontLenNoData(MSGHEADERSIZE);
 
-	m_pMsgBA->resize(m_msgLen);
+	m_pMsgBA->setCapacity(m_msgLen);
 	m_pMsgBA->clear();
 
 	m_pMCircularBuffer->popFront((char*)m_pMsgBA->contents(), 0, m_msgLen);
