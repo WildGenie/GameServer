@@ -9,7 +9,7 @@
 
 using boost::asio::ip::tcp;
 
-class NetClientBuffer;
+class MNetClientBuffer;
 
 class MClient
 {
@@ -18,15 +18,16 @@ public:
 		tcp::resolver::iterator endpoint_iterator);
 	void close();
 
-private:
-	void do_connect(tcp::resolver::iterator endpoint_iterator);
 	void start_async_read();
 	void start_async_send();
 
 private:
+	void do_connect(tcp::resolver::iterator endpoint_iterator);
+
+private:
 	boost::asio::io_service& io_service_;
 	tcp::socket socket_;
-	NetClientBuffer* m_pNetClientBuffer;
+	MNetClientBuffer* m_pNetClientBuffer;
 };
 
 #endif

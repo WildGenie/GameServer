@@ -132,6 +132,9 @@
     <ClCompile Include="..\..\src\shared\Network\MNetClientBuffer.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MClientThreadSafeData.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\shared\Database\Database.h">
@@ -285,6 +288,9 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\shared\Network\MNetClientBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MClientThreadSafeData.h">
       <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>

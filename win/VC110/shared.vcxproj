@@ -462,6 +462,7 @@
     <ClCompile Include="..\..\src\shared\Network\MClient.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MClientManager.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MClientThread.cpp" />
+    <ClCompile Include="..\..\src\shared\Network\MClientThreadSafeData.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MMsgBuffer.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MNetClientBuffer.cpp" />
     <ClCompile Include="..\..\src\shared\Network\NetworkManager.cpp" />
@@ -496,6 +497,7 @@
     <ClInclude Include="..\..\src\shared\Network\MClient.h" />
     <ClInclude Include="..\..\src\shared\Network\MClientManager.h" />
     <ClInclude Include="..\..\src\shared\Network\MClientThread.h" />
+    <ClInclude Include="..\..\src\shared\Network\MClientThreadSafeData.h" />
     <ClInclude Include="..\..\src\shared\Network\MMsgBuffer.h" />
     <ClInclude Include="..\..\src\shared\Network\MNetClientBuffer.h" />
     <ClInclude Include="..\..\src\shared\Network\NetworkManager.h" />

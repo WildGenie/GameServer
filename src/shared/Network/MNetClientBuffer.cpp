@@ -1,20 +1,21 @@
-#include "NetClientBuffer.h"
-#include "MsgBuffer.h"
+#include "MNetClientBuffer.h"
+#include "MMsgBuffer.h"
 #include "DynBuffer.h"
 #include "MByteBuffer.h"
 #include "MCircularBuffer.h"
 #include "BufferDefaultValue.h"
+#include "MClientThreadSafeData.h"
 
-NetClientBuffer::NetClientBuffer()
-	： m_canSend(true)
+MNetClientBuffer::MNetClientBuffer()
+	: m_canSend(true)
 {
-	m_recvSocketBuffer = new MsgBuffer();
-	m_recvClientBuffer = new MsgBuffer();
-	m_recvSocketDynBuffer = new DynBuffer(INITCAPACITY);
+	m_recvSocketBuffer = new MMsgBuffer();
+	m_recvClientBuffer = new MMsgBuffer();
+	//m_recvSocketDynBuffer = new DynBuffer(INITCAPACITY);	// 同一个线程共享的数据
 
 	m_sendClientBuffer = new MCircularBuffer(INITCAPACITY);
 	m_sendSocketBuffer = new MCircularBuffer(INITCAPACITY);
-	m_sendClientBA = new MByteBuffer(INITCAPACITY);
+	//m_sendClientBA = new MByteBuffer(INITCAPACITY);	// 同一个线程共享的数据
 
 	m_unCompressHeaderBA = new MByteBuffer(MSGHEADERSIZE);
 	m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);
@@ -23,34 +24,34 @@ NetClientBuffer::NetClientBuffer()
 	m_pMutex = new boost::mutex();
 }
 
-NetClientBuffer::~NetClientBuffer()
+MNetClientBuffer::~MNetClientBuffer()
 {
 	delete m_recvSocketBuffer;
 	delete m_recvClientBuffer;
-	delete m_recvSocketDynBuffer;
+	//delete m_recvSocketDynBuffer;
 
 	delete m_sendClientBuffer;
 	delete m_sendSocketBuffer;
-	delete m_sendClientBA;
+	//delete m_sendClientBA;
 
 	delete m_unCompressHeaderBA;
 
 	delete m_pMutex;
 }
 
-void NetClientBuffer::setRecvMsgSize(size_t len)
+void MNetClientBuffer::setRecvMsgSize(size_t len)
 {
 	m_recvSocketDynBuffer->setCapacity(len);
 }
 
-void NetClientBuffer::moveRecvSocketDyn2RecvSocket(size_t dynLen)
+void MNetClientBuffer::moveRecvSocketDyn2RecvSocket(size_t dynLen)
 {
 	m_recvSocketDynBuffer->setSize(dynLen);
 	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->m_storage, 0, m_recvSocketDynBuffer->size());
 }
 
 // 有可能一个数据包有多个消息，这个地方没有处理，如果有多个消息，需要处理，否则会丢失消息
-void NetClientBuffer::moveRecvSocket2RecvClient()
+void MNetClientBuffer::moveRecvSocket2RecvClient()
 {
 	while (m_recvSocketBuffer->checkHasMsg())  // 如果有数据
 	{
@@ -64,7 +65,7 @@ void NetClientBuffer::moveRecvSocket2RecvClient()
 	}
 }
 
-MByteBuffer* NetClientBuffer::getMsg()
+MByteBuffer* MNetClientBuffer::getMsg()
 {
 	if (m_recvClientBuffer->checkHasMsg())
 	{
@@ -74,12 +75,12 @@ MByteBuffer* NetClientBuffer::getMsg()
 	return nullptr;
 }
 
-void NetClientBuffer::onReadComplete(size_t dynLen)
+void MNetClientBuffer::onReadComplete(size_t dynLen)
 {
 	moveRecvSocketDyn2RecvSocket(dynLen);		// 放入接收消息处理缓冲区
 }
 
-void NetClientBuffer::sendMsg()
+void MNetClientBuffer::sendMsg()
 {
 	m_pHeaderBA->clear();
 	m_pHeaderBA->writeUnsignedInt32(m_sendClientBA->size());      // 填充长度
@@ -93,7 +94,7 @@ void NetClientBuffer::sendMsg()
 }
 
 // 获取数据，然后压缩加密
-void NetClientBuffer::moveSendClient2SendSocket()
+void MNetClientBuffer::moveSendClient2SendSocket()
 {
 	m_sendSocketBuffer->clear(); // 清理，这样环形缓冲区又可以从 0 索引开始了
 
@@ -108,7 +109,7 @@ void NetClientBuffer::moveSendClient2SendSocket()
 	m_sendClientBuffer->clear(); // 清理，这样环形缓冲区又可以从 0 索引开始了
 }
 
-bool NetClientBuffer::startAsyncSend()
+bool MNetClientBuffer::startAsyncSend()
 {
 	if (!m_canSend || m_sendClientBuffer->size() == 0)
 	{
@@ -121,15 +122,33 @@ bool NetClientBuffer::startAsyncSend()
 	return true;
 }
 
-void NetClientBuffer::onWriteComplete(size_t len)
+void MNetClientBuffer::onWriteComplete(size_t len)
 {
-	if (len < m_pNetClientBuffer->m_sendSocketBuffer->size())		// 如果数据没有发送完成
+	if (len < m_sendSocketBuffer->size())		// 如果数据没有发送完成
 	{
-		m_pNetClientBuffer->m_sendSocketBuffer->popFrontLenNoData(len);
+		m_sendSocketBuffer->popFrontLenNoData(len);
 	}
 	else				// 如果全部发送完成
 	{
 		m_canSend = true;		// 设置不能发送标志
-		m_pNetClientBuffer->m_sendSocketBuffer->clear();	// 清理数据
+		m_sendSocketBuffer->clear();	// 清理数据
 	}
+}
+
+// 这个会有多个线程去接收不同的 socket 数据
+void MNetClientBuffer::setRecvSocketBufferTSData(MClientThreadSafeData* tsData)
+{
+	m_recvSocketBuffer->setHeaderBATSData(tsData);
+	m_recvSocketBuffer->setMsgBATSData(tsData);
+	
+	m_recvSocketDynBuffer = tsData->m_recvSocketDynBuffer;
+}
+
+// 这个仅仅会有一个主线程发送消息
+void MNetClientBuffer::setRecvClientBufferTSData(MClientThreadSafeData* tsData)
+{
+	m_recvClientBuffer->setHeaderBATSData(tsData);
+	m_recvClientBuffer->setMsgBATSData(tsData);
+
+	m_sendClientBA = tsData->m_sendClientBA;
 }

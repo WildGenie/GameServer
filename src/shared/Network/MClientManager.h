@@ -11,7 +11,6 @@ class MClientManager : public boost::noncopyable
 {
 public:
 	MClientManager();
-
 	virtual ~MClientManager();
 
 	void Stop();
@@ -26,6 +25,8 @@ public:
 	void AddSocket(const SocketPtr& sock);
 
 	void RemoveSocket(const SocketPtr& sock);
+
+	void sendAndRecvData();
 
 private:
 	typedef std::set<SocketPtr> SocketSet;

@@ -1,23 +1,24 @@
-#include "MsgBuffer.h"
+#include "MMsgBuffer.h"
 #include "MCircularBuffer.h"
 #include "MByteBuffer.h"
 #include "BufferDefaultValue.h"
+#include "MClientThreadSafeData.h"
 
-MsgBuffer::MsgBuffer()
+MMsgBuffer::MMsgBuffer()
 {
 	m_pMCircularBuffer = new MCircularBuffer(INITCAPACITY);
-	m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);
-	m_pMsgBA = new MByteBuffer(INITCAPACITY);
+	//m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);		// 这两个字段需要线程共享
+	//m_pMsgBA = new MByteBuffer(INITCAPACITY);			// 这两个字段需要线程共享
 }
 
-MsgBuffer::~MsgBuffer()
+MMsgBuffer::~MMsgBuffer()
 {
 	delete m_pMCircularBuffer;
-	delete m_pHeaderBA;
-	delete m_pMsgBA;
+	//delete m_pHeaderBA;
+	//delete m_pMsgBA;
 }
 
-bool MsgBuffer::checkHasMsg()
+bool MMsgBuffer::checkHasMsg()
 {
 	if (m_pMCircularBuffer->size() <= MSGHEADERSIZE)
 	{
@@ -37,7 +38,7 @@ bool MsgBuffer::checkHasMsg()
 }
 
 // 移出一个消息
-void MsgBuffer::moveOutOneMsg()
+void MMsgBuffer::moveOutOneMsg()
 {
 	m_pMCircularBuffer->popFrontLenNoData(MSGHEADERSIZE);
 
@@ -45,4 +46,14 @@ void MsgBuffer::moveOutOneMsg()
 	m_pMsgBA->clear();
 
 	m_pMCircularBuffer->popFront((char*)m_pMsgBA->contents(), 0, m_msgLen);
+}
+
+void MMsgBuffer::setHeaderBATSData(MClientThreadSafeData* tsData)
+{
+
+}
+
+void MMsgBuffer::setMsgBATSData(MClientThreadSafeData* tsData)
+{
+
 }

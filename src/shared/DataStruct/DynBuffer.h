@@ -5,7 +5,7 @@
 
 class DynBuffer
 {
-	friend class NetClientBuffer;
+	friend class MNetClientBuffer;
 
 protected:
 	char* m_storage;

@@ -1,4 +1,5 @@
-#include "NetworkThread.h"
+#include "MClientManager.h"
+#include "MClientThread.h"
 #include "Database/DatabaseEnv.h"
 
 MClientManager::MClientManager() :
@@ -43,13 +44,13 @@ void MClientManager::RemoveSocket(const SocketPtr& sock)
 	m_Sockets.erase(sock);
 }
 
-void MClientManager::svc()
+void MClientManager::sendAndRecvData()
 {
 	// ·¢ËÍÏûÏ¢
 	SocketSet::iterator itBegin = m_Sockets.begin();
 	SocketSet::iterator itEnd = m_Sockets.end();
-	for (; itBegin != itEnd; ++itBegin)
-	{
-		(*itBegin)->start_async_send();
-	}
+	//for (; itBegin != itEnd; ++itBegin)
+	//{
+	//	(*itBegin)->start_async_send();
+	//}
 }

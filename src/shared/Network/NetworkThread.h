@@ -25,6 +25,8 @@
 #include <boost/atomic.hpp>
 #include <set>
 
+class MClientThreadSafeData;
+
 class NetworkThread : public boost::noncopyable
 {
 public:
@@ -52,6 +54,8 @@ public:
         return m_networkingService;
     }
 
+	void setClientBufferTSData(MClientThreadSafeData* pClientBufferTSData);
+
 private:
 
     virtual void svc();
@@ -66,6 +70,9 @@ private:
 
     protocol::Service m_networkingService;
     std::auto_ptr<protocol::Service::work> m_work;
+
+	MClientThreadSafeData* m_pSocketBufferTSData;
+	MClientThreadSafeData* m_pClientBufferTSData;
 };
 
 

@@ -27,7 +27,7 @@
 #include "NetworkThread.h"
 #include "NetworkManager.h"
 
-#include "NetClientBuffer.h"
+#include "MNetClientBuffer.h"
 #include "DynBuffer.h"
 #include "MCircularBuffer.h"
 
@@ -43,7 +43,7 @@ Socket::Socket( NetworkManager& socketMrg,
     m_closing(true),
     m_Address(UNKNOWN_NETWORK_ADDRESS),
 	m_bSocketOpened(false),
-	m_pNetClientBuffer(new NetClientBuffer())
+	m_pNetClientBuffer(new MNetClientBuffer())
 {
 
 }
@@ -310,7 +310,7 @@ std::string Socket::obtain_remote_address() const
     return UNKNOWN_NETWORK_ADDRESS;
 }
 
-NetClientBuffer* Socket::getNetClientBuffer()
+MNetClientBuffer* Socket::getNetClientBuffer()
 {
 	return m_pNetClientBuffer;
 }

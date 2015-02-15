@@ -1,4 +1,7 @@
 #include "MClient.h"
+#include "MNetClientBuffer.h"
+#include "MCircularBuffer.h"
+#include "DynBuffer.h"
 
 MClient::MClient(boost::asio::io_service& io_service,
 	tcp::resolver::iterator endpoint_iterator)
@@ -33,7 +36,7 @@ void MClient::start_async_read()
 	{
 		if (!ec)
 		{
-			m_pNetClientBuffer->startAsyncSend(length);		// 放入接收消息处理缓冲区
+			m_pNetClientBuffer->startAsyncSend();		// 放入接收消息处理缓冲区
 		}
 		else
 		{

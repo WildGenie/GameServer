@@ -18,11 +18,16 @@
 
 #include "NetworkThread.h"
 #include "Database/DatabaseEnv.h"
+#include "Socket.h"
+#include "MClientThreadSafeData.h"
+#include "MNetClientBuffer.h"
 
 NetworkThread::NetworkThread() :
-    m_Connections(0)
+	m_Connections(0), m_pSocketBufferTSData(new MClientThreadSafeData())
 {
     m_work.reset( new protocol::Service::work(m_networkingService));
+
+	m_pSocketBufferTSData->newRecvSocketDynBuffer();
 }
 
 NetworkThread::~NetworkThread()
@@ -59,6 +64,10 @@ void NetworkThread::AddSocket( const SocketPtr& sock )
 
     boost::lock_guard<boost::mutex> lock(m_SocketsLock);
     m_Sockets.insert(sock);
+
+	// 初始化 socket 的缓冲区
+	sock->getNetClientBuffer()->setRecvSocketBufferTSData(m_pSocketBufferTSData);
+	sock->getNetClientBuffer()->setRecvClientBufferTSData(m_pClientBufferTSData);
 }
 
 void NetworkThread::RemoveSocket( const SocketPtr& sock )
@@ -88,4 +97,9 @@ void NetworkThread::svc()
 	}
 
     DEBUG_LOG("Network Thread Exitting");
+}
+
+void NetworkThread::setClientBufferTSData(MClientThreadSafeData* pClientBufferTSData)
+{
+	m_pClientBufferTSData = pClientBufferTSData;
 }

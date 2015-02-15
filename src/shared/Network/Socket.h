@@ -35,11 +35,10 @@
 
 class NetworkThread;
 class NetworkManager;
-class NetClientBuffer;
+class MNetClientBuffer;
 
 class Socket : public boost::enable_shared_from_this<Socket>
 {
-
 public:
     /// Declare some friends
     friend class NetworkManager;
@@ -71,7 +70,10 @@ public:
     protocol::Socket& socket() { return m_socket; }
 
 	// 获取消息数据
-	NetClientBuffer* getNetClientBuffer();
+	MNetClientBuffer* getNetClientBuffer();
+
+	// 异步接收数据
+	void start_async_send();
 
 protected:
 
@@ -81,7 +83,7 @@ protected:
     uint32 native_handle();
 
     /// Schedule asynchronous send operation
-    void start_async_send();
+    //void start_async_send();
 
     virtual bool process_incoming_data() = 0;
 
@@ -102,7 +104,7 @@ protected:
 	bool m_bSocketOpened;
 
 	// 消息缓冲区
-	NetClientBuffer* m_pNetClientBuffer;
+	MNetClientBuffer* m_pNetClientBuffer;
 
 private:
 

@@ -23,8 +23,10 @@
 #include <boost/scoped_array.hpp>
 
 #include "ProtocolDefinitions.h"
+#include "Socket.h"
 
 class NetworkThread;
+class MClientThreadSafeData;
 
 /// Manages all sockets connected to peers and network threads
 class NetworkManager
@@ -80,6 +82,8 @@ private:
     boost::scoped_array<NetworkThread> m_NetThreads;
 
     bool m_isRunning;
+
+	MClientThreadSafeData* m_pClientBufferTSData;
 };
 
 #endif

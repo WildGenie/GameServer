@@ -23,12 +23,14 @@
 #include "Log.h"
 
 #include <boost/bind.hpp>
+#include "MClientThreadSafeData.h"
 
 NetworkManager::NetworkManager():
     m_NetThreadsCount(1),
-    m_isRunning(false)
+    m_isRunning(false),
+	m_pClientBufferTSData(new MClientThreadSafeData())
 {
-
+	m_pClientBufferTSData->newSendClientBA();
 }
 
 NetworkManager::~NetworkManager()
@@ -65,8 +67,11 @@ bool NetworkManager::StartNetworkIO( boost::uint16_t port, const char* address )
 
     accept_next_connection();
 
-    for (size_t i = 0; i < m_NetThreadsCount; ++i)
-        m_NetThreads[i].Start();
+	for (size_t i = 0; i < m_NetThreadsCount; ++i)
+	{
+		m_NetThreads[i].setClientBufferTSData(m_pClientBufferTSData);
+		m_NetThreads[i].Start();
+	}
     
     return true;
 }
