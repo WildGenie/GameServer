@@ -3,6 +3,7 @@
 #include "MByteBuffer.h"
 #include "BufferDefaultValue.h"
 #include "MClientThreadSafeData.h"
+#include "MClientProcessData.h"
 
 MMsgBuffer::MMsgBuffer()
 {
@@ -58,4 +59,14 @@ void MMsgBuffer::setHeaderBATSData(MClientThreadSafeData* tsData)
 void MMsgBuffer::setMsgBATSData(MClientThreadSafeData* tsData)
 {
 	m_pMsgBA = tsData->m_pMsgBA;
+}
+
+void MMsgBuffer::setHeaderBAProcessData(MClientProcessData* pMClientProcessData)
+{
+	m_pHeaderBA = pMClientProcessData->m_pHeaderBA;
+}
+
+void MMsgBuffer::setMsgBAProcessData(MClientProcessData* pMClientProcessData)
+{
+	m_pMsgBA = pMClientProcessData->m_pMsgBA;
 }

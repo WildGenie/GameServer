@@ -118,7 +118,7 @@ void MCircularBuffer::setCapacity(std::size_t newCapacity)
 */
 bool MCircularBuffer::canAddData(uint32 num)
 {
-	if (m_iCapacity - m_size > num)
+	if (m_iCapacity - m_size >= num)
 	{
 		return true;
 	}

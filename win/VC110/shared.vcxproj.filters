@@ -135,6 +135,9 @@
     <ClCompile Include="..\..\src\shared\Network\MClientThreadSafeData.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\shared\Network\MClientProcessData.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\shared\Database\Database.h">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegateBind.h">
       <Filter>FastDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\Network\MClientProcessData.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

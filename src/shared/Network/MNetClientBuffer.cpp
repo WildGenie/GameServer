@@ -5,6 +5,7 @@
 #include "MCircularBuffer.h"
 #include "BufferDefaultValue.h"
 #include "MClientThreadSafeData.h"
+#include "MClientProcessData.h"
 
 MNetClientBuffer::MNetClientBuffer()
 	: m_canSend(true)
@@ -150,10 +151,10 @@ void MNetClientBuffer::setRecvSocketBufferTSData(MClientThreadSafeData* tsData)
 }
 
 // 这个仅仅会有一个主线程发送消息
-void MNetClientBuffer::setRecvClientBufferTSData(MClientThreadSafeData* tsData)
+void MNetClientBuffer::setRecvClientProcessData(MClientProcessData* pMClientProcessData)
 {
-	m_recvClientBuffer->setHeaderBATSData(tsData);
-	m_recvClientBuffer->setMsgBATSData(tsData);
+	m_recvClientBuffer->setHeaderBAProcessData(pMClientProcessData);
+	m_recvClientBuffer->setMsgBAProcessData(pMClientProcessData);
 
 	//m_sendClientBA = tsData->m_sendClientBA;
 }

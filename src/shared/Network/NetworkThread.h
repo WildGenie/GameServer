@@ -26,6 +26,7 @@
 #include <set>
 
 class MClientThreadSafeData;
+class MClientProcessData;
 
 class NetworkThread : public boost::noncopyable
 {
@@ -54,7 +55,7 @@ public:
         return m_networkingService;
     }
 
-	void setClientBufferTSData(MClientThreadSafeData* pClientBufferTSData);
+	void setMClientProcessData(MClientProcessData* pMClientProcessData);
 
 private:
 
@@ -74,7 +75,7 @@ private:
     std::auto_ptr<protocol::Service::work> m_work;
 
 	MClientThreadSafeData* m_pSocketBufferTSData;
-	MClientThreadSafeData* m_pClientBufferTSData;
+	MClientProcessData* m_pMClientProcessData;
 	bool m_bExitFlag;		// 线程是否退出
 };
 

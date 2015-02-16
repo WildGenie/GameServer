@@ -27,7 +27,7 @@ NetworkThread::NetworkThread() :
 {
     m_work.reset( new protocol::Service::work(m_networkingService));
 
-	m_pSocketBufferTSData->newRecvSocketDynBuffer();
+	//m_pSocketBufferTSData->newRecvSocketDynBuffer();
 }
 
 NetworkThread::~NetworkThread()
@@ -74,7 +74,7 @@ void NetworkThread::AddSocket( const SocketPtr& sock )
 
 	// 初始化 socket 的缓冲区
 	sock->getNetClientBuffer()->setRecvSocketBufferTSData(m_pSocketBufferTSData);
-	sock->getNetClientBuffer()->setRecvClientBufferTSData(m_pClientBufferTSData);
+	sock->getNetClientBuffer()->setRecvClientProcessData(m_pMClientProcessData);
 }
 
 void NetworkThread::RemoveSocket( const SocketPtr& sock )
@@ -114,7 +114,7 @@ void NetworkThread::sendAndRecvData()
 	}
 }
 
-void NetworkThread::setClientBufferTSData(MClientThreadSafeData* pClientBufferTSData)
+void NetworkThread::setMClientProcessData(MClientProcessData* pMClientProcessData)
 {
-	m_pClientBufferTSData = pClientBufferTSData;
+	m_pMClientProcessData = pMClientProcessData;
 }

@@ -26,7 +26,7 @@
 #include "Socket.h"
 
 class NetworkThread;
-class MClientThreadSafeData;
+class MClientProcessData;
 class MByteBuffer;
 
 /// Manages all sockets connected to peers and network threads
@@ -47,6 +47,8 @@ public:
     const std::string& GetBindAddress() { return m_addr; }
 
     boost::uint16_t GetBindPort() { return m_port; }
+
+	MClientProcessData* getMClientProcessData();
 
 protected:
 
@@ -84,10 +86,7 @@ private:
 
     bool m_isRunning;
 
-	MClientThreadSafeData* m_pClientBufferTSData;
-
-public:
-	MByteBuffer* m_sendClientBA;		// 存放将要发送的临时数据，将要放到 m_sendClientBuffer 中去
+	MClientProcessData* m_pMClientProcessData;
 };
 
 #endif

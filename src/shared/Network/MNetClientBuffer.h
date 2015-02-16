@@ -7,6 +7,7 @@ class MByteBuffer;
 class MCircularBuffer;
 class Mutex;
 class MClientThreadSafeData;
+class MClientProcessData;
 
 #include <boost/thread/thread.hpp>
 
@@ -52,7 +53,7 @@ public:
 
 	// 设置线程安全的数据
 	void setRecvSocketBufferTSData(MClientThreadSafeData* tsData);
-	void setRecvClientBufferTSData(MClientThreadSafeData* tsData);
+	void setRecvClientProcessData(MClientProcessData* pMClientProcessData);
 };
 
 #endif				// __NETCLIENTBUFFER_H

@@ -21,7 +21,7 @@ public:
 	MClientThreadSafeData();
 	~MClientThreadSafeData();
 
-	void newRecvSocketDynBuffer();
+	//void newRecvSocketDynBuffer();
 	//void newSendClientBA();
 };
 

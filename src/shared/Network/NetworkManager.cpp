@@ -23,17 +23,16 @@
 #include "Log.h"
 
 #include <boost/bind.hpp>
-#include "MClientThreadSafeData.h"
+#include "MClientProcessData.h"
 #include "DataStruct/MByteBuffer.h"
 #include "DataStruct/BufferDefaultValue.h"
 
 NetworkManager::NetworkManager():
     m_NetThreadsCount(1),
     m_isRunning(false),
-	m_pClientBufferTSData(new MClientThreadSafeData()),
-	m_sendClientBA(new MByteBuffer(INITCAPACITY))
+	m_pMClientProcessData(new MClientProcessData())
 {
-	//m_pClientBufferTSData->newSendClientBA();
+	
 }
 
 NetworkManager::~NetworkManager()
@@ -72,7 +71,7 @@ bool NetworkManager::StartNetworkIO( boost::uint16_t port, const char* address )
 
 	for (size_t i = 0; i < m_NetThreadsCount; ++i)
 	{
-		m_NetThreads[i].setClientBufferTSData(m_pClientBufferTSData);
+		m_NetThreads[i].setMClientProcessData(m_pMClientProcessData);
 		m_NetThreads[i].Start();
 	}
     
@@ -182,4 +181,9 @@ NetworkThread& NetworkManager::get_network_thread_for_new_connection()
     }
 
     return m_NetThreads[min];
+}
+
+MClientProcessData* NetworkManager::getMClientProcessData()
+{
+	return m_pMClientProcessData;
 }

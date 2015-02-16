@@ -4,6 +4,7 @@
 class MCircularBuffer;
 class MByteBuffer;
 class MClientThreadSafeData;
+class MClientProcessData;
 
 #include "Platform/Define.h"
 
@@ -26,9 +27,13 @@ public:
 	bool checkHasMsg();
 	void moveOutOneMsg();
 
-	// 线程安全数据
+	// 线程共享安全数据
 	void setHeaderBATSData(MClientThreadSafeData* tsData);
 	void setMsgBATSData(MClientThreadSafeData* tsData);
+
+	// 进程共享数据
+	void setHeaderBAProcessData(MClientProcessData* pMClientProcessData);
+	void setMsgBAProcessData(MClientProcessData* pMClientProcessData);
 };
 
 #endif				// __MSGBUFFER_H
