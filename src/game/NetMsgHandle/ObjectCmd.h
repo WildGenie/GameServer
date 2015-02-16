@@ -14,7 +14,7 @@ namespace Cmd
 			byParam = eOBJECT_BASIC_USERCMD;
 			id = 0;
 		}
-		DWORD id;  // 选择的国家id 
+		DWORD id;
 	};
 };
 

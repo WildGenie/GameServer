@@ -42,16 +42,25 @@ protected:
 
 public:
     // constructor
-	MByteBuffer(size_t res) : m_pos(0)
+	MByteBuffer(size_t len) : m_pos(0)
     {
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
-		m_storage = new char[res];
+		m_storage = new char[len];
+		m_iCapacity = len;
     }
 
     // copy constructor
-	MByteBuffer(const MByteBuffer& buf) : m_pos(buf.m_pos), m_storage(buf.m_storage)
+	MByteBuffer(const MByteBuffer& buf) : m_pos(buf.m_pos), m_storage(buf.m_storage), m_iCapacity(buf.m_iCapacity), m_size(buf.m_size)
 	{
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
+	}
+
+	~MByteBuffer()
+	{
+		if (m_storage)
+		{
+			delete m_storage;
+		}
 	}
 
     void clear()
@@ -321,7 +330,7 @@ public:
 	T read()
     {
 		T r = read<T>(m_pos);
-		m_pos += sizeof(T);
+		readAddPos(sizeof(T));
         return r;
     }
 
@@ -353,6 +362,10 @@ public:
 	}
 
 	size_t size() const { return m_size; }
+	void setSize(size_t len)
+	{
+		m_size = len;
+	}
 	bool empty() const { return m_size == 0; }
 
 	size_t capacity()
@@ -455,7 +468,7 @@ public:
 	void append(const MByteBuffer& buffer)
     {
         if (buffer.pos())
-            append(buffer.contents(), buffer.pos());
+            append(buffer.contents(), buffer.size());
     }
 
     void put(size_t pos, const uint8* src, size_t cnt)

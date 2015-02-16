@@ -71,6 +71,7 @@ MByteBuffer* MNetClientBuffer::getMsg()
 {
 	if (m_recvClientBuffer->checkHasMsg())
 	{
+		m_recvClientBuffer->moveOutOneMsg();
 		return m_recvClientBuffer->m_pMsgBA;
 	}
 

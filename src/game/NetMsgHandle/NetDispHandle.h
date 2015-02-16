@@ -34,7 +34,7 @@ public:
 		uint8 byParam;
 		pMsgBA->readUnsigneduint8(byCmd);
 		pMsgBA->readUnsigneduint8(byParam);
-		pMsgBA->rpos(0);				// 重置读指针
+		pMsgBA->pos(0);				// 重置读指针
 
 		if (byCmd < Cmd::eByCmdTotal && m_pNetDispDelegateArr[byCmd])
 		{

@@ -28,9 +28,6 @@
     <Filter Include="FastDelegate">
       <UniqueIdentifier>{db97dcc0-5605-43ba-b3ab-f371144a9ede}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NetMsgHandle">
-      <UniqueIdentifier>{0b9c0aaa-a9e9-444c-a8ef-a9089c62ce78}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\shared\Database\Database.cpp">
@@ -292,9 +289,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegateBind.h">
       <Filter>FastDelegate</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\NetMsgHandle\NetDispHandle.h">
-      <Filter>NetMsgHandle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

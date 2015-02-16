@@ -27,6 +27,7 @@ bool MMsgBuffer::checkHasMsg()
 
 	m_pHeaderBA->clear();
 	m_pMCircularBuffer->front((char*)m_pHeaderBA->contents(), 0, MSGHEADERSIZE);
+	m_pHeaderBA->setSize(MSGHEADERSIZE);
 
 	m_pHeaderBA->readUnsignedInt32(m_msgLen);
 	if (m_msgLen + MSGHEADERSIZE <= m_pMCircularBuffer->size())
@@ -46,6 +47,7 @@ void MMsgBuffer::moveOutOneMsg()
 	m_pMsgBA->clear();
 
 	m_pMCircularBuffer->popFront((char*)m_pMsgBA->contents(), 0, m_msgLen);
+	m_pMsgBA->setSize(m_msgLen);
 }
 
 void MMsgBuffer::setHeaderBATSData(MClientThreadSafeData* tsData)
