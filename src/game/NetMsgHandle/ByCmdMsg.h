@@ -10,10 +10,21 @@ namespace Cmd
 	{
 		stObjectBaseCmd()
 		{
-			byParam = eOBJECT_USERCMD;
+			byCmd = eOBJECT_USERCMD;
 			id = 0;
 		}
 		DWORD id;
+
+		virtual void serialize(MByteBuffer& pMsgBA)
+		{
+			stNullUserCmd::serialize(pMsgBA);
+			pMsgBA.writeUnsignedInt32(id);
+		}
+
+		virtual void derialize(MByteBuffer& pMsgBA)
+		{
+
+		}
 	};
 };
 

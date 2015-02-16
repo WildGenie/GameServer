@@ -24,13 +24,16 @@
 
 #include <boost/bind.hpp>
 #include "MClientThreadSafeData.h"
+#include "DataStruct/MByteBuffer.h"
+#include "DataStruct/BufferDefaultValue.h"
 
 NetworkManager::NetworkManager():
     m_NetThreadsCount(1),
     m_isRunning(false),
-	m_pClientBufferTSData(new MClientThreadSafeData())
+	m_pClientBufferTSData(new MClientThreadSafeData()),
+	m_sendClientBA(new MByteBuffer(INITCAPACITY))
 {
-	m_pClientBufferTSData->newSendClientBA();
+	//m_pClientBufferTSData->newSendClientBA();
 }
 
 NetworkManager::~NetworkManager()

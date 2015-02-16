@@ -23,7 +23,7 @@
 #include "MNetClientBuffer.h"
 
 NetworkThread::NetworkThread() :
-	m_Connections(0), m_pSocketBufferTSData(new MClientThreadSafeData())
+	m_Connections(0), m_pSocketBufferTSData(new MClientThreadSafeData()), m_bExitFlag(false)
 {
     m_work.reset( new protocol::Service::work(m_networkingService));
 
@@ -47,6 +47,7 @@ void NetworkThread::Stop()
 void NetworkThread::Start()
 {
     m_thread.reset(new boost::thread(boost::bind(&NetworkThread::svc, this)));
+	m_sendThread.reset(new boost::thread(boost::bind(&NetworkThread::sendAndRecvData, this)));
 }
 
 void NetworkThread::Wait()
@@ -56,6 +57,12 @@ void NetworkThread::Wait()
         m_thread->join();
         m_thread.reset();
     }
+
+	if (m_sendThread.get())
+	{
+		m_sendThread->join();
+		m_sendThread.reset();
+	}
 }
 
 void NetworkThread::AddSocket( const SocketPtr& sock )
@@ -88,15 +95,23 @@ void NetworkThread::svc()
 
     LoginDatabase.ThreadEnd();
 
-	// 发送消息
-	SocketSet::iterator itBegin = m_Sockets.begin();
-	SocketSet::iterator itEnd = m_Sockets.end();
-	for (; itBegin != itEnd; ++itBegin)
-	{
-		(*itBegin)->start_async_send();
-	}
-
     DEBUG_LOG("Network Thread Exitting");
+}
+
+void NetworkThread::sendAndRecvData()
+{
+	while (!m_bExitFlag)
+	{
+		boost::lock_guard<boost::mutex> lock(m_SocketsLock);
+		// 发送消息
+		SocketSet::iterator itBegin = m_Sockets.begin();
+		SocketSet::iterator itEnd = m_Sockets.end();
+		for (; itBegin != itEnd; ++itBegin)
+		{
+			(*itBegin)->getNetClientBuffer()->moveRecvSocket2RecvClient();		// 将数据放入接收缓冲区中
+			(*itBegin)->start_async_send();					// 发送数据
+		}
+	}
 }
 
 void NetworkThread::setClientBufferTSData(MClientThreadSafeData* pClientBufferTSData)

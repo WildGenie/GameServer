@@ -19,7 +19,7 @@ void MClientThreadSafeData::newRecvSocketDynBuffer()
 	m_recvSocketDynBuffer = new DynBuffer(INITCAPACITY);
 }
 
-void MClientThreadSafeData::newSendClientBA()
-{
-	m_sendClientBA = new MByteBuffer(INITCAPACITY);
-}
+//void MClientThreadSafeData::newSendClientBA()
+//{
+//	m_sendClientBA = new MByteBuffer(INITCAPACITY);
+//}

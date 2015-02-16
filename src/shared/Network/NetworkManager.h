@@ -27,6 +27,7 @@
 
 class NetworkThread;
 class MClientThreadSafeData;
+class MByteBuffer;
 
 /// Manages all sockets connected to peers and network threads
 class NetworkManager
@@ -84,6 +85,9 @@ private:
     bool m_isRunning;
 
 	MClientThreadSafeData* m_pClientBufferTSData;
+
+public:
+	MByteBuffer* m_sendClientBA;		// 存放将要发送的临时数据，将要放到 m_sendClientBuffer 中去
 };
 
 #endif

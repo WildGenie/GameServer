@@ -49,7 +49,7 @@ void MNetClientBuffer::moveRecvSocketDyn2RecvSocket(size_t dynLen)
 	m_recvSocketDynBuffer->setSize(dynLen);
 	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->m_storage, 0, m_recvSocketDynBuffer->size());
 
-	moveRecvSocket2RecvClient();
+	//moveRecvSocket2RecvClient();
 }
 
 // 有可能一个数据包有多个消息，这个地方没有处理，如果有多个消息，需要处理，否则会丢失消息
@@ -83,15 +83,15 @@ void MNetClientBuffer::onReadComplete(size_t dynLen)
 	moveRecvSocketDyn2RecvSocket(dynLen);		// 放入接收消息处理缓冲区
 }
 
-void MNetClientBuffer::sendMsg()
+void MNetClientBuffer::sendMsg(MByteBuffer* sendClientBA)
 {
 	m_pHeaderBA->clear();
-	m_pHeaderBA->writeUnsignedInt32(m_sendClientBA->size());      // 填充长度
+	m_pHeaderBA->writeUnsignedInt32(sendClientBA->size());      // 填充长度
 
 	m_pMutex->lock();
 
 	m_sendClientBuffer->pushBack((char*)m_pHeaderBA->contents(), 0, m_pHeaderBA->size());
-	m_sendClientBuffer->pushBack((char*)m_sendClientBA->contents(), 0, m_sendClientBA->size());
+	m_sendClientBuffer->pushBack((char*)sendClientBA->contents(), 0, sendClientBA->size());
 
 	m_pMutex->unlock();
 }
@@ -153,5 +153,5 @@ void MNetClientBuffer::setRecvClientBufferTSData(MClientThreadSafeData* tsData)
 	m_recvClientBuffer->setHeaderBATSData(tsData);
 	m_recvClientBuffer->setMsgBATSData(tsData);
 
-	m_sendClientBA = tsData->m_sendClientBA;
+	//m_sendClientBA = tsData->m_sendClientBA;
 }

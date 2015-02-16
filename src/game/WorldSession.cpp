@@ -42,6 +42,8 @@
 #include "MByteBuffer.h"
 #include "MNetClientBuffer.h"
 #include "NetMsgHandle/NetMsgHandleManager.h"
+#include "NetMsgHandle/ObjectCmd.h"
+#include "WorldSocketMgr.h"
 
 // select opcodes appropriate for processing in Map::Update context for current session state
 static bool MapSessionFilterHelper(WorldSession* session, OpcodeHandler const& opHandle)
@@ -212,6 +214,10 @@ bool WorldSession::Update(PacketFilter& updater)
 		{
 			// 进行处理消息
 			sNetMsgHandleManager.m_pNetDispHandle->handleMsg(pMsgBA, this);
+
+			// Test 测试发送一个消息
+			Cmd::stObjectBasicCmd cmd;
+			cmd.sendMsg(m_Socket.get(), sWorldSocketMgr.m_sendClientBA);
 
 			pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取下一个消息
 		}

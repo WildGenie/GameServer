@@ -15,14 +15,14 @@ public:
 
 	// 这两个数据可能有的线程只需要一个数据，因此单独初始化
 	DynBuffer* m_recvSocketDynBuffer;	// 接收临时数据
-	MByteBuffer* m_sendClientBA;		// 存放将要发送的临时数据，将要放到 m_sendClientBuffer 中去
+	//MByteBuffer* m_sendClientBA;		// 存放将要发送的临时数据，将要放到 m_sendClientBuffer 中去
 
 public:
 	MClientThreadSafeData();
 	~MClientThreadSafeData();
 
 	void newRecvSocketDynBuffer();
-	void newSendClientBA();
+	//void newSendClientBA();
 };
 
 #endif

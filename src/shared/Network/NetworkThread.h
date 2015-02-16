@@ -59,11 +59,13 @@ public:
 private:
 
     virtual void svc();
+	virtual void sendAndRecvData();
 
     typedef std::set<SocketPtr> SocketSet;
 
     boost::atomic_long m_Connections;
     std::auto_ptr<boost::thread> m_thread;
+	std::auto_ptr<boost::thread> m_sendThread;		// 这个是发送数据的线程
 
     SocketSet m_Sockets;
     boost::mutex m_SocketsLock;
@@ -73,6 +75,7 @@ private:
 
 	MClientThreadSafeData* m_pSocketBufferTSData;
 	MClientThreadSafeData* m_pClientBufferTSData;
+	bool m_bExitFlag;		// 线程是否退出
 };
 
 

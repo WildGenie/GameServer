@@ -15,6 +15,17 @@ namespace Cmd
 			id = 0;
 		}
 		DWORD id;
+
+		virtual void serialize(MByteBuffer& pMsgBA)
+		{
+			stObjectBaseCmd::serialize(pMsgBA);
+			pMsgBA.writeUnsignedInt32(id);
+		}
+
+		virtual void derialize(MByteBuffer& pMsgBA)
+		{
+
+		}
 	};
 };
 
