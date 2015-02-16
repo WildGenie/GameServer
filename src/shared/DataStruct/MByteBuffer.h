@@ -11,6 +11,7 @@
 #include "System.h"
 #include "Platform/Define.h"
 #include "DynBufResizePolicy.h"
+#include "StorageBuffer.h"
 
 class MByteBufferException
 {
@@ -42,30 +43,25 @@ protected:
 
 public:
     // constructor
-	MByteBuffer(size_t len) : m_pos(0), m_size(0)
+	MByteBuffer(size_t len) : m_pos(0)
     {
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
-		m_storage = new char[len];
-		m_iCapacity = len;
+		m_pStorageBuffer->m_storage = new char[len];
+		m_pStorageBuffer->m_size = 0;
+		m_pStorageBuffer->m_iCapacity = len;
     }
-
-    // copy constructor
-	MByteBuffer(const MByteBuffer& buf) : m_pos(buf.m_pos), m_storage(buf.m_storage), m_iCapacity(buf.m_iCapacity), m_size(buf.m_size)
-	{
-		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
-	}
 
 	~MByteBuffer()
 	{
-		if (m_storage)
+		if (m_pStorageBuffer)
 		{
-			delete m_storage;
+			delete m_pStorageBuffer;
 		}
 	}
 
     void clear()
     {
-		m_size = 0;
+		m_pStorageBuffer->m_size = 0;
 		m_pos = 0;
     }
 
@@ -340,7 +336,7 @@ public:
     {
         if (pos + sizeof(T) > size())
 			throw MByteBufferException(false, pos, sizeof(T), size());
-        T val = *((T const*)&m_storage[pos]);
+		T val = *((T const*)&m_pStorageBuffer->m_storage[pos]);
 		if (sSysEndian != m_sysEndian)
 		{
 			MEndianConvert(val);
@@ -352,25 +348,27 @@ public:
     {
 		if (m_pos + len > size())
 			throw MByteBufferException(false, m_pos, len, size());
-		memcpy(dest, &m_storage[m_pos], len);
+		memcpy(dest, &m_pStorageBuffer->m_storage[m_pos], len);
 		readAddPos(len);
     }
 
 	const uint8* getStorage() const
 	{
-		return (uint8*)m_storage;
+		return (uint8*)m_pStorageBuffer->m_storage;
 	}
 
-	size_t size() const { return m_size; }
+	size_t size() const { return m_pStorageBuffer->m_size; }
+
 	void setSize(size_t len)
 	{
-		m_size = len;
+		m_pStorageBuffer->setSize(len);
 	}
-	bool empty() const { return m_size == 0; }
+
+	bool empty() const { return m_pStorageBuffer->m_size == 0; }
 
 	size_t capacity()
 	{
-		return m_iCapacity;
+		return m_pStorageBuffer->m_iCapacity;
 	}
 
 	void readAddPos(int delta)
@@ -381,26 +379,12 @@ public:
 	void writeAddPos(int delta)
 	{
 		m_pos += delta;
-		m_size += delta;
+		m_pStorageBuffer->m_size += delta;
 	}
 
 	void setCapacity(std::size_t newCapacity)
 	{
-		if (newCapacity == capacity())
-		{
-			return;
-		}
-		if (newCapacity < size())       // 不能分配比当前已经占有的空间还小的空间
-		{
-			return;
-		}
-		char* tmpbuff = new char[newCapacity];   // 分配新的空间
-		std::memcpy(tmpbuff, m_storage, m_size);
-
-		m_iCapacity = newCapacity;
-
-		delete[] m_storage;
-		m_storage = tmpbuff;
+		m_pStorageBuffer->setCapacity(newCapacity);
 	}
 
 	/**
@@ -408,12 +392,7 @@ public:
 	*/
 	bool canAddData(uint32 num)
 	{
-		if (m_iCapacity - m_size >= num)
-		{
-			return true;
-		}
-
-		return false;
+		return m_pStorageBuffer->canAddData(num);
 	}
 
 	// 在最后添加
@@ -445,7 +424,7 @@ public:
 			uint32 closeSize = DynBufResizePolicy::getCloseSize(cnt + size(), capacity());
 			setCapacity(closeSize);
 		}
-        memcpy(&m_storage[m_pos], src, cnt);
+		memcpy(&m_pStorageBuffer->m_storage[m_pos], src, cnt);
 		writeAddPos(cnt);
     }
 
@@ -477,7 +456,7 @@ public:
 		{
 			throw MByteBufferException(true, pos, cnt, size());
 		}
-        memcpy(&m_storage[pos], src, cnt);
+		memcpy(&m_pStorageBuffer->m_storage[pos], src, cnt);
     }
 
     void print_storage() const;
@@ -500,9 +479,7 @@ private:
 
 protected:
 	size_t m_pos;		// 读取写入位置
-	size_t m_size;		// 数据大小
-	size_t m_iCapacity;	// 分配的空间大小
-	char* m_storage;	// 存储空间
+	StorageBuffer* m_pStorageBuffer;
 };
 
 template <typename T>

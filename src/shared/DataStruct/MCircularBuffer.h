@@ -7,14 +7,14 @@
 
 #include "Platform/Define.h"
 
+class StorageBuffer;
+
 class MCircularBuffer
 {
 private:
-	char* m_storage;
+	StorageBuffer* m_pStorageBuffer;
 	std::size_t m_head;
 	std::size_t m_tail;
-	std::size_t m_size;
-	std::size_t m_iCapacity;
 
 protected:
 	bool canAddData(uint32 num);

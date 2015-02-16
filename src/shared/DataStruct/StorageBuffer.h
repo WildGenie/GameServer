@@ -2,6 +2,7 @@
 #define __STORE_BUFFER_H
 
 #include <cstddef>
+#include "Platform/Define.h"
 
 class StorageBuffer
 {
@@ -13,11 +14,9 @@ public:
 public:
 	StorageBuffer(std::size_t len);
 	~StorageBuffer();
-	std::size_t size();
-	std::size_t capacity();
 	void setCapacity(std::size_t newCapacity);
 	void setSize(std::size_t len);
-	char* getStorage();
+	bool canAddData(uint32 num);
 };
 
 #endif			// __STORE_BUFFER_H

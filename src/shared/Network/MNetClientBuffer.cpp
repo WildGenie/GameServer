@@ -48,7 +48,7 @@ void MNetClientBuffer::setRecvMsgSize(size_t len)
 void MNetClientBuffer::moveRecvSocketDyn2RecvSocket(size_t dynLen)
 {
 	m_recvSocketDynBuffer->setSize(dynLen);
-	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->m_storage, 0, m_recvSocketDynBuffer->size());
+	m_recvSocketBuffer->m_pMCircularBuffer->pushBack(m_recvSocketDynBuffer->getStorage(), 0, m_recvSocketDynBuffer->size());
 
 	//moveRecvSocket2RecvClient();
 }

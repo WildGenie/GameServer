@@ -3,7 +3,7 @@
 #include <string.h>
 
 StorageBuffer::StorageBuffer(std::size_t len)
-	: m_iCapacity(len)
+	: m_size(0), m_iCapacity(len)
 {
 	m_storage = new char[len];
 }
@@ -13,21 +13,11 @@ StorageBuffer::~StorageBuffer()
 	delete[] m_storage;
 }
 
-std::size_t StorageBuffer::size()
-{
-	return m_size;
-}
-
-size_t StorageBuffer::capacity()
-{
-	return m_iCapacity;
-}
-
 void StorageBuffer::setSize(std::size_t len)
 {
 	m_size = len;
 
-	if (m_size > capacity())
+	if (m_size > m_iCapacity)
 	{
 		setCapacity(m_size);
 	}
@@ -35,7 +25,12 @@ void StorageBuffer::setSize(std::size_t len)
 
 void StorageBuffer::setCapacity(std::size_t newCapacity)
 {
-	if (newCapacity <= capacity())
+	if (newCapacity <= m_size)       // 不能分配比当前已经占有的空间还小的空间
+	{
+		return;
+	}
+
+	if (newCapacity <= m_iCapacity)
 	{
 		return;
 	}
@@ -48,7 +43,15 @@ void StorageBuffer::setCapacity(std::size_t newCapacity)
 	m_storage = tmpbuff;
 }
 
-char* StorageBuffer::getStorage()
+/**
+*@brief 能否添加 num 长度的数据
+*/
+bool StorageBuffer::canAddData(uint32 num)
 {
-	return m_storage;
+	if (m_iCapacity - m_size >= num)
+	{
+		return true;
+	}
+
+	return false;
 }

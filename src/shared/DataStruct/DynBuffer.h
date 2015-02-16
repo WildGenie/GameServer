@@ -3,14 +3,14 @@
 
 #include <cstddef>
 
+class StorageBuffer;
+
 class DynBuffer
 {
 	friend class MNetClientBuffer;
 
 protected:
-	char* m_storage;
-	std::size_t m_size;
-	std::size_t m_iCapacity;
+	StorageBuffer* m_pStorageBuffer;
 
 public:
 	DynBuffer(std::size_t len);

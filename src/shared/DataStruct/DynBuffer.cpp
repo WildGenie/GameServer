@@ -1,66 +1,51 @@
 ﻿#include "DynBuffer.h"
 #include "DynBufResizePolicy.h"
 #include <string.h>
+#include "StorageBuffer.h"
 
 DynBuffer::DynBuffer(std::size_t len)
-	: m_iCapacity(len)
 {
-	m_storage = new char[len];
+	m_pStorageBuffer = new StorageBuffer(len);
 }
 
 DynBuffer::~DynBuffer()
 {
-	delete[] m_storage;
+	delete[] m_pStorageBuffer;
 }
 
 std::size_t DynBuffer::size()
 {
-	return m_size;
+	return m_pStorageBuffer->m_size;
 }
 
 size_t DynBuffer::capacity()
 {
-	return m_iCapacity;
+	return m_pStorageBuffer->m_iCapacity;
 }
 
 void DynBuffer::setSize(std::size_t len)
 {
-	m_size = len;
-
-	if (m_size > capacity())
-	{
-		setCapacity(m_size);
-	}
+	m_pStorageBuffer->setSize(len);
 }
 
 void DynBuffer::setCapacity(std::size_t newCapacity)
 {
-	if (newCapacity <= capacity())
-	{
-		return;
-	}
-
-	char* tmpbuff = new char[newCapacity];   // 分配新的空间
-	memcpy(tmpbuff, m_storage, m_iCapacity);
-	m_iCapacity = newCapacity;
-
-	delete[] m_storage;
-	m_storage = tmpbuff;
+	m_pStorageBuffer->setCapacity(newCapacity);
 }
 
 char* DynBuffer::getStorage()
 {
-	return m_storage;
+	return m_pStorageBuffer->m_storage;
 }
 
 void DynBuffer::push(char* pItem, std::size_t len)
 {
-	if (len > m_iCapacity)
+	if (len > m_pStorageBuffer->m_iCapacity)
 	{
 		uint32 closeSize = DynBufResizePolicy::getCloseSize(len, capacity());
 		setCapacity(closeSize);
 	}
 
-	memcpy(m_storage, pItem, len);
-	m_size = len;
+	memcpy(m_pStorageBuffer->m_storage, pItem, len);
+	m_pStorageBuffer->m_size = len;
 }

@@ -62,5 +62,5 @@ void MByteBuffer::hexlike() const
 
 void MByteBuffer::writeFile(FILE* file)
 {
-	fwrite((void*)&m_storage[0], sizeof(char), this->size(), file);
+	fwrite((void*)&m_pStorageBuffer->m_storage[0], sizeof(char), this->size(), file);
 }
