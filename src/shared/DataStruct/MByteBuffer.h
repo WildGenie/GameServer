@@ -356,7 +356,7 @@ public:
 		readAddPos(len);
     }
 
-    const uint8* contents() const 
+	const uint8* getStorage() const
 	{
 		return (uint8*)m_storage;
 	}
@@ -468,7 +468,7 @@ public:
 	void append(const MByteBuffer& buffer)
     {
         if (buffer.pos())
-            append(buffer.contents(), buffer.size());
+			append(buffer.getStorage(), buffer.size());
     }
 
     void put(size_t pos, const uint8* src, size_t cnt)

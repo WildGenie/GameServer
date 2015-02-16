@@ -457,6 +457,7 @@
     <ClCompile Include="..\..\src\shared\DataStruct\DynBuffer.cpp" />
     <ClCompile Include="..\..\src\shared\DataStruct\DynBufResizePolicy.cpp" />
     <ClCompile Include="..\..\src\shared\DataStruct\MCircularBuffer.cpp" />
+    <ClCompile Include="..\..\src\shared\DataStruct\StorageBuffer.cpp" />
     <ClCompile Include="..\..\src\shared\Log.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MClient.cpp" />
     <ClCompile Include="..\..\src\shared\Network\MClientManager.cpp" />
@@ -490,6 +491,7 @@
     <ClInclude Include="..\..\src\shared\DataStruct\DynBuffer.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\DynBufResizePolicy.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\MCircularBuffer.h" />
+    <ClInclude Include="..\..\src\shared\DataStruct\StorageBuffer.h" />
     <ClInclude Include="..\..\src\shared\DataStruct\SystemEndian.h" />
     <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegate.h" />
     <ClInclude Include="..\..\src\shared\FastDelegate\FastDelegateBind.h" />
