@@ -5,9 +5,9 @@
 
 MClientProcessData::MClientProcessData()
 {
-	m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);
-	m_pMsgBA = new MByteBuffer(INITCAPACITY);
-	m_sendClientBA = new MByteBuffer(INITCAPACITY);
+	m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
+	m_pMsgBA = new MByteBuffer(INIT_CAPACITY);
+	m_sendClientBA = new MByteBuffer(INIT_CAPACITY);
 }
 
 MClientProcessData::~MClientProcessData()

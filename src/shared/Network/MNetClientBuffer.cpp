@@ -12,15 +12,15 @@ MNetClientBuffer::MNetClientBuffer()
 {
 	m_recvSocketBuffer = new MMsgBuffer();
 	m_recvClientBuffer = new MMsgBuffer();
-	//m_recvSocketDynBuffer = new DynBuffer(INITCAPACITY);	// 同一个线程共享的数据
+	//m_recvSocketDynBuffer = new DynBuffer(INIT_CAPACITY);	// 同一个线程共享的数据
 
-	m_sendClientBuffer = new MCircularBuffer(INITCAPACITY);
-	m_sendSocketBuffer = new MCircularBuffer(INITCAPACITY);
-	//m_sendClientBA = new MByteBuffer(INITCAPACITY);	// 同一个线程共享的数据
+	m_sendClientBuffer = new MCircularBuffer(INIT_CAPACITY);
+	m_sendSocketBuffer = new MCircularBuffer(INIT_CAPACITY);
+	//m_sendClientBA = new MByteBuffer(INIT_CAPACITY);	// 同一个线程共享的数据
 
-	m_unCompressHeaderBA = new MByteBuffer(MSGHEADERSIZE);
-	m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);
-	m_pMsgBA = new DynBuffer(INITCAPACITY);
+	m_unCompressHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
+	m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
+	m_pMsgBA = new DynBuffer(INIT_CAPACITY);
 
 	m_pMutex = new boost::mutex();
 }
@@ -63,7 +63,7 @@ void MNetClientBuffer::moveRecvSocket2RecvClient()
 		m_unCompressHeaderBA->clear();
 		m_unCompressHeaderBA->writeUnsignedInt32(m_recvSocketBuffer->m_pMsgBA->size());
 		m_unCompressHeaderBA->pos(0);
-		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_unCompressHeaderBA->contents(), 0, MSGHEADERSIZE);             // 保存消息大小字段
+		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_unCompressHeaderBA->contents(), 0, MSG_HEADER_SIZE);             // 保存消息大小字段
 		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_recvSocketBuffer->m_pMsgBA->contents(), 0, m_recvSocketBuffer->m_pMsgBA->size());      // 保存消息大小字段
 	}
 }

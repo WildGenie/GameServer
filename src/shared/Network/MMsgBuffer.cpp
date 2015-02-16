@@ -7,9 +7,9 @@
 
 MMsgBuffer::MMsgBuffer()
 {
-	m_pMCircularBuffer = new MCircularBuffer(INITCAPACITY);
-	//m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);		// 这两个字段需要线程共享
-	//m_pMsgBA = new MByteBuffer(INITCAPACITY);			// 这两个字段需要线程共享
+	m_pMCircularBuffer = new MCircularBuffer(INIT_CAPACITY);
+	//m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);		// 这两个字段需要线程共享
+	//m_pMsgBA = new MByteBuffer(INIT_CAPACITY);			// 这两个字段需要线程共享
 }
 
 MMsgBuffer::~MMsgBuffer()
@@ -21,17 +21,17 @@ MMsgBuffer::~MMsgBuffer()
 
 bool MMsgBuffer::checkHasMsg()
 {
-	if (m_pMCircularBuffer->size() <= MSGHEADERSIZE)
+	if (m_pMCircularBuffer->size() <= MSG_HEADER_SIZE)
 	{
 		return false;
 	}
 
 	m_pHeaderBA->clear();
-	m_pMCircularBuffer->front((char*)m_pHeaderBA->contents(), 0, MSGHEADERSIZE);
-	m_pHeaderBA->setSize(MSGHEADERSIZE);
+	m_pMCircularBuffer->front((char*)m_pHeaderBA->contents(), 0, MSG_HEADER_SIZE);
+	m_pHeaderBA->setSize(MSG_HEADER_SIZE);
 
 	m_pHeaderBA->readUnsignedInt32(m_msgLen);
-	if (m_msgLen + MSGHEADERSIZE <= m_pMCircularBuffer->size())
+	if (m_msgLen + MSG_HEADER_SIZE <= m_pMCircularBuffer->size())
 	{
 		return true;
 	}
@@ -42,7 +42,7 @@ bool MMsgBuffer::checkHasMsg()
 // 移出一个消息
 void MMsgBuffer::moveOutOneMsg()
 {
-	m_pMCircularBuffer->popFrontLenNoData(MSGHEADERSIZE);
+	m_pMCircularBuffer->popFrontLenNoData(MSG_HEADER_SIZE);
 
 	m_pMsgBA->setCapacity(m_msgLen);
 	m_pMsgBA->clear();

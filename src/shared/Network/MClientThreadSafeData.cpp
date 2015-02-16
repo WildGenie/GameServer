@@ -5,9 +5,9 @@
 
 MClientThreadSafeData::MClientThreadSafeData()
 {
-	m_pHeaderBA = new MByteBuffer(MSGHEADERSIZE);
-	m_pMsgBA = new MByteBuffer(INITCAPACITY);
-	m_recvSocketDynBuffer = new DynBuffer(INITCAPACITY);
+	m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
+	m_pMsgBA = new MByteBuffer(INIT_CAPACITY);
+	m_recvSocketDynBuffer = new DynBuffer(INIT_CAPACITY);
 }
 
 MClientThreadSafeData::~MClientThreadSafeData()
@@ -23,10 +23,10 @@ MClientThreadSafeData::~MClientThreadSafeData()
 
 //void MClientThreadSafeData::newRecvSocketDynBuffer()
 //{
-//	m_recvSocketDynBuffer = new DynBuffer(INITCAPACITY);
+//	m_recvSocketDynBuffer = new DynBuffer(INIT_CAPACITY);
 //}
 
 //void MClientThreadSafeData::newSendClientBA()
 //{
-//	m_sendClientBA = new MByteBuffer(INITCAPACITY);
+//	m_sendClientBA = new MByteBuffer(INIT_CAPACITY);
 //}

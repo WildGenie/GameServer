@@ -6,7 +6,7 @@ uint32 DynBufResizePolicy::getCloseSize(uint32 needSize, uint32 capacity)
 {
 	uint32 ret = 0;
 
-	if (needSize <= MAXCAPACITY)
+	if (needSize <= MAX_CAPACITY)
 	{
 		if (capacity >= needSize)
 		{
@@ -15,14 +15,14 @@ uint32 DynBufResizePolicy::getCloseSize(uint32 needSize, uint32 capacity)
 		else
 		{
 			ret = 2 * capacity;
-			while (ret < needSize && ret < MAXCAPACITY)
+			while (ret < needSize && ret < MAX_CAPACITY)
 			{
 				ret *= 2;
 			}
 
-			if (ret > MAXCAPACITY)
+			if (ret > MAX_CAPACITY)
 			{
-				ret = MAXCAPACITY;
+				ret = MAX_CAPACITY;
 			}
 		}
 	}
