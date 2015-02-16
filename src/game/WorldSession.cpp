@@ -208,7 +208,7 @@ bool WorldSession::Update(PacketFilter& updater)
     {
 		MByteBuffer* pMsgBA;
 		pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取一个消息
-		if (nullptr != pMsgBA)
+		while (pMsgBA)
 		{
 			// 进行处理消息
 			sNetMsgHandleManager.m_pNetDispHandle->handleMsg(pMsgBA, this);
