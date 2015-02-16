@@ -94,6 +94,8 @@ void MNetClientBuffer::sendMsg(MByteBuffer* sendClientBA)
 	m_sendClientBuffer->pushBack((char*)sendClientBA->contents(), 0, sendClientBA->size());
 
 	m_pMutex->unlock();
+
+	sendClientBA->clear();
 }
 
 // 获取数据，然后压缩加密

@@ -42,7 +42,7 @@ protected:
 
 public:
     // constructor
-	MByteBuffer(size_t len) : m_pos(0)
+	MByteBuffer(size_t len) : m_pos(0), m_size(0)
     {
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// Ä¬ÈÏÊÇĞ¡¶Ë
 		m_storage = new char[len];
@@ -408,7 +408,7 @@ public:
 	*/
 	bool canAddData(uint32 num)
 	{
-		if (m_iCapacity - m_size > num)
+		if (m_iCapacity - m_size >= num)
 		{
 			return true;
 		}
