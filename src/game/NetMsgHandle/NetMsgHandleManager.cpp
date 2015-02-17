@@ -5,7 +5,6 @@
 #include "CmdType.h"
 
 NetMsgHandleManager::NetMsgHandleManager()
-	: m_pNetDispHandle(new NetDispHandle<FourNetDispDelegate>())
 {
 	m_pNetDispHandle->initNetDispDelegateSize(Cmd::eByCmdTotal);
 

@@ -571,6 +571,12 @@
     <ClCompile Include="..\..\src\game\Verify\VerifyThread.cpp">
       <Filter>Verify</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\game\NetMsgHandle\UtilMsg.cpp">
+      <Filter>NetMsgHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\game\NetMsgHandle\NetMsgHandleManagerBase.cpp">
+      <Filter>NetMsgHandle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\game\AccountMgr.h">
@@ -1095,6 +1101,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\game\Verify\VerifyThread.h">
       <Filter>Verify</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\UtilMsg.h">
+      <Filter>NetMsgHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\game\NetMsgHandle\NetMsgHandleManagerBase.h">
+      <Filter>NetMsgHandle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

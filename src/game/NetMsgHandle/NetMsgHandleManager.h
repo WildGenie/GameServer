@@ -1,18 +1,10 @@
 #ifndef __NETMSGHANDLEMANAGER_H
 #define __NETMSGHANDLEMANAGER_H
 
-#include "Policies/Singleton.h"
-#include "NetDispHandle.h"
+#include "NetMsgHandleManagerBase.h"
 
-class MByteBuffer;
-class WorldSession;
-template<class T> class NetDispHandle;
-
-class NetMsgHandleManager
+class NetMsgHandleManager : public NetMsgHandleManagerBase
 {
-public:
-	NetDispHandle<FourNetDispDelegate>* m_pNetDispHandle;
-
 public:
 	NetMsgHandleManager();
 };

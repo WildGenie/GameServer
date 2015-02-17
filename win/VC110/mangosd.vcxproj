@@ -462,14 +462,12 @@
     <ClCompile Include="..\..\src\mangosd\CliRunnable.cpp" />
     <ClCompile Include="..\..\src\mangosd\Main.cpp" />
     <ClCompile Include="..\..\src\mangosd\Master.cpp" />
-    <ClCompile Include="..\..\src\mangosd\RASocket.cpp" />
     <ClCompile Include="..\..\src\mangosd\WorldRunnable.cpp" />
     <ClCompile Include="..\..\src\shared\WheatyExceptionReport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\mangosd\CliRunnable.h" />
     <ClInclude Include="..\..\src\mangosd\Master.h" />
-    <ClInclude Include="..\..\src\mangosd\RASocket.h" />
     <ClInclude Include="..\..\src\mangosd\WorldRunnable.h" />
     <ClInclude Include="..\..\src\shared\WheatyExceptionReport.h" />
   </ItemGroup>

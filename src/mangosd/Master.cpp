@@ -37,7 +37,7 @@
 #include "Config/Config.h"
 #include "Database/DatabaseEnv.h"
 #include "CliRunnable.h"
-#include "RASocket.h"
+//#include "RASocket.h"
 #include "Util.h"
 #include "revision_sql.h"
 //#include "MaNGOSsoap.h"

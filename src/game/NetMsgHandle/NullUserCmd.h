@@ -39,12 +39,6 @@ namespace Cmd
 		{
 
 		}
-
-		void sendMsg(Socket* pSocket, MByteBuffer* pMsgBA)
-		{
-			serialize(*pMsgBA);
-			pSocket->getNetClientBuffer()->sendMsg(pMsgBA);
-		}
 	};
 }
 
