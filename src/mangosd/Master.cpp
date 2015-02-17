@@ -40,7 +40,7 @@
 #include "RASocket.h"
 #include "Util.h"
 #include "revision_sql.h"
-#include "MaNGOSsoap.h"
+//#include "MaNGOSsoap.h"
 #include "MassMailMgr.h"
 #include "DBCStores.h"
 
@@ -192,11 +192,11 @@ int Master::Run()
 
     ///- Start the databases
 	// TESTMODIFY
-    //if (!_StartDB())
-    //{
-    //    Log::WaitBeforeContinueIfNeed();
-    //    return 1;
-    //}
+    if (!_StartDB())
+    {
+        Log::WaitBeforeContinueIfNeed();
+        return 1;
+    }
 
     ///- Initialize the World
 	// TESTMODIFY
