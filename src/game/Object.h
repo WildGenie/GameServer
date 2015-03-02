@@ -29,95 +29,6 @@
 #include <set>
 #include <string>
 
-#define CONTACT_DISTANCE            0.5f
-#define INTERACTION_DISTANCE        5.0f
-#define ATTACK_DISTANCE             5.0f
-#define MAX_VISIBILITY_DISTANCE     333.0f      // max distance for visible object show, limited in 333 yards
-#define DEFAULT_VISIBILITY_DISTANCE 90.0f       // default visible distance, 90 yards on continents
-#define DEFAULT_VISIBILITY_INSTANCE 120.0f      // default visible distance in instances, 120 yards
-#define DEFAULT_VISIBILITY_BGARENAS 180.0f      // default visible distance in BG/Arenas, 180 yards
-
-#define DEFAULT_WORLD_OBJECT_SIZE   0.388999998569489f      // currently used (correctly?) for any non Unit world objects. This is actually the bounding_radius, like player/creature from creature_model_data
-#define DEFAULT_OBJECT_SCALE        1.0f                    // player/item scale as default, npc/go from database, pets from dbc
-
-#define MAX_STEALTH_DETECT_RANGE    45.0f
-
-enum TempSummonType
-{
-    TEMPSUMMON_MANUAL_DESPAWN              = 0,             // despawns when UnSummon() is called
-    TEMPSUMMON_DEAD_DESPAWN                = 1,             // despawns when the creature disappears
-    TEMPSUMMON_CORPSE_DESPAWN              = 2,             // despawns instantly after death
-    TEMPSUMMON_CORPSE_TIMED_DESPAWN        = 3,             // despawns after a specified time after death (or when the creature disappears)
-    TEMPSUMMON_TIMED_DESPAWN               = 4,             // despawns after a specified time
-    TEMPSUMMON_TIMED_OOC_DESPAWN           = 5,             // despawns after a specified time after the creature is out of combat
-    TEMPSUMMON_TIMED_OR_DEAD_DESPAWN       = 6,             // despawns after a specified time OR when the creature disappears
-    TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN     = 7,             // despawns after a specified time OR when the creature dies
-    TEMPSUMMON_TIMED_OOC_OR_DEAD_DESPAWN   = 8,             // despawns after a specified time (OOC) OR when the creature disappears
-    TEMPSUMMON_TIMED_OOC_OR_CORPSE_DESPAWN = 9,             // despawns after a specified time (OOC) OR when the creature dies
-};
-
-enum PhaseMasks
-{
-    PHASEMASK_NORMAL   = 0x00000001,
-    PHASEMASK_ANYWHERE = 0xFFFFFFFF
-};
-
-class WorldPacket;
-class UpdateData;
-class WorldSession;
-class Creature;
-class Player;
-class Unit;
-class Group;
-class Map;
-class UpdateMask;
-class InstanceData;
-class TerrainInfo;
-class TransportInfo;
-
-typedef UNORDERED_MAP<Player*, UpdateData> UpdateDataMapType;
-
-struct Position
-{
-    Position() : x(0.0f), y(0.0f), z(0.0f), o(0.0f) {}
-    Position(float _x, float _y, float _z, float _o) : x(_x), y(_y), z(_z), o(_o) {}
-    float x, y, z, o;
-};
-
-struct WorldLocation
-{
-    uint32 mapid;
-    float coord_x;
-    float coord_y;
-    float coord_z;
-    float orientation;
-    explicit WorldLocation(uint32 _mapid = 0, float _x = 0, float _y = 0, float _z = 0, float _o = 0)
-        : mapid(_mapid), coord_x(_x), coord_y(_y), coord_z(_z), orientation(_o) {}
-    WorldLocation(WorldLocation const& loc)
-        : mapid(loc.mapid), coord_x(loc.coord_x), coord_y(loc.coord_y), coord_z(loc.coord_z), orientation(loc.orientation) {}
-};
-
-// use this class to measure time between world update ticks
-// essential for units updating their spells after cells become active
-class WorldUpdateCounter
-{
-    public:
-        WorldUpdateCounter() : m_tmStart(0) {}
-
-        time_t timeElapsed()
-        {
-            if (!m_tmStart)
-                m_tmStart = WorldTimer::tickPrevTime();
-
-            return WorldTimer::getMSTimeDiff(m_tmStart, WorldTimer::tickTime());
-        }
-
-        void Reset() { m_tmStart = WorldTimer::tickTime(); }
-
-    private:
-        uint32 m_tmStart;
-};
-
 class MANGOS_DLL_SPEC Object
 {
     public:
@@ -409,221 +320,28 @@ struct WorldObjectChangeAccumulator;
 
 class MANGOS_DLL_SPEC WorldObject : public Object
 {
-        friend struct WorldObjectChangeAccumulator;
+    friend struct WorldObjectChangeAccumulator;
 
-    public:
+public:
+    virtual ~WorldObject() {}
 
-        // class is used to manipulate with WorldUpdateCounter
-        // it is needed in order to get time diff between two object's Update() calls
-        class MANGOS_DLL_SPEC UpdateHelper
-        {
-            public:
-                explicit UpdateHelper(WorldObject* obj) : m_obj(obj) {}
-                ~UpdateHelper() { }
+    virtual void Update(uint32 /*update_diff*/, uint32 /*time_diff*/) {}
 
-                void Update(uint32 time_diff)
-                {
-                    m_obj->Update(m_obj->m_updateTracker.timeElapsed(), time_diff);
-                    m_obj->m_updateTracker.Reset();
-                }
+    void _Create(uint32 guidlow, HighGuid guidhigh, uint32 phaseMask);
 
-            private:
-                UpdateHelper(const UpdateHelper&);
-                UpdateHelper& operator=(const UpdateHelper&);
+    void SetMap(Map* map);
+    Map* GetMap() const { MANGOS_ASSERT(m_currMap); return m_currMap; }
+    // used to check all object's GetMap() calls when object is not in world!
+    void ResetMap() { m_currMap = NULL; }
 
-                WorldObject* const m_obj;
-        };
+protected:
+    explicit WorldObject();
 
-        virtual ~WorldObject() {}
+private:
+    Map* m_currMap;                                     // current object's Map location
 
-        virtual void Update(uint32 /*update_diff*/, uint32 /*time_diff*/) {}
-
-        void _Create(uint32 guidlow, HighGuid guidhigh, uint32 phaseMask);
-
-        TransportInfo* GetTransportInfo() const { return m_transportInfo; }
-        bool IsBoarded() const { return m_transportInfo != NULL; }
-        void SetTransportInfo(TransportInfo* transportInfo) { m_transportInfo = transportInfo; }
-
-        void Relocate(float x, float y, float z, float orientation);
-        void Relocate(float x, float y, float z);
-
-        void SetOrientation(float orientation);
-
-        float GetPositionX() const { return m_position.x; }
-        float GetPositionY() const { return m_position.y; }
-        float GetPositionZ() const { return m_position.z; }
-        void GetPosition(float& x, float& y, float& z) const
-        { x = m_position.x; y = m_position.y; z = m_position.z; }
-        void GetPosition(WorldLocation& loc) const
-        { loc.mapid = m_mapId; GetPosition(loc.coord_x, loc.coord_y, loc.coord_z); loc.orientation = GetOrientation(); }
-        float GetOrientation() const { return m_position.o; }
-        void GetNearPoint2D(float& x, float& y, float distance, float absAngle) const;
-        void GetNearPoint(WorldObject const* searcher, float& x, float& y, float& z, float searcher_bounding_radius, float distance2d, float absAngle) const;
-        void GetClosePoint(float& x, float& y, float& z, float bounding_radius, float distance2d = 0, float angle = 0, const WorldObject* obj = NULL) const
-        {
-            // angle calculated from current orientation
-            GetNearPoint(obj, x, y, z, bounding_radius, distance2d, GetOrientation() + angle);
-        }
-        void GetContactPoint(const WorldObject* obj, float& x, float& y, float& z, float distance2d = CONTACT_DISTANCE) const
-        {
-            // angle to face `obj` to `this` using distance includes size of `obj`
-            GetNearPoint(obj, x, y, z, obj->GetObjectBoundingRadius(), distance2d, GetAngle(obj));
-        }
-
-        virtual float GetObjectBoundingRadius() const { return DEFAULT_WORLD_OBJECT_SIZE; }
-
-        bool IsPositionValid() const;
-        void UpdateGroundPositionZ(float x, float y, float& z) const;
-        void UpdateAllowedPositionZ(float x, float y, float& z) const;
-
-        void GetRandomPoint(float x, float y, float z, float distance, float& rand_x, float& rand_y, float& rand_z) const;
-
-        uint32 GetMapId() const { return m_mapId; }
-        uint32 GetInstanceId() const { return m_InstanceId; }
-
-        virtual void SetPhaseMask(uint32 newPhaseMask, bool update);
-        uint32 GetPhaseMask() const { return m_phaseMask; }
-        bool InSamePhase(WorldObject const* obj) const { return InSamePhase(obj->GetPhaseMask()); }
-        bool InSamePhase(uint32 phasemask) const { return (GetPhaseMask() & phasemask); }
-
-        uint32 GetZoneId() const;
-        uint32 GetAreaId() const;
-        void GetZoneAndAreaId(uint32& zoneid, uint32& areaid) const;
-
-        InstanceData* GetInstanceData() const;
-
-        const char* GetName() const { return m_name.c_str(); }
-        void SetName(const std::string& newname) { m_name = newname; }
-
-        virtual const char* GetNameForLocaleIdx(int32 /*locale_idx*/) const { return GetName(); }
-
-        float GetDistance(const WorldObject* obj) const;
-        float GetDistance(float x, float y, float z) const;
-        float GetDistance2d(const WorldObject* obj) const;
-        float GetDistance2d(float x, float y) const;
-        float GetDistanceZ(const WorldObject* obj) const;
-        bool IsInMap(const WorldObject* obj) const
-        {
-            return IsInWorld() && obj->IsInWorld() && (GetMap() == obj->GetMap()) && InSamePhase(obj);
-        }
-        bool IsWithinDist3d(float x, float y, float z, float dist2compare) const;
-        bool IsWithinDist2d(float x, float y, float dist2compare) const;
-        bool _IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D) const;
-
-        // use only if you will sure about placing both object at same map
-        bool IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D = true) const
-        {
-            return obj && _IsWithinDist(obj, dist2compare, is3D);
-        }
-
-        bool IsWithinDistInMap(WorldObject const* obj, float dist2compare, bool is3D = true) const
-        {
-            return obj && IsInMap(obj) && _IsWithinDist(obj, dist2compare, is3D);
-        }
-        bool IsWithinLOS(float x, float y, float z) const;
-        bool IsWithinLOSInMap(const WorldObject* obj) const;
-        bool GetDistanceOrder(WorldObject const* obj1, WorldObject const* obj2, bool is3D = true) const;
-        bool IsInRange(WorldObject const* obj, float minRange, float maxRange, bool is3D = true) const;
-        bool IsInRange2d(float x, float y, float minRange, float maxRange) const;
-        bool IsInRange3d(float x, float y, float z, float minRange, float maxRange) const;
-
-        float GetAngle(const WorldObject* obj) const;
-        float GetAngle(const float x, const float y) const;
-        bool HasInArc(const float arcangle, const WorldObject* obj) const;
-        bool isInFrontInMap(WorldObject const* target, float distance, float arc = M_PI) const;
-        bool isInBackInMap(WorldObject const* target, float distance, float arc = M_PI) const;
-        bool isInFront(WorldObject const* target, float distance, float arc = M_PI) const;
-        bool isInBack(WorldObject const* target, float distance, float arc = M_PI) const;
-
-        virtual void CleanupsBeforeDelete();                // used in destructor or explicitly before mass creature delete to remove cross-references to already deleted units
-
-        virtual void SendMessageToSet(WorldPacket* data, bool self) const;
-        virtual void SendMessageToSetInRange(WorldPacket* data, float dist, bool self) const;
-        void SendMessageToSetExcept(WorldPacket* data, Player const* skipped_receiver) const;
-
-        void MonsterSay(const char* text, uint32 language, Unit const* target = NULL) const;
-        void MonsterYell(const char* text, uint32 language, Unit const* target = NULL) const;
-        void MonsterTextEmote(const char* text, Unit const* target, bool IsBossEmote = false) const;
-        void MonsterWhisper(const char* text, Unit const* target, bool IsBossWhisper = false) const;
-        void MonsterSay(int32 textId, uint32 language, Unit const* target = NULL) const;
-        void MonsterYell(int32 textId, uint32 language, Unit const* target = NULL) const;
-        void MonsterTextEmote(int32 textId, Unit const* target, bool IsBossEmote = false) const;
-        void MonsterWhisper(int32 textId, Unit const* receiver, bool IsBossWhisper = false) const;
-        void MonsterYellToZone(int32 textId, uint32 language, Unit const* target) const;
-        static void BuildMonsterChat(WorldPacket* data, ObjectGuid senderGuid, uint8 msgtype, char const* text, uint32 language, char const* name, ObjectGuid targetGuid, char const* targetName);
-
-        void PlayDistanceSound(uint32 sound_id, Player const* target = NULL) const;
-        void PlayDirectSound(uint32 sound_id, Player const* target = NULL) const;
-
-        void SendObjectDeSpawnAnim(ObjectGuid guid);
-        void SendGameObjectCustomAnim(ObjectGuid guid, uint32 animId = 0);
-
-        virtual bool IsHostileTo(Unit const* unit) const = 0;
-        virtual bool IsFriendlyTo(Unit const* unit) const = 0;
-        bool IsControlledByPlayer() const;
-
-        virtual void SaveRespawnTime() {}
-        void AddObjectToRemoveList();
-
-        void UpdateObjectVisibility();
-        virtual void UpdateVisibilityAndView();             // update visibility for object and object for all around
-
-        // main visibility check function in normal case (ignore grey zone distance check)
-        bool isVisibleFor(Player const* u, WorldObject const* viewPoint) const { return isVisibleForInState(u, viewPoint, false); }
-
-        // low level function for visibility change code, must be define in all main world object subclasses
-        virtual bool isVisibleForInState(Player const* u, WorldObject const* viewPoint, bool inVisibleList) const = 0;
-
-        void SetMap(Map* map);
-        Map* GetMap() const { MANGOS_ASSERT(m_currMap); return m_currMap; }
-        // used to check all object's GetMap() calls when object is not in world!
-        void ResetMap() { m_currMap = NULL; }
-
-        // obtain terrain data for map where this object belong...
-        TerrainInfo const* GetTerrain() const;
-
-        void AddToClientUpdateList() override;
-        void RemoveFromClientUpdateList() override;
-        void BuildUpdateData(UpdateDataMapType&) override;
-
-        Creature* SummonCreature(uint32 id, float x, float y, float z, float ang, TempSummonType spwtype, uint32 despwtime, bool asActiveObject = false);
-
-        bool isActiveObject() const { return m_isActiveObject || m_viewPoint.hasViewers(); }
-        void SetActiveObjectState(bool active);
-
-        ViewPoint& GetViewPoint() { return m_viewPoint; }
-
-        // ASSERT print helper
-        bool PrintCoordinatesError(float x, float y, float z, char const* descr) const;
-
-        virtual void StartGroupLoot(Group* /*group*/, uint32 /*timer*/) {}
-
-    protected:
-        explicit WorldObject();
-
-        // these functions are used mostly for Relocate() and Corpse/Player specific stuff...
-        // use them ONLY in LoadFromDB()/Create()  funcs and nowhere else!
-        // mapId/instanceId should be set in SetMap() function!
-        void SetLocationMapId(uint32 _mapId) { m_mapId = _mapId; }
-        void SetLocationInstanceId(uint32 _instanceId) { m_InstanceId = _instanceId; }
-
-        virtual void StopGroupLoot() {}
-
-        std::string m_name;
-
-        TransportInfo* m_transportInfo;
-
-    private:
-        Map* m_currMap;                                     // current object's Map location
-
-        uint32 m_mapId;                                     // object at map with map_id
-        uint32 m_InstanceId;                                // in map copy with instance id
-        uint32 m_phaseMask;                                 // in area phase state
-
-        Position m_position;
-        ViewPoint m_viewPoint;
-        WorldUpdateCounter m_updateTracker;
-        bool m_isActiveObject;
+    uint32 m_mapId;                                     // object at map with
+    Position m_position;
 };
 
 #endif
