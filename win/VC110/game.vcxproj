@@ -337,7 +337,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\game\CharacterDatabaseCleaner.cpp" />
     <ClCompile Include="..\..\src\game\Creature.cpp" />
     <ClCompile Include="..\..\src\game\DynamicObject.cpp" />
     <ClCompile Include="..\..\src\game\GameObject.cpp" />
@@ -354,8 +353,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\src\game\Player.cpp" />
-    <ClCompile Include="..\..\src\game\PlayerDump.cpp" />
-    <ClCompile Include="..\..\src\game\PoolManager.cpp" />
     <ClCompile Include="..\..\src\game\Unit.cpp" />
     <ClCompile Include="..\..\src\game\Verify\VerifyThread.cpp" />
     <ClCompile Include="..\..\src\game\World.cpp" />
@@ -364,11 +361,9 @@
     <ClCompile Include="..\..\src\game\WorldSocketMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\game\CharacterDatabaseCleaner.h" />
     <ClInclude Include="..\..\src\game\Creature.h" />
     <ClInclude Include="..\..\src\game\DynamicObject.h" />
     <ClInclude Include="..\..\src\game\GameObject.h" />
-    <ClInclude Include="..\..\src\game\Language.h" />
     <ClInclude Include="..\..\src\game\NetMsgHandle\ByCmdMsg.h" />
     <ClInclude Include="..\..\src\game\NetMsgHandle\CmdType.h" />
     <ClInclude Include="..\..\src\game\NetMsgHandle\NetMsgHandleManagerBase.h" />
@@ -382,8 +377,6 @@
     <ClInclude Include="..\..\src\game\ObjectMgr.h" />
     <ClInclude Include="..\..\src\game\pchdef.h" />
     <ClInclude Include="..\..\src\game\Player.h" />
-    <ClInclude Include="..\..\src\game\PlayerDump.h" />
-    <ClInclude Include="..\..\src\game\PoolManager.h" />
     <ClInclude Include="..\..\src\game\Unit.h" />
     <ClInclude Include="..\..\src\game\Verify\VerifyThread.h" />
     <ClInclude Include="..\..\src\game\World.h" />

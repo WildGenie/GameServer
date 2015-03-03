@@ -10,9 +10,6 @@
     <Filter Include="Server">
       <UniqueIdentifier>{af0d7b92-aa88-4870-bf29-5f9856a954d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tool">
-      <UniqueIdentifier>{efeae208-8789-4329-889a-b50baa18c19a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NetMsgHandle">
       <UniqueIdentifier>{71a8472a-7438-4365-942d-57a7b85dee26}</UniqueIdentifier>
     </Filter>
@@ -21,9 +18,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\game\PoolManager.cpp">
-      <Filter>World/Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\game\World.cpp">
       <Filter>World/Handlers</Filter>
     </ClCompile>
@@ -57,13 +51,7 @@
     <ClCompile Include="..\..\src\game\WorldSocketMgr.cpp">
       <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\game\PlayerDump.cpp">
-      <Filter>Tool</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\game\pchdef.cpp" />
-    <ClCompile Include="..\..\src\game\CharacterDatabaseCleaner.cpp">
-      <Filter>Tool</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\game\NetMsgHandle\GameObjectHandle.cpp">
       <Filter>NetMsgHandle</Filter>
     </ClCompile>
@@ -81,9 +69,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\game\PoolManager.h">
-      <Filter>World/Handlers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\game\World.h">
       <Filter>World/Handlers</Filter>
     </ClInclude>
@@ -117,16 +102,7 @@
     <ClInclude Include="..\..\src\game\WorldSocketMgr.h">
       <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\game\Language.h">
-      <Filter>Tool</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\game\PlayerDump.h">
-      <Filter>Tool</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\game\pchdef.h" />
-    <ClInclude Include="..\..\src\game\CharacterDatabaseCleaner.h">
-      <Filter>Tool</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\game\NetMsgHandle\GameObjectHandle.h">
       <Filter>NetMsgHandle</Filter>
     </ClInclude>

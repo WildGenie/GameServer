@@ -24,18 +24,10 @@
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
 #include "Log.h"
-#include "Opcodes.h"
-#include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Player.h"
 #include "ObjectMgr.h"
-#include "Group.h"
-#include "Guild.h"
-#include "GuildMgr.h"
 #include "World.h"
-#include "BattleGround/BattleGroundMgr.h"
-#include "MapManager.h"
-#include "SocialMgr.h"
 #include "Auth/AuthCrypt.h"
 #include "Auth/HMACSHA1.h"
 #include "zlib/zlib.h"
@@ -46,51 +38,9 @@
 #include "NetMsgHandle/ObjectCmd.h"
 #include "NetMsgHandle/UtilMsg.h"
 
-// select opcodes appropriate for processing in Map::Update context for current session state
-static bool MapSessionFilterHelper(WorldSession* session, OpcodeHandler const& opHandle)
-{
-    // we do not process thread-unsafe packets
-    if (opHandle.packetProcessing == PROCESS_THREADUNSAFE)
-        return false;
-
-    // we do not process not loggined player packets
-    Player* plr = session->GetPlayer();
-    if (!plr)
-        return false;
-
-    // in Map::Update() we do not process packets where player is not in world!
-    return plr->IsInWorld();
-}
-
-bool MapSessionFilter::Process(WorldPacket* packet)
-{
-    OpcodeHandler const& opHandle = opcodeTable[packet->GetOpcode()];
-    if (opHandle.packetProcessing == PROCESS_INPLACE)
-        return true;
-
-    // let's check if our opcode can be really processed in Map::Update()
-    return MapSessionFilterHelper(m_pSession, opHandle);
-}
-
-// we should process ALL packets when player is not in world/logged in
-// OR packet handler is not thread-safe!
-bool WorldSessionFilter::Process(WorldPacket* packet)
-{
-    OpcodeHandler const& opHandle = opcodeTable[packet->GetOpcode()];
-    // check if packet handler is supposed to be safe
-    if (opHandle.packetProcessing == PROCESS_INPLACE)
-        return true;
-
-    // let's check if our opcode can't be processed in Map::Update()
-    return !MapSessionFilterHelper(m_pSession, opHandle);
-}
-
 /// WorldSession constructor
 WorldSession::WorldSession(uint32 id, const boost::shared_ptr<WorldSocket>& sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale) :
-    m_muteTime(mute_time), _player(NULL), m_Socket(sock), _security(sec), _accountId(id), m_expansion(expansion), _logoutTime(0),
-    m_inQueue(false), m_playerLoading(false), m_playerLogout(false), m_playerRecentlyLogout(false), m_playerSave(false),
-    m_sessionDbcLocale(sWorld.GetAvailableDbcLocale(locale)), m_sessionDbLocaleIndex(sObjectMgr.GetIndexForLocale(locale)),
-    m_latency(0), m_tutorialState(TUTORIALDATA_UNCHANGED)
+     _player(NULL), m_Socket(sock),  _logoutTime(0)
 {
     if (sock)
     {
@@ -102,8 +52,8 @@ WorldSession::WorldSession(uint32 id, const boost::shared_ptr<WorldSocket>& sock
 WorldSession::~WorldSession()
 {
     ///- unload player if not unloaded
-    if (_player)
-        LogoutPlayer(true);
+    //if (_player)
+    //    LogoutPlayer(true);
 
     /// - If have unclosed socket, close it
     if (m_Socket)
@@ -111,61 +61,20 @@ WorldSession::~WorldSession()
         m_Socket->CloseSocket();
         m_Socket.reset();
     }
-
-    ///- empty incoming packet queue
-    WorldPacket* packet = NULL;
-    while (_recvQueue.next(packet))
-        delete packet;
 }
 
 /// Send a packet to the client
-void WorldSession::SendPacket(WorldPacket const* packet)
+void WorldSession::SendPacket()
 {
     if (!m_Socket)
         return;
 
-#ifdef MANGOS_DEBUG
-
-    // Code for network use statistic
-    static uint64 sendPacketCount = 0;
-    static uint64 sendPacketBytes = 0;
-
-    static time_t firstTime = time(NULL);
-    static time_t lastTime = firstTime;                     // next 60 secs start time
-
-    static uint64 sendLastPacketCount = 0;
-    static uint64 sendLastPacketBytes = 0;
-
-    time_t cur_time = time(NULL);
-
-    if ((cur_time - lastTime) < 60)
-    {
-        sendPacketCount += 1;
-        sendPacketBytes += packet->size();
-
-        sendLastPacketCount += 1;
-        sendLastPacketBytes += packet->size();
-    }
-    else
-    {
-        uint64 minTime = uint64(cur_time - lastTime);
-        uint64 fullTime = uint64(lastTime - firstTime);
-        DETAIL_LOG("Send all time packets count: " UI64FMTD " bytes: " UI64FMTD " avr.count/sec: %f avr.bytes/sec: %f time: %u", sendPacketCount, sendPacketBytes, float(sendPacketCount) / fullTime, float(sendPacketBytes) / fullTime, uint32(fullTime));
-        DETAIL_LOG("Send last min packets count: " UI64FMTD " bytes: " UI64FMTD " avr.count/sec: %f avr.bytes/sec: %f", sendLastPacketCount, sendLastPacketBytes, float(sendLastPacketCount) / minTime, float(sendLastPacketBytes) / minTime);
-
-        lastTime = cur_time;
-        sendLastPacketCount = 1;
-        sendLastPacketBytes = packet->wpos();               // wpos is real written size
-    }
-
-#endif                                                  // !MANGOS_DEBUG
-
-    if ( !m_Socket->SendPacket(*packet) )
+    if ( !m_Socket->SendPacket() )
         m_Socket->CloseSocket();
 }
 
 /// Update the WorldSession (triggered by World update)
-bool WorldSession::Update(PacketFilter& updater)
+bool WorldSession::Update()
 {
     ///- Retrieve packets from the receive queue and call the appropriate handlers
     /// not process packets if socket already closed
@@ -286,19 +195,6 @@ bool WorldSession::Update(PacketFilter& updater)
     if (m_Socket && m_Socket->IsClosed())
     {
         m_Socket.reset();
-    }
-
-    // check if we are safe to proceed with logout
-    // logout procedure should happen only in World::UpdateSessions() method!!!
-    if (updater.ProcessLogout())
-    {
-        ///- If necessary, log the player out
-        time_t currTime = time(NULL);
-        if (!m_Socket || (ShouldLogOut(currTime) && !m_playerLoading))
-            LogoutPlayer(true);
-
-        if (!m_Socket)
-            return false;                                   // Will remove this session from the world session map
     }
 
     return true;

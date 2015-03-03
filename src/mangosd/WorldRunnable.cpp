@@ -25,7 +25,6 @@
 #include "World.h"
 #include "WorldRunnable.h"
 #include "Timer.h"
-#include "MapManager.h"
 
 #include "Database/DatabaseEnv.h"
 
@@ -41,7 +40,6 @@ void WorldRunnable::run()
 {
     ///- Init new SQL thread for the world database
     WorldDatabase.ThreadStart();                            // let thread do safe mySQL requests (one connection call enough)
-    sWorld.InitResultQueue();
 
     uint32 realCurrTime = 0;
     uint32 realPrevTime = WorldTimer::tick();
@@ -49,9 +47,9 @@ void WorldRunnable::run()
     uint32 prevSleepTime = 0;                               // used for balanced full tick time length near WORLD_SLEEP_CONST
 
     ///- While we have not World::m_stopEvent, update the world
-    while (!World::IsStopped())
+    //while (!World::IsStopped())
+	while (true)
     {
-        ++World::m_worldLoopCounter;
         realCurrTime = WorldTimer::getMSTime();
 
         uint32 diff = WorldTimer::tick();
@@ -71,17 +69,15 @@ void WorldRunnable::run()
         else
             prevSleepTime = 0;
 
-#ifdef WIN32
-        if (m_ServiceStatus == 0) World::StopNow(SHUTDOWN_EXIT_CODE);
-        while (m_ServiceStatus == 2) Sleep(1000);
-#endif
+//#ifdef WIN32
+//        if (m_ServiceStatus == 0) World::StopNow(SHUTDOWN_EXIT_CODE);
+//        while (m_ServiceStatus == 2) Sleep(1000);
+//#endif
     }
-
-    sWorld.CleanupsBeforeStop();
 
     sWorldSocketMgr.StopNetwork();
 
-    MapManager::Instance().UnloadAll();                     // unload all grids (including locked in memory)
+    //MapManager::Instance().UnloadAll();                     // unload all grids (including locked in memory)
 
     ///- End the database thread
     WorldDatabase.ThreadEnd();                              // free mySQL thread resources

@@ -27,14 +27,12 @@
 #include "Log.h"
 #include "Master.h"
 #include "SystemConfig.h"
-#include "AuctionHouseBot/AuctionHouseBot.h"
 
 #include "revision.h"
 #include "revision_nr.h"
 
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
-//#include <ace/Version.h>
 #include <boost/program_options.hpp>
 #include <boost/version.hpp>
 #include <sstream>
@@ -123,9 +121,6 @@ extern int main(int argc, char** argv)
         usage(description, argv[0]);
         return 0;
     }
-
-    if (vm.count("ahbot"))
-        sAuctionBotConfig.SetConfigFileName(vm["ahbot"].as<std::string>().c_str());
 
     if (!serviceDaemonMode.empty())
     {

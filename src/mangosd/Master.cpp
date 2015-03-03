@@ -36,17 +36,8 @@
 #include "SystemConfig.h"
 #include "Config/Config.h"
 #include "Database/DatabaseEnv.h"
-#include "CliRunnable.h"
-//#include "RASocket.h"
 #include "Util.h"
 #include "revision_sql.h"
-//#include "MaNGOSsoap.h"
-#include "MassMailMgr.h"
-#include "DBCStores.h"
-
-//#include <ace/OS_NS_signal.h>
-//#include <ace/TP_Reactor.h>
-//#include <ace/Dev_Poll_Reactor.h>
 
 #ifdef WIN32
 #include "ServiceWin32.h"
@@ -74,21 +65,16 @@ class FreezeDetectorRunnable : public MaNGOS::Runnable
             w_loops = 0;
             m_lastchange = 0;
             w_lastchange = 0;
-            while (!World::IsStopped())
+            //while (!World::IsStopped())
+			while (true)
             {
                 MaNGOS::Thread::Sleep(1000);
 
                 uint32 curtime = WorldTimer::getMSTime();
                 // DEBUG_LOG("anti-freeze: time=%u, counters=[%u; %u]",curtime,Master::m_masterLoopCounter,World::m_worldLoopCounter);
 
-                // normal work
-                if (w_loops != World::m_worldLoopCounter)
-                {
-                    w_lastchange = curtime;
-                    w_loops = World::m_worldLoopCounter;
-                }
                 // possible freeze
-                else if (WorldTimer::getMSTimeDiff(w_lastchange, curtime) > _delaytime)
+                if (WorldTimer::getMSTimeDiff(w_lastchange, curtime) > _delaytime)
                 {
                     sLog.outError("World Thread hangs, kicking out server!");
                     *((uint32 volatile*)NULL) = 0;          // bang crash
@@ -229,16 +215,6 @@ int Master::Run()
 
     MaNGOS::Thread* cliThread = NULL;
 
-#ifdef WIN32
-    if (sConfig.GetBoolDefault("Console.Enable", true) && (m_ServiceStatus == -1)/* need disable console in service mode*/)
-#else
-    if (sConfig.GetBoolDefault("Console.Enable", true))
-#endif
-    {
-        ///- Launch CliRunnable thread
-        cliThread = new MaNGOS::Thread(new CliRunnable);
-    }
-
     MaNGOS::Thread* rar_thread = NULL;
     if (sConfig.GetBoolDefault("Ra.Enable", false))
     {
@@ -311,8 +287,8 @@ int Master::Run()
     }
 
     ///- Launch the world listener socket
-    uint16 wsport = sWorld.getConfig(CONFIG_UINT32_PORT_WORLD);
-    std::string bind_ip = sConfig.GetStringDefault("BindIP", "0.0.0.0");
+    uint16 wsport;
+    std::string bind_ip;
 
 	// TESTMODIFY
 	wsport = 10002;
@@ -322,7 +298,7 @@ int Master::Run()
     {
         sLog.outError("Failed to start network");
         Log::WaitBeforeContinueIfNeed();
-        World::StopNow(ERROR_EXIT_CODE);
+        //World::StopNow(ERROR_EXIT_CODE);
         // go down and shutdown the server
     }
 
@@ -362,9 +338,6 @@ int Master::Run()
 
     ///- Clean account database before leaving
     clearOnlineAccounts();
-
-    // send all still queued mass mails (before DB connections shutdown)
-    sMassMailMgr.Update(true);
 
     ///- Wait for DB delay threads to end
     CharacterDatabase.HaltDelayThread();
@@ -424,7 +397,7 @@ int Master::Run()
     }
 
     ///- Exit the process with specified return value
-    return World::GetExitCode();
+    //return World::GetExitCode();
 }
 
 /// Initialize connection to the databases
@@ -535,11 +508,6 @@ bool Master::_StartDB()
 
     ///- Clean the database before starting
     clearOnlineAccounts();
-
-    sWorld.LoadDBVersion();
-
-    sLog.outString("Using World DB: %s", sWorld.GetDBVersion());
-    sLog.outString("Using creature EventAI: %s", sWorld.GetCreatureEventAIVersion());
     return true;
 }
 
@@ -559,20 +527,20 @@ void Master::clearOnlineAccounts()
 /// Handle termination signals
 void Master::_OnSignal(int s)
 {
-    switch (s)
-    {
-        case SIGINT:
-            World::StopNow(RESTART_EXIT_CODE);
-            break;
-        case SIGTERM:
+switch (s)
+{
+    case SIGINT:
+        //World::StopNow(RESTART_EXIT_CODE);
+        break;
+    case SIGTERM:
 #ifdef _WIN32
-        case SIGBREAK:
+    case SIGBREAK:
 #endif
-            World::StopNow(SHUTDOWN_EXIT_CODE);
-            break;
-    }
+        //World::StopNow(SHUTDOWN_EXIT_CODE);
+        break;
+}
 
-    signal(s, _OnSignal);
+signal(s, _OnSignal);
 }
 
 /// Define hook '_OnSignal' for all termination signals

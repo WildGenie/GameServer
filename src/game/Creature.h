@@ -21,13 +21,7 @@
 
 #include "Common.h"
 #include "Unit.h"
-#include "UpdateMask.h"
-#include "ItemPrototype.h"
-#include "SharedDefines.h"
-#include "LootMgr.h"
-#include "DBCEnums.h"
 #include "Database/DatabaseEnv.h"
-#include "Cell.h"
 
 #include <list>
 
@@ -54,13 +48,13 @@ class MANGOS_DLL_SPEC Creature : public Unit
 
 public:
 
-    explicit Creature(CreatureSubtype subtype = CREATURE_SUBTYPE_GENERIC);
+    //explicit Creature(CreatureSubtype subtype = CREATURE_SUBTYPE_GENERIC);
     virtual ~Creature();
 
     void AddToWorld() override;
     void RemoveFromWorld() override;
 
-    bool Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo const* cinfo, Team team = TEAM_NONE, const CreatureData* data = NULL, GameEventCreatureData const* eventData = NULL);
+    //bool Create(uint32 guidlow, CreatureCreatePos& cPos, CreatureInfo const* cinfo, Team team = TEAM_NONE, const CreatureData* data = NULL, GameEventCreatureData const* eventData = NULL);
 
     void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
 

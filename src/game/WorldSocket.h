@@ -89,7 +89,7 @@ public:
     /// Send A packet on the socket, this function is reentrant.
     /// @param pct packet to send
     /// @return false of failure
-    bool SendPacket(const WorldPacket& pct);
+    bool SendPacket();
 
     WorldSocket( NetworkManager& socketMrg, 
                     NetworkThread& owner );
@@ -106,7 +106,7 @@ virtual bool open() override;
 
 private:
     /// Called by ProcessIncoming() on CMSG_PING.
-    int HandlePing(WorldPacket& recvPacket);
+    int HandlePing();
 
 private:
     /// Time in which the last ping was received

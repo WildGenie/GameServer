@@ -30,7 +30,6 @@ public:
     void AddToWorld() override;
     void RemoveFromWorld() override;
 
-    bool Create(uint32 guidlow, Unit* caster, uint32 spellId, SpellEffectIndex effIndex, float x, float y, float z, int32 duration, float radius, DynamicObjectType type);
     void Update(uint32 update_diff, uint32 p_time) override;
     void Delete();
     //GridReference<DynamicObject>& GetGridRef() { return m_gridRef; }

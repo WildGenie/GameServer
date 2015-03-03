@@ -27,10 +27,6 @@
 #include <boost/thread/mutex.hpp>
 
 #include "Common.h"
-#include "SharedDefines.h"
-#include "ObjectGuid.h"
-#include "AuctionHouseMgr.h"
-#include "Item.h"
 
 struct ItemPrototype;
 struct AuctionEntry;
@@ -57,14 +53,12 @@ struct OpcodeHandler;
 /// Player session in the World
 class MANGOS_DLL_SPEC WorldSession
 {
-    friend class CharacterHandler;
-
 public:
     WorldSession(uint32 id, const boost::shared_ptr<WorldSocket>& sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale);
     ~WorldSession();
 
-    void SendPacket(WorldPacket const* packet);
-    bool Update(PacketFilter& updater);
+    void SendPacket();
+    bool Update();
 
 private:
     Player* _player;

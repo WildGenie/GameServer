@@ -85,20 +85,12 @@ protected:
     /// Schedule asynchronous send operation
     //void start_async_send();
 
-    virtual bool process_incoming_data() = 0;
-
     /// Mutex type used for various synchronizations.
     typedef boost::mutex LockType;
     typedef boost::lock_guard<LockType> GuardType;
 
     /// Mutex for protecting output related data.
     LockType m_OutBufferLock;
-
-    /// Buffer used for writing output.
-    //std::auto_ptr<NetworkBuffer> m_OutBuffer;
-
-    /// Buffer used for receiving input
-    //std::auto_ptr<NetworkBuffer> m_ReadBuffer;
 
 	// socket ÊÇ·ñ´ò¿ª
 	bool m_bSocketOpened;
@@ -144,7 +136,7 @@ private:
     /// True is socket is closed
     bool m_closing;
 
-    static const std::string UNKNOWN_NETWORK_ADDRESS;;
+    static const std::string UNKNOWN_NETWORK_ADDRESS;
 };
 
 #endif
