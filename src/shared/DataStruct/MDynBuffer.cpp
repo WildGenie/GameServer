@@ -1,11 +1,11 @@
 ﻿#include "MDynBuffer.h"
 #include "MDynBufResizePolicy.h"
 #include <string.h>
-#include "StorageBuffer.h"
+#include "MStorageBuffer.h"
 
 MDynBuffer::MDynBuffer(std::size_t len)
 {
-	m_pStorageBuffer = new StorageBuffer(len);
+	m_pStorageBuffer = new MStorageBuffer(len);
 }
 
 MDynBuffer::~MDynBuffer()

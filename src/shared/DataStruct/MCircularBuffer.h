@@ -7,12 +7,12 @@
 
 #include "Platform/Define.h"
 
-class StorageBuffer;
+class MStorageBuffer;
 
 class MCircularBuffer
 {
 private:
-	StorageBuffer* m_pStorageBuffer;
+	MStorageBuffer* m_pStorageBuffer;
 	std::size_t m_head;
 	std::size_t m_tail;
 

@@ -3,7 +3,7 @@
 #include "MBufferUtil.h"
 #include <string.h>
 #include "Platform/Define.h"
-#include "StorageBuffer.h"
+#include "MStorageBuffer.h"
 
 /**
  * @brief ¹¹Ôìº¯Êý
@@ -11,7 +11,7 @@
 MCircularBuffer::MCircularBuffer(std::size_t len)
 	: m_head(0), m_tail(0)
 {
-	m_pStorageBuffer = new StorageBuffer(len);
+	m_pStorageBuffer = new MStorageBuffer(len);
 }
 
 MCircularBuffer::~MCircularBuffer()

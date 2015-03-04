@@ -11,7 +11,7 @@
 #include "System.h"
 #include "Platform/Define.h"
 #include "MDynBufResizePolicy.h"
-#include "StorageBuffer.h"
+#include "MStorageBuffer.h"
 
 class MByteBufferException
 {
@@ -45,7 +45,7 @@ public:
 	// constructor
 	MByteBuffer(size_t len) : m_pos(0)
 	{
-		m_pStorageBuffer = new StorageBuffer(len);
+		m_pStorageBuffer = new MStorageBuffer(len);
 		m_sysEndian = eSys_LITTLE_ENDIAN;		// 默认是小端
 	}
 
@@ -511,7 +511,7 @@ private:
 
 protected:
 	size_t m_pos;		// 读取写入位置
-	StorageBuffer* m_pStorageBuffer;
+	MStorageBuffer* m_pStorageBuffer;
 };
 
 template <typename T>
