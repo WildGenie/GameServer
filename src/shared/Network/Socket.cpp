@@ -28,8 +28,8 @@
 #include "NetworkManager.h"
 
 #include "MNetClientBuffer.h"
-#include "DynBuffer.h"
-#include "MCircularBuffer.h"
+#include "MDynBuffer.h"
+#include "MByteBuffer.h"
 
 const std::string Socket::UNKNOWN_NETWORK_ADDRESS = "<unknown>";
 
@@ -189,7 +189,7 @@ void Socket::start_async_send()
     //                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
     //                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
 
-	m_socket.async_write_some(boost::asio::buffer(m_pNetClientBuffer->m_sendSocketBuffer->getStorage(), m_pNetClientBuffer->m_sendSocketBuffer->size()),
+	m_socket.async_write_some(boost::asio::buffer(m_pNetClientBuffer->m_sendSocketBuffer->rd_ptr(), m_pNetClientBuffer->m_sendSocketBuffer->avaliableBytes()),
 	                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
 	                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
 }

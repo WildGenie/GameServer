@@ -1,9 +1,9 @@
-#ifndef __DYNBUFRESIZEPOLICY_H
-#define __DYNBUFRESIZEPOLICY_H
+#ifndef __MDYNBUFRESIZEPOLICY_H
+#define __MDYNBUFRESIZEPOLICY_H
 
 #include "Platform/Define.h"
 
-class DynBufResizePolicy
+class MDynBufResizePolicy
 {
 public:
 	static uint32 getCloseSize(uint32 needSize, uint32 capacity);

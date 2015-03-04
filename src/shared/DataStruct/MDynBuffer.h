@@ -1,11 +1,11 @@
-﻿#ifndef __DYNBUFFER_H
-#define __DYNBUFFER_H
+﻿#ifndef __MDYNBUFFER_H
+#define __MDYNBUFFER_H
 
 #include <cstddef>
 
 class StorageBuffer;
 
-class DynBuffer
+class MDynBuffer
 {
 	friend class MNetClientBuffer;
 
@@ -13,8 +13,8 @@ protected:
 	StorageBuffer* m_pStorageBuffer;
 
 public:
-	DynBuffer(std::size_t len);
-	~DynBuffer();
+	MDynBuffer(std::size_t len);
+	~MDynBuffer();
 	std::size_t size();
 	std::size_t capacity();
 	void setCapacity(std::size_t newCapacity);

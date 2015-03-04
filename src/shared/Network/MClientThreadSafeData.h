@@ -2,7 +2,8 @@
 #define __MCLIENTTHREADSAFEDATA_H
 
 class MByteBuffer;
-class DynBuffer;
+class MDynBuffer;
+class MMsgBuffer;
 
 /**
  * @brief 基于线程安全的 socket buffer 数据，同一个线程共享这些数据
@@ -14,8 +15,9 @@ public:
 	MByteBuffer* m_pMsgBA;			// 返回的字节数组，没有消息长度的一个完整的消息.
 
 	// 这两个数据可能有的线程只需要一个数据，因此单独初始化
-	DynBuffer* m_recvSocketDynBuffer;	// 接收临时数据
+	MDynBuffer* m_recvSocketDynBuffer;	// 接收临时数据
 	//MByteBuffer* m_sendClientBA;		// 存放将要发送的临时数据，将要放到 m_sendClientBuffer 中去
+	MMsgBuffer* m_sendClient2SocketBuffer;	// Client 到 Socket 过渡，线程共享
 
 public:
 	MClientThreadSafeData();

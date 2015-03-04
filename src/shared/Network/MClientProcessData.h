@@ -2,7 +2,7 @@
 #define __MCLIENTPROCESSDATA_H
 
 class MByteBuffer;
-class DynBuffer;
+class MDynBuffer;
 
 /**
  * @brief 基于进程 socket buffer 数据，同一个进程共享这些数据

@@ -25,7 +25,7 @@
 #include <boost/bind.hpp>
 #include "MClientProcessData.h"
 #include "DataStruct/MByteBuffer.h"
-#include "DataStruct/BufferDefaultValue.h"
+#include "DataStruct/MBufferDefaultValue.h"
 
 NetworkManager::NetworkManager():
     m_NetThreadsCount(1),

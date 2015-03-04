@@ -1,8 +1,8 @@
-#include "DynBufResizePolicy.h"
-#include "BufferDefaultValue.h"
+#include "MDynBufResizePolicy.h"
+#include "MBufferDefaultValue.h"
 
 // 获取一个最近的大小
-uint32 DynBufResizePolicy::getCloseSize(uint32 needSize, uint32 capacity)
+uint32 MDynBufResizePolicy::getCloseSize(uint32 needSize, uint32 capacity)
 {
 	uint32 ret = 0;
 

@@ -4,7 +4,7 @@
 #include <cstddef>
 #include "Platform/Define.h"
 
-class StorageBuffer
+class MStorageBuffer
 {
 public:
 	char* m_storage;
@@ -12,8 +12,8 @@ public:
 	std::size_t m_iCapacity;
 
 public:
-	StorageBuffer(std::size_t len);
-	~StorageBuffer();
+	MStorageBuffer(std::size_t len);
+	~MStorageBuffer();
 	void setCapacity(std::size_t newCapacity);
 	void setSize(std::size_t len);
 	bool canAddData(uint32 num);

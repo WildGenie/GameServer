@@ -1,7 +1,7 @@
-#include "BufferUtil.h"
+#include "MBufferUtil.h"
 #include <assert.h>
 
-void* BufferUtil::memSwap(void *dest, const void *source, size_t count)
+void* MBufferUtil::memSwap(void *dest, const void *source, size_t count)
 {
 	assert((nullptr != dest) && (nullptr != source));
 

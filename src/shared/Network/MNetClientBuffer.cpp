@@ -1,26 +1,24 @@
 #include "MNetClientBuffer.h"
 #include "MMsgBuffer.h"
-#include "DynBuffer.h"
+#include "MDynBuffer.h"
 #include "MByteBuffer.h"
 #include "MCircularBuffer.h"
-#include "BufferDefaultValue.h"
+#include "MBufferDefaultValue.h"
 #include "MClientThreadSafeData.h"
 #include "MClientProcessData.h"
 
 MNetClientBuffer::MNetClientBuffer()
-	: m_canSend(true)
 {
 	m_recvSocketBuffer = new MMsgBuffer();
 	m_recvClientBuffer = new MMsgBuffer();
-	//m_recvSocketDynBuffer = new DynBuffer(INIT_CAPACITY);	// 同一个线程共享的数据
+	//m_recvSocketDynBuffer = new MDynBuffer(INIT_CAPACITY);	// 同一个线程共享的数据
 
-	m_sendClientBuffer = new MCircularBuffer(INIT_CAPACITY);
-	m_sendSocketBuffer = new MCircularBuffer(INIT_CAPACITY);
+	m_sendClientBuffer = new MByteBuffer(INIT_CAPACITY);
+	m_sendSocketBuffer = new MByteBuffer(INIT_CAPACITY);
 	//m_sendClientBA = new MByteBuffer(INIT_CAPACITY);	// 同一个线程共享的数据
 
 	m_unCompressHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
 	m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
-	m_pMsgBA = new DynBuffer(INIT_CAPACITY);
 
 	m_pMutex = new boost::mutex();
 }
@@ -91,8 +89,8 @@ void MNetClientBuffer::sendMsg(MByteBuffer* sendClientBA)
 
 	m_pMutex->lock();
 
-	m_sendClientBuffer->pushBack((char*)m_pHeaderBA->getStorage(), 0, m_pHeaderBA->size());
-	m_sendClientBuffer->pushBack((char*)sendClientBA->getStorage(), 0, sendClientBA->size());
+	m_sendClientBuffer->writeUnsignedInt32(sendClientBA->size());
+	m_sendClientBuffer->writeBytes((char*)sendClientBA->getStorage(), 0, sendClientBA->size());
 
 	m_pMutex->unlock();
 
@@ -103,40 +101,42 @@ void MNetClientBuffer::sendMsg(MByteBuffer* sendClientBA)
 void MNetClientBuffer::moveSendClient2SendSocket()
 {
 	m_sendSocketBuffer->clear(); // 清理，这样环形缓冲区又可以从 0 索引开始了
+	m_sendClient2SocketBuffer->m_pMCircularBuffer->clear();
+
+	m_sendClient2SocketBuffer->m_pMCircularBuffer->pushBack((char*)m_sendClientBuffer->getStorage(), 0, m_sendClientBuffer->size());
 
 	m_pMutex->lock();
 
-	m_pMsgBA->setSize(m_sendClientBuffer->size());
-	m_sendClientBuffer->popFront(m_pMsgBA->getStorage(), 0, m_sendClientBuffer->size());
+	m_sendClientBuffer->clear();	// 清理，这样环形缓冲区又可以从 0 索引开始了
 
 	m_pMutex->unlock();
 
-	m_sendSocketBuffer->pushBack(m_pMsgBA->getStorage(), 0, m_pMsgBA->size());
-	m_sendClientBuffer->clear(); // 清理，这样环形缓冲区又可以从 0 索引开始了
+	m_sendSocketBuffer->writeBytes(m_sendClient2SocketBuffer->m_pMCircularBuffer->getStorage(), 0, m_sendClient2SocketBuffer->m_pMCircularBuffer->size());
 }
 
 bool MNetClientBuffer::startAsyncSend()
 {
-	if (!m_canSend || m_sendClientBuffer->size() == 0)
+	if (m_sendClientBuffer->size() == 0)		// 只有缓冲区为空的时候才能拷贝数据，如果不为空，就是有数据正在发送
+	{
+		moveSendClient2SendSocket();		// 处理消息数据，等待发送
+	}
+
+	if (m_sendClientBuffer->size() == 0)		// 如果还是没有数据
 	{
 		return false;
 	}
-
-	m_canSend = false;		// 设置不能发送标志
-	moveSendClient2SendSocket();		// 处理消息数据，等待发送
 
 	return true;
 }
 
 void MNetClientBuffer::onWriteComplete(size_t len)
 {
-	if (len < m_sendSocketBuffer->size())		// 如果数据没有发送完成
+	if (len < m_sendSocketBuffer->avaliableBytes())		// 如果数据没有发送完成
 	{
-		m_sendSocketBuffer->popFrontLenNoData(len);
+		m_sendSocketBuffer->pos(len);
 	}
 	else				// 如果全部发送完成
 	{
-		m_canSend = true;		// 设置不能发送标志
 		m_sendSocketBuffer->clear();	// 清理数据
 	}
 }
@@ -148,6 +148,7 @@ void MNetClientBuffer::setRecvSocketBufferTSData(MClientThreadSafeData* tsData)
 	m_recvSocketBuffer->setMsgBATSData(tsData);
 	
 	m_recvSocketDynBuffer = tsData->m_recvSocketDynBuffer;
+	m_sendClient2SocketBuffer = tsData->m_sendClient2SocketBuffer;
 }
 
 // 这个仅仅会有一个主线程发送消息

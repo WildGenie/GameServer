@@ -32,8 +32,8 @@ public:
 	{
 		uint8 byCmd;
 		uint8 byParam;
-		pMsgBA->readUnsigneduint8(byCmd);
-		pMsgBA->readUnsigneduint8(byParam);
+		pMsgBA->readUnsignedInt8(byCmd);
+		pMsgBA->readUnsignedInt8(byParam);
 		pMsgBA->pos(0);				// ÷ÿ÷√∂¡÷∏’Î
 
 		if (byCmd < Cmd::eByCmdTotal && m_pNetDispDelegateArr[byCmd])

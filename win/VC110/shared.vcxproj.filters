@@ -102,15 +102,6 @@
     <ClCompile Include="..\..\src\shared\Network\NetworkManager.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\shared\DataStruct\BufferUtil.cpp">
-      <Filter>DataStruct</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\shared\DataStruct\DynBuffer.cpp">
-      <Filter>DataStruct</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\shared\DataStruct\DynBufResizePolicy.cpp">
-      <Filter>DataStruct</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\shared\DataStruct\MCircularBuffer.cpp">
       <Filter>DataStruct</Filter>
     </ClCompile>
@@ -138,7 +129,16 @@
     <ClCompile Include="..\..\src\shared\Network\MClientProcessData.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\shared\DataStruct\StorageBuffer.cpp">
+    <ClCompile Include="..\..\src\shared\DataStruct\MDynBuffer.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\MDynBufResizePolicy.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\MStorageBuffer.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\shared\DataStruct\MBufferUtil.cpp">
       <Filter>DataStruct</Filter>
     </ClCompile>
   </ItemGroup>
@@ -248,22 +248,7 @@
     <ClInclude Include="..\..\src\shared\Network\NetworkManager.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\BufferDefaultValue.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\BufferUtil.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\DynBuffer.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\DynBufResizePolicy.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\MCircularBuffer.h">
-      <Filter>DataStruct</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\SystemEndian.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\shared\DataStruct\MByteBuffer.h">
@@ -299,7 +284,22 @@
     <ClInclude Include="..\..\src\shared\Network\MClientProcessData.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\shared\DataStruct\StorageBuffer.h">
+    <ClInclude Include="..\..\src\shared\DataStruct\MBufferDefaultValue.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MDynBuffer.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MDynBufResizePolicy.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MStorageBuffer.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MSystemEndian.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\shared\DataStruct\MBufferUtil.h">
       <Filter>DataStruct</Filter>
     </ClInclude>
   </ItemGroup>

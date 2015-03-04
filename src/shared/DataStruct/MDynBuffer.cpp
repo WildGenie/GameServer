@@ -1,48 +1,48 @@
-﻿#include "DynBuffer.h"
-#include "DynBufResizePolicy.h"
+﻿#include "MDynBuffer.h"
+#include "MDynBufResizePolicy.h"
 #include <string.h>
 #include "StorageBuffer.h"
 
-DynBuffer::DynBuffer(std::size_t len)
+MDynBuffer::MDynBuffer(std::size_t len)
 {
 	m_pStorageBuffer = new StorageBuffer(len);
 }
 
-DynBuffer::~DynBuffer()
+MDynBuffer::~MDynBuffer()
 {
 	delete[] m_pStorageBuffer;
 }
 
-std::size_t DynBuffer::size()
+std::size_t MDynBuffer::size()
 {
 	return m_pStorageBuffer->m_size;
 }
 
-size_t DynBuffer::capacity()
+size_t MDynBuffer::capacity()
 {
 	return m_pStorageBuffer->m_iCapacity;
 }
 
-void DynBuffer::setSize(std::size_t len)
+void MDynBuffer::setSize(std::size_t len)
 {
 	m_pStorageBuffer->setSize(len);
 }
 
-void DynBuffer::setCapacity(std::size_t newCapacity)
+void MDynBuffer::setCapacity(std::size_t newCapacity)
 {
 	m_pStorageBuffer->setCapacity(newCapacity);
 }
 
-char* DynBuffer::getStorage()
+char* MDynBuffer::getStorage()
 {
 	return m_pStorageBuffer->m_storage;
 }
 
-void DynBuffer::push(char* pItem, std::size_t len)
+void MDynBuffer::push(char* pItem, std::size_t len)
 {
 	if (len > m_pStorageBuffer->m_iCapacity)
 	{
-		uint32 closeSize = DynBufResizePolicy::getCloseSize(len, capacity());
+		uint32 closeSize = MDynBufResizePolicy::getCloseSize(len, capacity());
 		setCapacity(closeSize);
 	}
 

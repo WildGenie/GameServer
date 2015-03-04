@@ -1,7 +1,8 @@
 #include "MClient.h"
 #include "MNetClientBuffer.h"
 #include "MCircularBuffer.h"
-#include "DynBuffer.h"
+#include "MDynBuffer.h"
+#include "MByteBuffer.h"
 
 MClient::MClient(boost::asio::io_service& io_service,
 	tcp::resolver::iterator endpoint_iterator)

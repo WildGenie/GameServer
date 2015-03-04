@@ -1,19 +1,19 @@
-﻿#include "StorageBuffer.h"
-#include "DynBufResizePolicy.h"
+﻿#include "MStorageBuffer.h"
+#include "MDynBufResizePolicy.h"
 #include <string.h>
 
-StorageBuffer::StorageBuffer(std::size_t len)
+MStorageBuffer::MStorageBuffer(std::size_t len)
 	: m_size(0), m_iCapacity(len)
 {
 	m_storage = new char[len];
 }
 
-StorageBuffer::~StorageBuffer()
+MStorageBuffer::~MStorageBuffer()
 {
 	delete[] m_storage;
 }
 
-void StorageBuffer::setSize(std::size_t len)
+void MStorageBuffer::setSize(std::size_t len)
 {
 	m_size = len;
 
@@ -23,7 +23,7 @@ void StorageBuffer::setSize(std::size_t len)
 	}
 }
 
-void StorageBuffer::setCapacity(std::size_t newCapacity)
+void MStorageBuffer::setCapacity(std::size_t newCapacity)
 {
 	if (newCapacity <= m_size)       // 不能分配比当前已经占有的空间还小的空间
 	{
@@ -46,7 +46,7 @@ void StorageBuffer::setCapacity(std::size_t newCapacity)
 /**
 *@brief 能否添加 num 长度的数据
 */
-bool StorageBuffer::canAddData(uint32 num)
+bool MStorageBuffer::canAddData(uint32 num)
 {
 	if (m_iCapacity - m_size >= num)
 	{

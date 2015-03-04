@@ -1,7 +1,7 @@
 #include "MClientProcessData.h"
 #include "MByteBuffer.h"
-#include "DynBuffer.h"
-#include "BufferDefaultValue.h"
+#include "MDynBuffer.h"
+#include "MBufferDefaultValue.h"
 
 MClientProcessData::MClientProcessData()
 {

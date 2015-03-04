@@ -1,6 +1,6 @@
 #include "MCircularBuffer.h"
-#include "DynBufResizePolicy.h"
-#include "BufferUtil.h"
+#include "MDynBufResizePolicy.h"
+#include "MBufferUtil.h"
 #include <string.h>
 #include "Platform/Define.h"
 #include "StorageBuffer.h"
@@ -57,16 +57,16 @@ void MCircularBuffer::linearize()
 	{
 		if (m_pStorageBuffer->m_iCapacity - m_head == m_tail)
 		{
-			BufferUtil::memSwap(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + m_head, m_tail);
+			MBufferUtil::memSwap(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + m_head, m_tail);
 		}
 		else if (m_pStorageBuffer->m_iCapacity - m_head > m_tail)
 		{
-			BufferUtil::memSwap(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + m_head, m_pStorageBuffer->m_size - m_head);
+			MBufferUtil::memSwap(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + m_head, m_pStorageBuffer->m_size - m_head);
 			std::memmove(m_pStorageBuffer->m_storage + (m_pStorageBuffer->m_size - m_tail), m_pStorageBuffer->m_storage + m_head, m_tail);
 		}
 		else
 		{
-			BufferUtil::memSwap(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + (m_pStorageBuffer->m_size - m_tail), m_tail);
+			MBufferUtil::memSwap(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + (m_pStorageBuffer->m_size - m_tail), m_tail);
 			std::memmove(m_pStorageBuffer->m_storage, m_pStorageBuffer->m_storage + (m_tail - m_head), m_head);
 		}
 	}
@@ -129,7 +129,7 @@ void MCircularBuffer::pushBack(char* pItem, std::size_t startPos, std::size_t le
 {
 	if (!canAddData(len)) // 存储空间必须要比实际数据至少多 1
 	{
-		uint32 closeSize = DynBufResizePolicy::getCloseSize(len + size(), capacity());
+		uint32 closeSize = MDynBufResizePolicy::getCloseSize(len + size(), capacity());
 		setCapacity(closeSize);
 	}
 
@@ -163,7 +163,7 @@ void MCircularBuffer::pushFront(char* pItem, std::size_t startPos, std::size_t l
 {
 	if (!canAddData(len)) // 存储空间必须要比实际数据至少多 1
 	{
-		uint32 closeSize = DynBufResizePolicy::getCloseSize(len + size(), capacity());
+		uint32 closeSize = MDynBufResizePolicy::getCloseSize(len + size(), capacity());
 		setCapacity(closeSize);
 	}
 

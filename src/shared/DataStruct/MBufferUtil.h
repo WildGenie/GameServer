@@ -1,7 +1,7 @@
-#ifndef __BUFFERUTIL_H
-#define __BUFFERUTIL_H
+#ifndef __MBUFFERUTIL_H
+#define __MBUFFERUTIL_H
 
-class BufferUtil
+class MBufferUtil
 {
 public:
 	static void* memSwap(void *dest, const void *source, size_t count);
