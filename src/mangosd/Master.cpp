@@ -178,11 +178,11 @@ int Master::Run()
 
     ///- Start the databases
 	// TESTMODIFY
-    if (!_StartDB())
-    {
-        Log::WaitBeforeContinueIfNeed();
-        return 1;
-    }
+    //if (!_StartDB())
+    //{
+    //    Log::WaitBeforeContinueIfNeed();
+    //    return 1;
+    //}
 
     ///- Initialize the World
 	// TESTMODIFY
