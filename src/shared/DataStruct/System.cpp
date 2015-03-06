@@ -1,5 +1,5 @@
 #include "System.h"
-#include "SystemEndian.h"
+#include "MSystemEndian.h"
 
 template<> System* System::Singleton<System>::m_sSingleton = 0;
 

@@ -18,7 +18,7 @@
 
 set(LIBRARY_NAME shared)
 
-set(LIBRARY_SRCS
+set(Auth_SRCS
     Auth/AuthCrypt.cpp
     Auth/AuthCrypt.h
     Auth/BigNumber.cpp
@@ -30,12 +30,14 @@ set(LIBRARY_SRCS
     Auth/SARC4.h
     Auth/Sha1.cpp
     Auth/Sha1.h
-    ByteBuffer.cpp
-    ByteBuffer.h
-    Common.cpp
-    Common.h
+	)
+	
+set(Config_SRCS
     Config/Config.cpp
     Config/Config.h
+	)
+	
+set(Database_SRCS
     Database/Database.cpp
     Database/Database.h
     Database/DatabaseEnv.h
@@ -64,21 +66,35 @@ set(LIBRARY_SRCS
     Database/SQLStorage.cpp
     Database/SQLStorage.h
     Database/SQLStorageImpl.h
-    Errors.h
-    LockedQueue.h
+	)
+	
+set(DataStruct_SRCS
+	DataStruct/MBufferDefaultValue.h
+	DataStruct/MBufferUtil.h
+	DataStruct/MBufferUtil.cpp
+	DataStruct/MByteBuffer.h
+	DataStruct/MByteBuffer.cpp
+	DataStruct/MByteConverter.h
+	DataStruct/MCircularBuffer.cpp
+	DataStruct/MCircularBuffer.h
+	DataStruct/MDynBuffer.cpp
+	DataStruct/MDynBuffer.h
+	DataStruct/MDynBufResizePolicy.cpp
+	DataStruct/MDynBufResizePolicy.h
+	DataStruct/MStorageBuffer.cpp
+	DataStruct/MStorageBuffer.h
+	DataStruct/MSystemEndian.h
+	DataStruct/Singleton.h
+	DataStruct/System.cpp
+	DataStruct/System.h
+	)
+	
+set(Log_SRCS
     Log.cpp
     Log.h
-    ProgressBar.cpp
-    ProgressBar.h
-    revision_nr.h
-    revision_sql.h
-    SystemConfig.h
-    Threading.cpp
-    Threading.h
-    Timer.h
-    Util.cpp
-    Util.h
-    WorldPacket.h
+	)
+	
+set(Network_SRCS
 	Network/ProtocolDefinitions.h
 	Network/Socket.cpp
 	Network/Socket.h
@@ -86,28 +102,88 @@ set(LIBRARY_SRCS
 	Network/NetworkThread.h
 	Network/NetworkManager.cpp
 	Network/NetworkManager.h
-   )
+	
+	Network/MClient.cpp
+	Network/MClient.h
+	Network/MClientManager.cpp
+	Network/MClientManager.h
+	Network/MClientProcessData.cpp
+	Network/MClientProcessData.h
+	Network/MClientThread.cpp
+	Network/MClientThread.h
+	Network/MClientThreadSafeData.cpp
+	Network/MClientThreadSafeData.h
+	Network/MMsgBuffer.cpp
+	Network/MMsgBuffer.h
+	Network/MNetClientBuffer.cpp
+	Network/MNetClientBuffer.h
+	)
+	
+set(Util_SRCS
+	ByteBuffer.cpp
+    ByteBuffer.h
+    Errors.h
+    ProgressBar.cpp
+	ProgressBar.h
+    Timer.h
+    Util.cpp
+    Util.h
+	)
+	
+set(FastDelegate_SRCS
+	FastDelegate/FastDelegate.h
+	FastDelegate/FastDelegateBind.h
+	)
+	
+set(Common_SRCS
+    Common.cpp
+    Common.h
+	LockedQueue.h
+	revision_nr.h
+    revision_sql.h
+    SystemConfig.h
+    Threading.cpp
+    Threading.h
+	)
 
 # OS specific files
 if(WIN32)
-  set(LIBRARY_SRCS
-      ${LIBRARY_SRCS}
-      WheatyExceptionReport.cpp
-      WheatyExceptionReport.h
+  add_definitions(-DWIN32_LEAN_AND_MEAN)
+  
+  set(Common_SRCS
+      ${Common_SRCS}
       ServiceWin32.cpp
       ServiceWin32.h
      )
 else()
-  set(LIBRARY_SRCS
-      ${LIBRARY_SRCS}
+  set(Common_SRCS
+      ${Common_SRCS}
       PosixDaemon.cpp
       PosixDaemon.h
      )
 endif()
 
-source_group("Util"
-  REGULAR_EXPRESSION .*
-)
+set(LIBRARY_SRCS
+	${Auth_SRCS}
+	${Config_SRCS}
+	${Database_SRCS}
+	${DataStruct_SRCS}
+	${Log_SRCS}
+	${Network_SRCS}
+	${Util_SRCS}
+	${FastDelegate}
+	${Common_SRCS}
+   )
+
+source_group("Auth" FILES ${Auth_SRCS})
+source_group("Config" FILES ${Config_SRCS})
+source_group("Database" FILES ${Database_SRCS})
+source_group("DataStruct" FILES ${DataStruct_SRCS})
+source_group("Log" FILES ${Log_SRCS})
+source_group("Network" FILES ${Network_SRCS})
+source_group("Util" FILES ${Util_SRCS})
+source_group("FastDelegate" FILES ${FastDelegate_SRCS})
+source_group("" FILES ${Common_SRCS})
 
 # TODO: really needed?
 foreach(SRC ${LIBRARY_SRCS})
@@ -120,20 +196,13 @@ foreach(SRC ${LIBRARY_SRCS})
   endif()
 endforeach(SRC)
 
-source_group("DataStores"
-  REGULAR_EXPRESSION DBC
-)
-
-source_group("Log"
-  REGULAR_EXPRESSION Log
-)
-
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/DataStruct
+  ${CMAKE_CURRENT_SOURCE_DIR}/FastDelegate
   ${CMAKE_SOURCE_DIR}/dep/include
   ${CMAKE_SOURCE_DIR}/src/framework
   ${CMAKE_BINARY_DIR}
-  ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
 )
 
@@ -144,6 +213,3 @@ add_library(${LIBRARY_NAME} STATIC
 )
 
 add_dependencies(${LIBRARY_NAME} revision.h)
-if(NOT ACE_USE_EXTERNAL)
-  add_dependencies(${LIBRARY_NAME} ACE_Project)
-endif()
