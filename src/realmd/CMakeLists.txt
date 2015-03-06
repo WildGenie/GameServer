@@ -27,12 +27,16 @@ set(EXECUTABLE_SRCS
     PatchHandler.h
     RealmList.cpp
     RealmList.h
+	SessionManager.cpp
+    SessionManager.h
    )
 
 if(WIN32)
   # add resource file to windows build
   set(EXECUTABLE_SRCS ${EXECUTABLE_SRCS} realmd.rc)
 endif()
+
+source_group("" FILES ${EXECUTABLE_SRCS})
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/shared

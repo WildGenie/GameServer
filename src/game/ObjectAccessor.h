@@ -47,24 +47,9 @@ class MANGOS_DLL_DECL ObjectAccessor : public MaNGOS::Singleton<ObjectAccessor, 
     ObjectAccessor(const ObjectAccessor&);
     ObjectAccessor& operator=(const ObjectAccessor&);
 
-public:
-    // Search player at any map in world and other objects at same map with `obj`
-    // Note: recommended use Map::GetUnit version if player also expected at same map only
-    static Unit* GetUnit(WorldObject const& obj, ObjectGuid guid);
-
-    // Player access
-    static Player* FindPlayer(ObjectGuid guid, bool inWorld = true);// if need player at specific map better use Map::GetPlayer
-    static Player* FindPlayerByName(const char* name);
-    static void KickPlayer(ObjectGuid guid);
-
-    void SaveAllPlayers();
-
 private:
     typedef boost::mutex LockType;
     typedef MaNGOS::GeneralLock<LockType > Guard;
-
-    LockType i_playerGuard;
-    LockType i_corpseGuard;
 };
 
 #define sObjectAccessor ObjectAccessor::Instance()

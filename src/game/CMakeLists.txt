@@ -98,6 +98,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/dep/recastnavigation/
   ${CMAKE_SOURCE_DIR}/dep/include
   ${CMAKE_SOURCE_DIR}/src/shared
+  ${CMAKE_SOURCE_DIR}/src/shared/FastDelegate
+  ${CMAKE_SOURCE_DIR}/src/shared/DataStruct
+  ${CMAKE_SOURCE_DIR}/src/shared/Network
   ${CMAKE_SOURCE_DIR}/src/framework
   ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/src/shared
@@ -123,6 +126,10 @@ target_link_libraries(${LIBRARY_NAME}
   shared
   detour
 )
+
+if(WIN32)
+  add_definitions(-DWIN32_LEAN_AND_MEAN)
+endif()
 
 if(UNIX)
   # Both systems don't have libdl and don't need them
