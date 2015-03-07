@@ -28,7 +28,7 @@ set(CMAKE_MODULE_PATH
 
 # define all options here
 option(DEBUG                "Debug mode"                            OFF)
-option(TBB_USE_EXTERNAL     "Use external TBB"                      OFF)
+option(NEDMALLOC_USE_EXTERNAL     "Use external nedmalloc"                      OFF)
 option(USE_STD_MALLOC       "Use standard malloc instead of TBB"    OFF)
 if(PCHSupport_FOUND AND WIN32) # TODO: why only enable it on windows by default?
   option(PCH                "Use precompiled headers"               ON)
@@ -49,7 +49,7 @@ message(
     CMAKE_INSTALL_PREFIX    Path where the server should be installed to
     PCH                     Use precompiled headers
     DEBUG                   Debug mode
-    TBB_USE_EXTERNAL        Use external TBB
+    NEDMALLOC_USE_EXTERNAL        Use external nedmalloc
     USE_STD_MALLOC          Use standard malloc instead of TBB
   To set an option simply type -D<OPTION>=<VALUE> after 'cmake <srcs>'.
   Also, you can specify the generator with -G. see 'cmake --help' for more details
@@ -130,33 +130,6 @@ set(CMAKE_INSTALL_RPATH ${LIBS_DIR})
 set(CMAKE_INSTALL_NAME_DIR ${LIBS_DIR})
 # Run out of build tree
 set(CMAKE_BUILD_WITH_INSTALL_RPATH OFF)
-
-# Find needed packages and if necessery abort if something important is missing
-unset(ACE_INCLUDE_DIR CACHE)
-unset(ACE_LIBRARIES CACHE)
-unset(ACE_LIBRARIES_DIR CACHE)
-unset(ACE_INCLUDE_DIR)
-unset(ACE_LIBRARIES)
-unset(ACE_LIBRARIES_DIR)
-
-if(NOT USE_STD_MALLOC)
-  unset(TBB_INCLUDE_DIR CACHE)
-  unset(TBB_LIBRARIES CACHE)
-  unset(TBB_LIBRARIES_DIR CACHE)
-  unset(TBB_INCLUDE_DIR)
-  unset(TBB_LIBRARIES)
-  unset(TBB_LIBRARIES_DIR)
-  if(TBB_USE_EXTERNAL)
-    find_package(TBB)
-    if(NOT TBB_FOUND)
-      message(FATAL_ERROR
-        "This project requires TBB installed when TBB_USE_EXTERNAL is set. Please download the TBB Stable Release from http://www.threadingbuildingblocks.org/ and install it. If this script didn't find TBB and it was correctly installed please set TBB_ROOT to the correct path."
-      )
-    endif()
-  else()
-    include(cmake/ImportTBB.cmake)
-  endif()
-endif()
 
 # Win32 delivered packages
 if(WIN32)

@@ -86,8 +86,8 @@ add_library(${LIBRARY_NAME} STATIC
   ${LIBRARY_SRCS}
 )
 
-if(NOT TBB_USE_EXTERNAL)
-  add_dependencies(${LIBRARY_NAME} TBB_Project)
+if(NOT NEDMALLOC_USE_EXTERNAL)
+  add_dependencies(${LIBRARY_NAME} nedmalloc)
 endif()
 
 target_link_libraries(${LIBRARY_NAME}
