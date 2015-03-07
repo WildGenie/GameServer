@@ -288,22 +288,6 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH ${LIBS_DIR})
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-# Generate revision-extractor
-set(GENREV_SRC
-  src/tools/genrevision/genrevision.cpp
-)
-
-add_executable(genrev
-  ${GENREV_SRC}
-)
-
-get_target_property(GENERATE_EXE genrev LOCATION)
-add_custom_target("revision.h" ALL
-  COMMAND ${GENERATE_EXE} ${CMAKE_SOURCE_DIR}
-  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-  DEPENDS genrev
-)
-
 if(WIN32)
   install(
     FILES

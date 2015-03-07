@@ -18,6 +18,8 @@
 
 set(EXECUTABLE_NAME mangosd)
 
+cmake_policy(SET CMP0043 NEW)
+
 set(EXECUTABLE_SRCS
     Main.cpp
     Master.cpp
@@ -31,9 +33,14 @@ if(WIN32)
   set(EXECUTABLE_SRCS ${EXECUTABLE_SRCS} mangosd.rc)
 endif()
 
+source_group("" FILES ${EXECUTABLE_SRCS})
+
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/shared
-  ${CMAKE_SOURCE_DIR}/dep/include/gsoap
+  ${CMAKE_SOURCE_DIR}/src/shared/Thread
+  ${CMAKE_SOURCE_DIR}/src/shared/Util
+  ${CMAKE_SOURCE_DIR}/src/shared/Log
+  ${CMAKE_SOURCE_DIR}/src/shared/Platform
   ${CMAKE_SOURCE_DIR}/src/framework
   ${CMAKE_SOURCE_DIR}/src/game
   ${CMAKE_BINARY_DIR}
@@ -45,8 +52,6 @@ include_directories(
 add_executable(${EXECUTABLE_NAME}
   ${EXECUTABLE_SRCS}
 )
-
-add_dependencies(${EXECUTABLE_NAME} revision.h)
 
 target_link_libraries(${EXECUTABLE_NAME}
   game

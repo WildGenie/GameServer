@@ -37,7 +37,7 @@
 #include "Config/Config.h"
 #include "Database/DatabaseEnv.h"
 #include "Util.h"
-#include "revision_sql.h"
+#include "Version.h"
 
 #ifdef WIN32
 #include "ServiceWin32.h"
@@ -420,7 +420,7 @@ bool Master::_StartDB()
         return false;
     }
 
-    if (!WorldDatabase.CheckRequiredField("db_version", REVISION_DB_MANGOS))
+	if (!WorldDatabase.CheckRequiredField("db_version", MANGOS_DB_VERSION_LIB_VERSION))
     {
         ///- Wait for already started DB delay threads to end
         WorldDatabase.HaltDelayThread();
@@ -449,7 +449,7 @@ bool Master::_StartDB()
         return false;
     }
 
-    if (!CharacterDatabase.CheckRequiredField("character_db_version", REVISION_DB_CHARACTERS))
+	if (!CharacterDatabase.CheckRequiredField("character_db_version", MANGOS_DB_VERSION_LIB_VERSION))
     {
         ///- Wait for already started DB delay threads to end
         WorldDatabase.HaltDelayThread();
@@ -482,7 +482,7 @@ bool Master::_StartDB()
         return false;
     }
 
-    if (!LoginDatabase.CheckRequiredField("realmd_db_version", REVISION_DB_REALMD))
+	if (!LoginDatabase.CheckRequiredField("realmd_db_version", MANGOS_DB_VERSION_LIB_VERSION))
     {
         ///- Wait for already started DB delay threads to end
         WorldDatabase.HaltDelayThread();

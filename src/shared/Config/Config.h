@@ -27,6 +27,8 @@
 
 #include <boost/program_options.hpp>
 
+#include "WarnPush.h"
+
 class MANGOS_DLL_SPEC Config
 {
     public:
@@ -55,5 +57,7 @@ class MANGOS_DLL_SPEC Config
 };
 
 #define sConfig MaNGOS::Singleton<Config>::Instance()
+
+#include "WarnPop.h"
 
 #endif

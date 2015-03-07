@@ -23,6 +23,8 @@
 #include <vector>
 #include <stdexcept>
 
+#include "WarnPush.h"
+
 class Database;
 class SqlConnection;
 class QueryResult;
@@ -348,5 +350,7 @@ class MANGOS_DLL_SPEC SqlPlainPreparedStatement : public SqlPreparedStatement
 
         std::string m_szPlainRequest;
 };
+
+#include "WarnPop.h"
 
 #endif

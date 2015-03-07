@@ -23,6 +23,8 @@
 #include "Errors.h"
 #include "Field.h"
 
+#include "WarnPush.h"
+
 class MANGOS_DLL_SPEC QueryResult
 {
     public:
@@ -80,5 +82,7 @@ class MANGOS_DLL_SPEC QueryNamedResult
         QueryResult* mQuery;
         QueryFieldNames mFieldNames;
 };
+
+#include "WarnPop.h"
 
 #endif

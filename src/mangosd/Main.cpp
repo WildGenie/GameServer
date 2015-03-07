@@ -28,8 +28,7 @@
 #include "Master.h"
 #include "SystemConfig.h"
 
-#include "revision.h"
-#include "revision_nr.h"
+#include "Version.h"
 
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
@@ -112,7 +111,6 @@ extern int main(int argc, char** argv)
 
     if (vm.count("version"))
     {
-        printf("%s\n", _FULLVERSION(REVISION_DATE, REVISION_TIME, REVISION_NR, REVISION_ID));
         return 0;
     }
 
@@ -180,7 +178,6 @@ extern int main(int argc, char** argv)
     }
 #endif
 
-    sLog.outString("%s [world-daemon]", _FULLVERSION(REVISION_DATE, REVISION_TIME, REVISION_NR, REVISION_ID));
     sLog.outString("<Ctrl-C> to stop.");
     sLog.outString("\n\n"
                    "MM   MM         MM   MM  MMMMM   MMMM   MMMMM\n"

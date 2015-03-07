@@ -31,6 +31,8 @@
 
 #include "SqlPreparedStatement.h"
 
+#include "WarnPush.h"
+
 class SqlTransaction;
 class SqlResultQueue;
 class SqlQueryHolder;
@@ -311,4 +313,7 @@ class MANGOS_DLL_SPEC Database
         std::string m_logsDir;
         uint32 m_pingIntervallms;
 };
+
+#include "WarnPop.h"
+
 #endif

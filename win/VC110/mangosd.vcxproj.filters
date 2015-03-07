@@ -34,12 +34,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\mangosd\Main.cpp" />
     <ClCompile Include="..\..\src\mangosd\Master.cpp" />
-    <ClCompile Include="..\..\src\shared\WheatyExceptionReport.cpp" />
     <ClCompile Include="..\..\src\mangosd\WorldRunnable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\mangosd\Master.h" />
-    <ClInclude Include="..\..\src\shared\WheatyExceptionReport.h" />
     <ClInclude Include="..\..\src\mangosd\WorldRunnable.h" />
   </ItemGroup>
   <ItemGroup>

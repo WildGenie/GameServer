@@ -18,6 +18,8 @@
 
 set(LIBRARY_NAME game)
 
+cmake_policy(SET CMP0043 NEW)
+
 set(Object_SRCS
     Creature.cpp
     Creature.h
@@ -101,6 +103,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/shared/FastDelegate
   ${CMAKE_SOURCE_DIR}/src/shared/DataStruct
   ${CMAKE_SOURCE_DIR}/src/shared/Network
+  ${CMAKE_SOURCE_DIR}/src/shared/Thread
+  ${CMAKE_SOURCE_DIR}/src/shared/Util
+  ${CMAKE_SOURCE_DIR}/src/shared/Log
   ${CMAKE_SOURCE_DIR}/src/framework
   ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/src/shared
@@ -139,8 +144,6 @@ if(UNIX)
     )
   endif()
 endif()
-
-add_dependencies(${LIBRARY_NAME} revision.h)
 
 # Generate precompiled header
 if(PCH)

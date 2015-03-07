@@ -1,0 +1,11 @@
+#ifndef __VERSION_H__
+#define __VERSION_H__
+
+
+#define MANGOS_VERSION 101100
+#define MANGOS_VERSION_LIB_VERSION "1_11"
+
+#define MANGOS_DB_VERSION 101100
+#define MANGOS_DB_VERSION_LIB_VERSION "1_11"
+
+#endif // __VERSION_H__

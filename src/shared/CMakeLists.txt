@@ -18,6 +18,8 @@
 
 set(LIBRARY_NAME shared)
 
+cmake_policy(SET CMP0043 NEW)
+
 set(Auth_SRCS
     Auth/AuthCrypt.cpp
     Auth/AuthCrypt.h
@@ -90,8 +92,8 @@ set(DataStruct_SRCS
 	)
 	
 set(Log_SRCS
-    Log.cpp
-    Log.h
+    Log/Log.cpp
+    Log/Log.h
 	)
 	
 set(Network_SRCS
@@ -120,14 +122,16 @@ set(Network_SRCS
 	)
 	
 set(Util_SRCS
-	ByteBuffer.cpp
-    ByteBuffer.h
-    Errors.h
-    ProgressBar.cpp
-	ProgressBar.h
-    Timer.h
-    Util.cpp
-    Util.h
+	Util/ByteBuffer.cpp
+    Util/ByteBuffer.h
+    Util/Errors.h
+    Util/ProgressBar.cpp
+	Util/ProgressBar.h
+    Util/Timer.h
+    Util/Util.cpp
+    Util/Util.h
+	Util/WarnPop.h
+	Util/WarnPush.h
 	)
 	
 set(FastDelegate_SRCS
@@ -135,31 +139,31 @@ set(FastDelegate_SRCS
 	FastDelegate/FastDelegateBind.h
 	)
 	
+set(Thread_SRCS
+    Thread/Threading.cpp
+    Thread/Threading.h
+	)
+	
 set(Common_SRCS
     Common.cpp
     Common.h
 	LockedQueue.h
-	revision_nr.h
-    revision_sql.h
+	Version.h
     SystemConfig.h
-    Threading.cpp
-    Threading.h
 	)
 
 # OS specific files
 if(WIN32)
   add_definitions(-DWIN32_LEAN_AND_MEAN)
   
-  set(Common_SRCS
-      ${Common_SRCS}
-      ServiceWin32.cpp
-      ServiceWin32.h
+  set(Platform_SRCS
+      Platform/ServiceWin32.cpp
+      Platform/ServiceWin32.h
      )
 else()
-  set(Common_SRCS
-      ${Common_SRCS}
-      PosixDaemon.cpp
-      PosixDaemon.h
+  set(Platform_SRCS
+      Platform/PosixDaemon.cpp
+      Platform/PosixDaemon.h
      )
 endif()
 
@@ -172,6 +176,8 @@ set(LIBRARY_SRCS
 	${Network_SRCS}
 	${Util_SRCS}
 	${FastDelegate}
+	${Thread_SRCS}
+	${Platform_SRCS}
 	${Common_SRCS}
    )
 
@@ -183,6 +189,8 @@ source_group("Log" FILES ${Log_SRCS})
 source_group("Network" FILES ${Network_SRCS})
 source_group("Util" FILES ${Util_SRCS})
 source_group("FastDelegate" FILES ${FastDelegate_SRCS})
+source_group("Thread" FILES ${Thread_SRCS})
+source_group("Platform" FILES ${Platform_SRCS})
 source_group("" FILES ${Common_SRCS})
 
 # TODO: really needed?
@@ -200,6 +208,10 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/DataStruct
   ${CMAKE_CURRENT_SOURCE_DIR}/FastDelegate
+  ${CMAKE_CURRENT_SOURCE_DIR}/Log
+  ${CMAKE_CURRENT_SOURCE_DIR}/Thread
+  ${CMAKE_CURRENT_SOURCE_DIR}/Util
+  ${CMAKE_CURRENT_SOURCE_DIR}/Platform
   ${CMAKE_SOURCE_DIR}/dep/include
   ${CMAKE_SOURCE_DIR}/src/framework
   ${CMAKE_BINARY_DIR}
@@ -211,5 +223,3 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SystemConfig.h.in ${CMAKE_CURRENT_BIN
 add_library(${LIBRARY_NAME} STATIC
   ${LIBRARY_SRCS}
 )
-
-add_dependencies(${LIBRARY_NAME} revision.h)

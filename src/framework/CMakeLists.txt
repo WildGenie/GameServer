@@ -18,6 +18,8 @@
 
 set(LIBRARY_NAME framework)
 
+cmake_policy(SET CMP0043 NEW)
+
 set(LIBRARY_SRCS
     Dynamic/FactoryHolder.h
     Dynamic/ObjectRegistry.h
