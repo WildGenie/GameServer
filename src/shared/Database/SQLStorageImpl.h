@@ -27,7 +27,7 @@ template<class DerivedLoader, class StorageClass>
 template<class S, class D>                                  // S source-type, D destination-type
 void SQLStorageLoaderBase<DerivedLoader, StorageClass>::convert(uint32 /*field_pos*/, S src, D& dst)
 {
-    dst = D(src);
+    dst = D(src != 0);
 }
 
 template<class DerivedLoader, class StorageClass>

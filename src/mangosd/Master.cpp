@@ -398,6 +398,8 @@ int Master::Run()
 
     ///- Exit the process with specified return value
     //return World::GetExitCode();
+
+	return 0;
 }
 
 /// Initialize connection to the databases

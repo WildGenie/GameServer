@@ -46,8 +46,7 @@
 
 Creature::~Creature()
 {
-    delete i_AI;
-    i_AI = NULL;
+    
 }
 
 void Creature::AddToWorld()

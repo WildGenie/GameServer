@@ -25,11 +25,6 @@
 
 #include <list>
 
-struct SpellEntry;
-
-class CreatureAI;
-class Group;
-class Quest;
 class Player;
 class WorldSession;
 
@@ -44,8 +39,6 @@ struct GameEventCreatureData;
 
 class MANGOS_DLL_SPEC Creature : public Unit
 {
-    CreatureAI* i_AI;
-
 public:
 
     //explicit Creature(CreatureSubtype subtype = CREATURE_SUBTYPE_GENERIC);
@@ -58,7 +51,7 @@ public:
 
     void Update(uint32 update_diff, uint32 time) override;  // overwrite Unit::Update
 
-    CreatureAI* AI() { return i_AI; }
+    //CreatureAI* AI() { return i_AI; }
 
 protected:
     //Cell m_currentCell;                                 // store current cell where creature listed

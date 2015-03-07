@@ -28,6 +28,8 @@
 
 #include "Common.h"
 
+#include "WarnPush.h"
+
 struct ItemPrototype;
 struct AuctionEntry;
 struct AuctionHouseEntry;
@@ -67,4 +69,7 @@ private:
 
     time_t _logoutTime;
 };
+
+#include "WarnPop.h"
+
 #endif

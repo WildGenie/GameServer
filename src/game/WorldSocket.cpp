@@ -30,11 +30,6 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
 
-#if defined( __GNUC__ )
-#pragma pack()
-#else
-#pragma pack(pop)
-#endif
 
 WorldSocket::WorldSocket( NetworkManager& socketMrg, 
                           NetworkThread& owner ) :
