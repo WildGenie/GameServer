@@ -20,6 +20,9 @@
 // switch to OS specific allocator only when _STANDARD_MALLOC is defined
 #ifndef USE_STANDARD_MALLOC
 
+#define REPLACE_SYSTEM_ALLOCATOR
+#define NO_NED_NAMESPACE
+
 #include "nedmalloc.h"
 
 void* operator new(size_t sz)

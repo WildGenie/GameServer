@@ -60,6 +60,7 @@ target_link_libraries(${EXECUTABLE_NAME}
   g3dlite
   backtrace
   ${Boost_LIBRARIES}
+  nedmalloc
 )
 
 if(WIN32)

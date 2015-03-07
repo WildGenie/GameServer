@@ -61,6 +61,7 @@ target_link_libraries(${EXECUTABLE_NAME}
   framework
   backtrace
   ${Boost_LIBRARIES}
+  nedmalloc
 )
 
 if(WIN32)
