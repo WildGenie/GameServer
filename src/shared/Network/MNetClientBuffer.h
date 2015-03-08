@@ -32,6 +32,7 @@ public:
 	MByteBuffer* m_pHeaderBA;			// 写入四个字节头部
 
 	boost::mutex* m_pMutex;
+	boost::mutex* m_pRevMutex;
 	//bool m_canSend;						// 异步发送的过程中，当前发送的数据是否发送完成
 
 public:

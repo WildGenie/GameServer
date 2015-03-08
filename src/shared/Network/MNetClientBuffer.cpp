@@ -21,6 +21,9 @@ MNetClientBuffer::MNetClientBuffer()
 	m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
 
 	m_pMutex = new boost::mutex();
+	m_pRevMutex = new boost::mutex();
+
+	m_sendClientBuffer->setSize(4);
 }
 
 MNetClientBuffer::~MNetClientBuffer()
@@ -36,6 +39,7 @@ MNetClientBuffer::~MNetClientBuffer()
 	delete m_unCompressHeaderBA;
 
 	delete m_pMutex;
+	delete m_pRevMutex;
 }
 
 void MNetClientBuffer::setRecvMsgSize(size_t len)
@@ -61,8 +65,13 @@ void MNetClientBuffer::moveRecvSocket2RecvClient()
 		m_unCompressHeaderBA->clear();
 		m_unCompressHeaderBA->writeUnsignedInt32(m_recvSocketBuffer->m_pMsgBA->size());
 		m_unCompressHeaderBA->pos(0);
+
+		m_pRevMutex->lock();
+
 		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_unCompressHeaderBA->getStorage(), 0, MSG_HEADER_SIZE);             // 保存消息大小字段
 		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_recvSocketBuffer->m_pMsgBA->getStorage(), 0, m_recvSocketBuffer->m_pMsgBA->size());      // 保存消息大小字段
+
+		m_pRevMutex->unlock();
 	}
 }
 
@@ -70,7 +79,9 @@ MByteBuffer* MNetClientBuffer::getMsg()
 {
 	if (m_recvClientBuffer->checkHasMsg())
 	{
+		m_pRevMutex->lock();
 		m_recvClientBuffer->moveOutOneMsg();
+		m_pRevMutex->unlock();
 		return m_recvClientBuffer->m_pMsgBA;
 	}
 
@@ -80,6 +91,7 @@ MByteBuffer* MNetClientBuffer::getMsg()
 void MNetClientBuffer::onReadComplete(size_t dynLen)
 {
 	moveRecvSocketDyn2RecvSocket(dynLen);		// 放入接收消息处理缓冲区
+	moveRecvSocket2RecvClient();
 }
 
 void MNetClientBuffer::sendMsg(MByteBuffer* sendClientBA)

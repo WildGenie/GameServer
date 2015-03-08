@@ -379,14 +379,26 @@ public:
 		return (uint8*)m_pStorageBuffer->m_storage;
 	}
 
-	size_t size() const { return m_pStorageBuffer->m_size; }
+	size_t size() const 
+	{
+		if (m_pStorageBuffer != nullptr)
+		{
+			m_pStorageBuffer->setSize(0);
+			return m_pStorageBuffer->m_size;
+		}
+
+		return 0;
+	}
 
 	void setSize(size_t len)
 	{
 		m_pStorageBuffer->setSize(len);
 	}
 
-	bool empty() const { return m_pStorageBuffer->m_size == 0; }
+	bool empty() const 
+	{ 
+		return m_pStorageBuffer->m_size == 0; 
+	}
 
 	size_t capacity()
 	{

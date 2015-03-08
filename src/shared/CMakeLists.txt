@@ -48,9 +48,6 @@ set(Database_SRCS
     Database/DatabaseMysql.h
     Database/DatabasePostgre.cpp
     Database/DatabasePostgre.h
-    Database/DBCFileLoader.cpp
-    Database/DBCFileLoader.h
-    Database/DBCStore.h
     Database/Field.cpp
     Database/Field.h
     Database/PGSQLDelayThread.h
@@ -68,6 +65,12 @@ set(Database_SRCS
     Database/SQLStorage.cpp
     Database/SQLStorage.h
     Database/SQLStorageImpl.h
+	)
+
+set(DatabaseDBC_SRCS
+	Database/DBCFileLoader.cpp
+    Database/DBCFileLoader.h
+    Database/DBCStore.h
 	)
 	
 set(DataStruct_SRCS
@@ -171,6 +174,7 @@ set(LIBRARY_SRCS
 	${Auth_SRCS}
 	${Config_SRCS}
 	${Database_SRCS}
+	${DatabaseDBC_SRCS}
 	${DataStruct_SRCS}
 	${Log_SRCS}
 	${Network_SRCS}
@@ -184,6 +188,7 @@ set(LIBRARY_SRCS
 source_group("Auth" FILES ${Auth_SRCS})
 source_group("Config" FILES ${Config_SRCS})
 source_group("Database" FILES ${Database_SRCS})
+source_group("Database\\DataStores" FILES ${DatabaseDBC_SRCS})
 source_group("DataStruct" FILES ${DataStruct_SRCS})
 source_group("Log" FILES ${Log_SRCS})
 source_group("Network" FILES ${Network_SRCS})

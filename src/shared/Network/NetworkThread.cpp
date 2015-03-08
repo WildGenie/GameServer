@@ -108,7 +108,7 @@ void NetworkThread::sendAndRecvData()
 		SocketSet::iterator itEnd = m_Sockets.end();
 		for (; itBegin != itEnd; ++itBegin)
 		{
-			(*itBegin)->getNetClientBuffer()->moveRecvSocket2RecvClient();		// 将数据放入接收缓冲区中
+			//(*itBegin)->getNetClientBuffer()->moveRecvSocket2RecvClient();		// 将数据放入接收缓冲区中
 			(*itBegin)->start_async_send();					// 发送数据
 		}
 	}

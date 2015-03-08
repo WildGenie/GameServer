@@ -60,8 +60,11 @@ target_link_libraries(${EXECUTABLE_NAME}
   g3dlite
   backtrace
   ${Boost_LIBRARIES}
-  nedmalloc
 )
+
+if(NOT (NEDMALLOC_USE_EXTERNAL OR USE_STD_MALLOC))
+  target_link_libraries(${EXECUTABLE_NAME} nedmalloc)
+endif()
 
 if(WIN32)
   add_definitions(-DWIN32_LEAN_AND_MEAN)
