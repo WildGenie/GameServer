@@ -26,7 +26,6 @@
 #include "Common.h"
 #include "Auth/BigNumber.h"
 #include "Auth/Sha1.h"
-#include "ByteBuffer.h"
 
 #include "Network/Socket.h"
 

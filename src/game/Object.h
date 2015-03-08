@@ -20,7 +20,6 @@
 #define _OBJECT_H
 
 #include "Common.h"
-#include "ByteBuffer.h"
 
 #include <set>
 #include <string>

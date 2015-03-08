@@ -125,8 +125,6 @@ set(Network_SRCS
 	)
 	
 set(Util_SRCS
-	Util/ByteBuffer.cpp
-    Util/ByteBuffer.h
     Util/Errors.h
     Util/ProgressBar.cpp
 	Util/ProgressBar.h

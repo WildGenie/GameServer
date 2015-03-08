@@ -21,7 +21,7 @@
 #include "Policies/Singleton.h"
 #include "Config/Config.h"
 #include "Util.h"
-#include "ByteBuffer.h"
+#include "MByteBuffer.h"
 #include "ProgressBar.h"
 
 #include <boost/thread.hpp>
@@ -871,7 +871,7 @@ void Log::outErrorScriptLib(const char* err, ...)
     fflush(stderr);
 }
 
-void Log::outWorldPacketDump(uint32 socket, uint32 opcode, char const* opcodeName, ByteBuffer const* packet, bool incoming)
+void Log::outWorldPacketDump(uint32 socket, uint32 opcode, char const* opcodeName, MByteBuffer const* packet, bool incoming)
 {
     if (!worldLogfile)
         return;
@@ -880,9 +880,9 @@ void Log::outWorldPacketDump(uint32 socket, uint32 opcode, char const* opcodeNam
 
     outTimestamp(worldLogfile);
 
-    fprintf(worldLogfile, "\n%s:\nSOCKET: %u\nLENGTH: " SIZEFMTD "\nOPCODE: %s (0x%.4X)\nDATA:\n",
+    fprintf(worldLogfile, "\n%s:\nSOCKET: %u\nLENGTH: " SIZEFMTD,
             incoming ? "CLIENT" : "SERVER",
-            socket, packet->size(), opcodeName, opcode);
+            socket, packet->size());
 
     size_t p = 0;
     while (p < packet->size())
