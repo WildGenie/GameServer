@@ -8,7 +8,6 @@
 
 #include "MByteConverter.h"
 #include "MSystemEndian.h"
-#include "System.h"
 #include "Platform/Define.h"
 #include "MDynBufResizePolicy.h"
 #include "MStorageBuffer.h"
@@ -144,6 +143,11 @@ public:
 	void hexlike() const;
 	void writeFile(FILE* file);
 
+	void compress(size_t startPos = 0, size_t len_ = 0);
+	void uncompress(size_t startPos = 0, size_t len_ = 0);
+	void encrypt(size_t startPos = 0, size_t len_ = 0);
+	void decrype(size_t startPos = 0, size_t len_ = 0);
+
 private:
 	// 添加的一定是和系统大小端相同的
 	// limited for internal use because can "append" any unexpected type (like pointer and etc) with hard detection problem
@@ -153,6 +157,8 @@ private:
 protected:
 	size_t m_pos;		// 读取写入位置
 	MStorageBuffer* m_pStorageBuffer;
+	char m_encryptKey[8];
+	char m_decryptKey[8];
 };
 
 

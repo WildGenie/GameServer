@@ -1,4 +1,7 @@
 #include "MByteBuffer.h"
+#include "MCompress.h"
+#include "Encrypt.h"
+#include "MemOp.h"
 
 #include <sstream>
 
@@ -121,7 +124,6 @@ MByteBuffer& MByteBuffer::writeMultiByte(const std::string& value, size_t len)
 	return *this;
 }
 
-//MByteBuffer& writeMultiByte(const char* str, size_t len)
 MByteBuffer& MByteBuffer::writeBytes(const char* str, size_t startPos, size_t len)
 {
 	if (str)
@@ -435,7 +437,8 @@ void MByteBuffer::append(const uint8* src, size_t cnt)
 		uint32 closeSize = MDynBufResizePolicy::getCloseSize(cnt + size(), capacity());
 		setCapacity(closeSize);
 	}
-	memcpy(&m_pStorageBuffer->m_storage[m_pos], src, cnt);
+	//memcpy(&m_pStorageBuffer->m_storage[m_pos], src, cnt);
+	memmove(&m_pStorageBuffer->m_storage[m_pos], src, cnt);	// 同一块内存方式覆盖
 	writeAddPos(cnt);
 }
 
@@ -567,4 +570,50 @@ template<>
 inline void MByteBuffer::read_skip<std::string>()
 {
 	read_skip<char*>();
+}
+
+void MByteBuffer::compress(size_t startPos, size_t len_)
+{
+	uint32 destLen = 0;
+	char** destBytes = nullptr;
+	CompressUtil::mcompress(m_pStorageBuffer->m_storage + startPos, len_ ? len_ : size(), destBytes, &destLen);
+
+	clear();
+	setSize(startPos + destLen + (len_ ? size() - startPos - len_ : 0));
+	if (len_)
+	{
+		pos(startPos + destLen);
+		writeBytes(m_pStorageBuffer->m_storage, startPos + len_, size() - startPos - len_);	   // 在自己空间中拷贝，可能导致数据被覆盖
+	}
+	pos(startPos);
+	writeBytes((*destBytes), 0, destLen);
+	MemOp::freeMem((*destBytes));
+}
+
+void MByteBuffer::uncompress(size_t startPos, size_t len_)
+{
+	uint32 destLen = 0;
+	char** destBytes = nullptr;
+	CompressUtil::muncompress(m_pStorageBuffer->m_storage + startPos, len_ ? len_ : size(), destBytes, &destLen);
+
+	clear();
+	setSize(startPos + destLen + (len_ ? size() - startPos - len_ : 0));
+	if (len_)
+	{
+		pos(startPos + destLen);
+		writeBytes(m_pStorageBuffer->m_storage, startPos + len_, size() - startPos - len_);	   // 在自己空间中拷贝，可能导致数据被覆盖
+	}
+	pos(startPos);
+	writeBytes((*destBytes), 0, destLen);
+	MemOp::freeMem((*destBytes));
+}
+
+void MByteBuffer::encrypt(size_t startPos, size_t len_)
+{
+	EncryptDecryptUtil::encrypt(m_pStorageBuffer->m_storage + startPos, len_ ? len_ : size(), m_pStorageBuffer->m_storage + startPos, m_encryptKey);
+}
+
+void MByteBuffer::decrype(size_t startPos, size_t len_)
+{
+	EncryptDecryptUtil::decrypt(m_pStorageBuffer->m_storage + startPos, len_ ? len_ : size(), m_pStorageBuffer->m_storage + startPos, m_decryptKey);
 }

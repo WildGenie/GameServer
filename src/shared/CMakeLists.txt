@@ -89,9 +89,6 @@ set(DataStruct_SRCS
 	DataStruct/MStorageBuffer.cpp
 	DataStruct/MStorageBuffer.h
 	DataStruct/MSystemEndian.h
-	DataStruct/Singleton.h
-	DataStruct/System.cpp
-	DataStruct/System.h
 	)
 	
 set(Log_SRCS
@@ -134,9 +131,11 @@ set(Util_SRCS
 	Util/WarnPop.h
 	Util/WarnPush.h
 	Util/Encrypt.h
-	Util/Encrypt.h
+	Util/Encrypt.cpp
 	Util/MCompress.h
-	Util/MCompress.h
+	Util/MCompress.cpp
+	Util/MemOp.h
+	Util/MemOp.cpp
 	)
 	
 set(FastDelegate_SRCS

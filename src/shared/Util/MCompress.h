@@ -13,11 +13,11 @@ namespace NSCompress
 	};
 }
 
-class EncryptDecryptUtil
+class CompressUtil
 {
 public:
-	static int mcompress(const char* srcBytes, uint32 srcLen, char* destBytes, uint32* destLen, NSCompress::CompressMethod method = NSCompress::DEFLAT);
-	static int muncompress(const char* srcBytes, uint32 srcLen, char* destBytes, uint32* destLen, NSCompress::CompressMethod method = NSCompress::DEFLAT);
+	static int mcompress(const char* srcBytes, uint32 srcLen, char** destBytes, uint32* destLen, NSCompress::CompressMethod method = NSCompress::DEFLAT);
+	static int muncompress(const char* srcBytes, uint32 srcLen, char** destBytes, uint32* destLen, NSCompress::CompressMethod method = NSCompress::DEFLAT);
 };
 
 
