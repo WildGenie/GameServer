@@ -135,6 +135,10 @@ set(Util_SRCS
     Util/Util.h
 	Util/WarnPop.h
 	Util/WarnPush.h
+	Util/Encrypt.h
+	Util/Encrypt.h
+	Util/MCompress.h
+	Util/MCompress.h
 	)
 	
 set(FastDelegate_SRCS

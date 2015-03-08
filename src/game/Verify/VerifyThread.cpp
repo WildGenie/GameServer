@@ -66,15 +66,14 @@ void VerifyThread::svc()
 			for (; itBegin != itEnd; ++itBegin)
 			{
 				MByteBuffer* pMsgBA;
-				pMsgBA = (*itBegin)->getNetClientBuffer()->getMsg();
-				while (pMsgBA)
+				
+				while ((pMsgBA = (*itBegin)->getNetClientBuffer()->getMsg()) != nullptr)
 				{
 					((WorldSocket*)(itBegin->get()))->addSession();
 					// Test 接收到第一个消息就进入场景
 					removeList.insert(*itBegin);
 					//RemoveSocket(*itBegin);
 					break;
-					//pMsgBA = (*itBegin)->getNetClientBuffer()->getMsg();
 				}
 			}
 

@@ -78,13 +78,13 @@ bool WorldSession::Update()
 {
     ///- Retrieve packets from the receive queue and call the appropriate handlers
     /// not process packets if socket already closed
-    WorldPacket* packet = NULL;
+    //WorldPacket* packet = NULL;
     //while (m_Socket && !m_Socket->IsClosed() && _recvQueue.next(packet, updater))
 	if (m_Socket && !m_Socket->IsClosed())
     {
 		MByteBuffer* pMsgBA;
-		pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取一个消息
-		while (pMsgBA)
+
+		while ((pMsgBA = m_Socket->getNetClientBuffer()->getMsg()) != nullptr)	// 获取一个消息
 		{
 			// 进行处理消息
 			sNetMsgHandleManager.m_pNetDispHandle->handleMsg(pMsgBA, this);
@@ -92,8 +92,6 @@ bool WorldSession::Update()
 			// Test 测试发送一个消息
 			Cmd::stObjectBasicCmd cmd;
 			UtilMsg::sendMsg(m_Socket.get(), &cmd);
-
-			pMsgBA = m_Socket->getNetClientBuffer()->getMsg();	// 获取下一个消息
 		}
 
 
