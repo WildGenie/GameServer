@@ -22,8 +22,6 @@ MNetClientBuffer::MNetClientBuffer()
 
 	m_pMutex = new boost::mutex();
 	m_pRevMutex = new boost::mutex();
-
-	m_sendClientBuffer->setSize(4);
 }
 
 MNetClientBuffer::~MNetClientBuffer()

@@ -184,11 +184,6 @@ void Socket::start_async_send()
 
     m_OutActive = true;
 
-	// TEST
-    //m_socket.async_write_some( boost::asio::buffer( m_OutBuffer->rd_ptr(), m_OutBuffer->length() ),
-    //                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
-    //                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
-
 	m_socket.async_write_some(boost::asio::buffer(m_pNetClientBuffer->m_sendSocketBuffer->rd_ptr(), m_pNetClientBuffer->m_sendSocketBuffer->avaliableBytes()),
 	                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
 	                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
@@ -207,12 +202,6 @@ void Socket::on_write_complete( const boost::system::error_code& error,
 
     m_OutActive = false;
 
-	// TEST
-    //m_OutBuffer->rd_ptr( bytes_transferred );
-	//m_OutBuffer->advance(bytes_transferred);
-
-    //reset( *m_OutBuffer ); 
-
 	m_pNetClientBuffer->onWriteComplete(bytes_transferred);
 
     start_async_send();
@@ -222,13 +211,6 @@ void Socket::start_async_read()
 {
     if( IsClosed() )
         return;
-
-    //reset( *m_ReadBuffer );
-
-	// TEST
-    //m_socket.async_read_some( boost::asio::buffer( m_ReadBuffer->wr_ptr(), m_ReadBuffer->space() ),
-    //                          boost::bind( &Socket::on_read_complete, shared_from_this(), 
-    //                                       boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
 
 	m_socket.async_read_some(boost::asio::buffer(m_pNetClientBuffer->m_recvSocketDynBuffer->getStorage(), m_pNetClientBuffer->m_recvSocketDynBuffer->capacity()),
 	                          boost::bind( &Socket::on_read_complete, shared_from_this(), 
@@ -246,9 +228,6 @@ void Socket::on_read_complete( const boost::system::error_code& error,
 
     if( bytes_transferred > 0 )
     {
-		// TEST
-        //m_ReadBuffer->wr_ptr( bytes_transferred );
-
         //if( !process_incoming_data() )
         //{
         //    CloseSocket();
@@ -260,27 +239,6 @@ void Socket::on_read_complete( const boost::system::error_code& error,
 
     start_async_read();
 }
-
-//void Socket::reset( NetworkBuffer& buffer )
-//{
-//    //if( buffer.length() == 0 )
-//    //{
-//    //    buffer.reset();
-//    //}
-//    //else
-//    //{
-//    //    buffer.crunch();
-//    //}
-//
-//	if (buffer.size() == 0)
-//	{
-//		buffer.clear();
-//	}
-//	else
-//	{
-//		buffer.clear();
-//	}
-//}
 
 void Socket::OnError( const boost::system::error_code& error )
 {
