@@ -22,6 +22,6 @@ if defined CMAKEPATH (
 cd %base_dir%
 
 ::%DEVENV% %base_dir%build\ThirdParty.sln /build "Debug" /project "INSTALL"
-%DEVENV% %base_dir%build\MaNGOS.sln
+start "" %DEVENV% %base_dir%build\MaNGOS.sln
 
 pause
