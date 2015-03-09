@@ -61,6 +61,7 @@ target_link_libraries(${EXECUTABLE_NAME}
   framework
   backtrace
   ${Boost_LIBRARIES}
+  zlib
 )
 
 if(NOT (NEDMALLOC_USE_EXTERNAL OR USE_STD_MALLOC))
