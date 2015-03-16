@@ -58,18 +58,7 @@ void MNetClientBuffer::moveRecvSocket2RecvClient()
 {
 	while (m_recvSocketBuffer->checkHasMsg())  // 如果有数据
 	{
-		m_recvSocketBuffer->moveOutOneMsg();
-		//m_recvSocketBuffer->m_pMsgBA->uncompress();
-		m_unCompressHeaderBA->clear();
-		m_unCompressHeaderBA->writeUnsignedInt32(m_recvSocketBuffer->m_pMsgBA->size());
-		m_unCompressHeaderBA->pos(0);
-
-		m_pRevMutex->lock();
-
-		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_unCompressHeaderBA->getStorage(), 0, MSG_HEADER_SIZE);             // 保存消息大小字段
-		m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_recvSocketBuffer->m_pMsgBA->getStorage(), 0, m_recvSocketBuffer->m_pMsgBA->size());      // 保存消息大小字段
-
-		m_pRevMutex->unlock();
+		UnCompressAndDecryptEveryOne();
 	}
 }
 
@@ -168,4 +157,20 @@ void MNetClientBuffer::setRecvClientProcessData(MClientProcessData* pMClientProc
 	m_recvClientBuffer->setMsgBAProcessData(pMClientProcessData);
 
 	//m_sendClientBA = tsData->m_sendClientBA;
+}
+
+void MNetClientBuffer::UnCompressAndDecryptEveryOne()
+{
+	m_recvSocketBuffer->moveOutOneMsg();
+	//m_recvSocketBuffer->m_pMsgBA->uncompress();
+	m_unCompressHeaderBA->clear();
+	m_unCompressHeaderBA->writeUnsignedInt32(m_recvSocketBuffer->m_pMsgBA->size());
+	m_unCompressHeaderBA->pos(0);
+
+	m_pRevMutex->lock();
+
+	m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_unCompressHeaderBA->getStorage(), 0, MSG_HEADER_SIZE);             // 保存消息大小字段
+	m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_recvSocketBuffer->m_pMsgBA->getStorage(), 0, m_recvSocketBuffer->m_pMsgBA->size());      // 保存消息大小字段
+
+	m_pRevMutex->unlock();
 }

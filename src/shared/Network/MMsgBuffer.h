@@ -34,6 +34,7 @@ public:
 	// 进程共享数据
 	void setHeaderBAProcessData(MClientProcessData* pMClientProcessData);
 	void setMsgBAProcessData(MClientProcessData* pMClientProcessData);
+	void getHeaderSize(uint32& msgLen);
 };
 
 #endif				// __MSGBUFFER_H

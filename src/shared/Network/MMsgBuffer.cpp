@@ -30,7 +30,8 @@ bool MMsgBuffer::checkHasMsg()
 	m_pMCircularBuffer->front((char*)m_pHeaderBA->getStorage(), 0, MSG_HEADER_SIZE);
 	m_pHeaderBA->setSize(MSG_HEADER_SIZE);
 
-	m_pHeaderBA->readUnsignedInt32(m_msgLen);
+	//m_pHeaderBA->readUnsignedInt32(m_msgLen);
+	getHeaderSize(m_msgLen);
 	if (m_msgLen + MSG_HEADER_SIZE <= m_pMCircularBuffer->size())
 	{
 		return true;
@@ -69,4 +70,15 @@ void MMsgBuffer::setHeaderBAProcessData(MClientProcessData* pMClientProcessData)
 void MMsgBuffer::setMsgBAProcessData(MClientProcessData* pMClientProcessData)
 {
 	m_pMsgBA = pMClientProcessData->m_pMsgBA;
+}
+
+void MMsgBuffer::getHeaderSize(uint32& msgLen)
+{
+	m_pHeaderBA->readUnsignedInt32(msgLen);
+#if MSG_COMPRESS
+	if ((msglen & PACKET_ZIP) > 0)         // 如果有压缩标志
+	{
+		msglen &= (~PACKET_ZIP);         // 去掉压缩标志位
+	}
+#endif
 }

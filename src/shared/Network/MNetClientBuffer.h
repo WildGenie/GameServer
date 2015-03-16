@@ -55,6 +55,7 @@ public:
 	// 设置线程安全的数据
 	void setRecvSocketBufferTSData(MClientThreadSafeData* tsData);
 	void setRecvClientProcessData(MClientProcessData* pMClientProcessData);
+	void MNetClientBuffer::UnCompressAndDecryptEveryOne();
 };
 
 #endif				// __NETCLIENTBUFFER_H
