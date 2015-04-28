@@ -38,8 +38,6 @@ Socket::Socket( NetworkManager& socketMrg,
     m_manager(socketMrg),
     m_owner(owner),
     m_socket(owner.service()),
-    m_OutBufferSize(protocol::SEND_BUFFER_SIZE),
-    m_OutActive(false),
     m_closing(true),
     m_Address(UNKNOWN_NETWORK_ADDRESS),
 	m_bSocketOpened(false),
@@ -96,8 +94,6 @@ bool Socket::open()
     m_closing = false;
 
     // Allocate buffers.
-    //m_OutBuffer.reset( new NetworkBuffer(m_OutBufferSize) );
-    //m_ReadBuffer.reset( new NetworkBuffer( protocol::READ_BUFFER_SIZE ) );
 	m_pNetClientBuffer->setRecvMsgSize(protocol::READ_BUFFER_SIZE);
 
     // Start reading data from client
@@ -157,11 +153,6 @@ bool Socket::SetSendBufferSize( int size )
     return true;
 }
 
-void Socket::SetOutgoingBufferSize( size_t size )
-{
-    m_OutBufferSize = size;
-}
-
 uint32 Socket::native_handle() 
 {
     return uint32( m_socket.native_handle() );
@@ -172,19 +163,12 @@ void Socket::start_async_send()
     if( IsClosed() )
         return;
 
-    if( m_OutActive )
-        return;
-    
-    //if ( m_OutBuffer->length() == 0 )
-	if (!m_pNetClientBuffer->startAsyncSend())	// 如果 Client 不能发送数据
+	if (!m_pNetClientBuffer->startAsyncSend())	// 如果 Client 没有数据发送
     {
-        m_OutActive = false;
         return;
     }
 
-    m_OutActive = true;
-
-	m_socket.async_write_some(boost::asio::buffer(m_pNetClientBuffer->m_sendSocketBuffer->rd_ptr(), m_pNetClientBuffer->m_sendSocketBuffer->avaliableBytes()),
+	m_socket.async_write_some(boost::asio::buffer(m_pNetClientBuffer->m_sendSocketBuffer->getCurPtr(), m_pNetClientBuffer->m_sendSocketBuffer->avaliableBytes()),
 	                           boost::bind( &Socket::on_write_complete, shared_from_this(), 
 	                                        boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred ) );
 }
@@ -192,6 +176,7 @@ void Socket::start_async_send()
 void Socket::on_write_complete( const boost::system::error_code& error,
                                      size_t bytes_transferred )
 {
+	// 如果连接关闭，会发生错误，这个时候处理关闭
     if( error )
     {
         OnError( error );
@@ -200,11 +185,13 @@ void Socket::on_write_complete( const boost::system::error_code& error,
 
     GuardType Lock(m_OutBufferLock);
 
-    m_OutActive = false;
-
 	m_pNetClientBuffer->onWriteComplete(bytes_transferred);
 
-    start_async_send();
+	// 如果没有发送完成，继续发送剩余的数据
+	if (m_pNetClientBuffer->m_sendSocketBuffer->avaliableBytes())
+	{
+		start_async_send();
+	}
 }
 
 void Socket::start_async_read()

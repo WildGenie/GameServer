@@ -136,7 +136,7 @@ public:
 	void append(size_t cnt);
 	void append(const MByteBuffer& buffer);
 	void put(size_t pos, const uint8* src, size_t cnt);
-	char* rd_ptr();
+	char* getCurPtr();				// 获取当前
 	size_t avaliableBytes();
 	void print_storage() const;
 	void textlike() const;

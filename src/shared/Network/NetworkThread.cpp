@@ -109,7 +109,10 @@ void NetworkThread::sendAndRecvData()
 		for (; itBegin != itEnd; ++itBegin)
 		{
 			//(*itBegin)->getNetClientBuffer()->moveRecvSocket2RecvClient();		// 将数据放入接收缓冲区中
-			(*itBegin)->start_async_send();					// 发送数据
+			if ((*itBegin)->getNetClientBuffer()->canSendData() && (*itBegin)->getNetClientBuffer()->hasSendData())		// 如果 Client 不能发送数据
+			{
+				(*itBegin)->start_async_send();					// 发送数据
+			}
 		}
 	}
 }

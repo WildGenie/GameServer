@@ -475,7 +475,7 @@ void MByteBuffer::put(size_t pos, const uint8* src, size_t cnt)
 	memcpy(&m_pStorageBuffer->m_storage[pos], src, cnt);
 }
 
-char* MByteBuffer::rd_ptr()
+char* MByteBuffer::getCurPtr()
 {
 	return m_pStorageBuffer->m_storage + m_pos;
 }

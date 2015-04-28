@@ -8,7 +8,7 @@ uint32 MDynBufResizePolicy::getCloseSize(uint32 needSize, uint32 capacity)
 
 	if (needSize <= MAX_CAPACITY)
 	{
-		if (capacity >= needSize)
+		if (capacity > needSize)		// 使用 > ，不适用 >= ，浪费一个自己，方便判断
 		{
 			ret = capacity;
 		}

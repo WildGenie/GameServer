@@ -64,7 +64,7 @@ public:
     bool SetSendBufferSize( int size );
 
     /// Set custom value for outgoing buffer size
-    void SetOutgoingBufferSize( size_t size );
+    //void SetOutgoingBufferSize( size_t size );
 
     /// Get underlying socket object
     protocol::Socket& socket() { return m_socket; }
@@ -127,11 +127,11 @@ private:
     /// Address of the remote peer
     std::string m_Address;
 
-    /// Size of the m_OutBuffer.
-    size_t m_OutBufferSize;
+    /// Size of the m_OutBuffer.缓冲区大小，现在缓冲区重新实现，因此不用这个， socket 缓冲区大小可能需要自己设置一下，目前没有设置
+    //size_t m_OutBufferSize;
 
-    /// True if the socket has an outstanding write operation
-    bool m_OutActive;
+    /// True if the socket has an outstanding write operation，这个标志就是当前 socket 是否在写，现在已经不用了
+    //bool m_OutActive;
 
     /// True is socket is closed
     bool m_closing;

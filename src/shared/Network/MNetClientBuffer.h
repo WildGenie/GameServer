@@ -31,7 +31,7 @@ public:
 	MByteBuffer* m_unCompressHeaderBA;  // 存放解压后的头的长度
 	MByteBuffer* m_pHeaderBA;			// 写入四个字节头部
 
-	boost::mutex* m_pMutex;
+	boost::mutex* m_pSendMutex;
 	boost::mutex* m_pRevMutex;
 	//bool m_canSend;						// 异步发送的过程中，当前发送的数据是否发送完成
 
@@ -56,6 +56,8 @@ public:
 	void setRecvSocketBufferTSData(MClientThreadSafeData* tsData);
 	void setRecvClientProcessData(MClientProcessData* pMClientProcessData);
 	void MNetClientBuffer::UnCompressAndDecryptEveryOne();
+	bool canSendData();		// 当前是否可以从 socket 发送数据
+	bool hasSendData();		// 当前是否有发送的数据
 };
 
 #endif				// __NETCLIENTBUFFER_H

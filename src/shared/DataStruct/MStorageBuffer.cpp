@@ -48,7 +48,7 @@ void MStorageBuffer::setCapacity(std::size_t newCapacity)
 */
 bool MStorageBuffer::canAddData(uint32 num)
 {
-	if (m_iCapacity - m_size >= num)
+	if (m_iCapacity - m_size > num)		// 浪费一个字节，不用 >= ，使用 > 
 	{
 		return true;
 	}

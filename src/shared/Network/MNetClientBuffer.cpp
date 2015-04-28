@@ -20,7 +20,7 @@ MNetClientBuffer::MNetClientBuffer()
 	m_unCompressHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
 	m_pHeaderBA = new MByteBuffer(MSG_HEADER_SIZE);
 
-	m_pMutex = new boost::mutex();
+	m_pSendMutex = new boost::mutex();
 	m_pRevMutex = new boost::mutex();
 }
 
@@ -36,7 +36,7 @@ MNetClientBuffer::~MNetClientBuffer()
 
 	delete m_unCompressHeaderBA;
 
-	delete m_pMutex;
+	delete m_pSendMutex;
 	delete m_pRevMutex;
 }
 
@@ -86,12 +86,12 @@ void MNetClientBuffer::sendMsg(MByteBuffer* sendClientBA)
 	m_pHeaderBA->clear();
 	m_pHeaderBA->writeUnsignedInt32(sendClientBA->size());      // 填充长度
 
-	m_pMutex->lock();
+	m_pSendMutex->lock();
 
 	m_sendClientBuffer->writeUnsignedInt32(sendClientBA->size());
 	m_sendClientBuffer->writeBytes((char*)sendClientBA->getStorage(), 0, sendClientBA->size());
 
-	m_pMutex->unlock();
+	m_pSendMutex->unlock();
 
 	sendClientBA->clear();
 }
@@ -102,25 +102,25 @@ void MNetClientBuffer::moveSendClient2SendSocket()
 	m_sendSocketBuffer->clear(); // 清理，这样环形缓冲区又可以从 0 索引开始了
 	m_sendClient2SocketBuffer->m_pMCircularBuffer->clear();
 
+	m_pSendMutex->lock();
+
 	m_sendClient2SocketBuffer->m_pMCircularBuffer->pushBack((char*)m_sendClientBuffer->getStorage(), 0, m_sendClientBuffer->size());
-
-	m_pMutex->lock();
-
 	m_sendClientBuffer->clear();	// 清理，这样环形缓冲区又可以从 0 索引开始了
 
-	m_pMutex->unlock();
+	m_pSendMutex->unlock();
 
 	m_sendSocketBuffer->writeBytes(m_sendClient2SocketBuffer->m_pMCircularBuffer->getStorage(), 0, m_sendClient2SocketBuffer->m_pMCircularBuffer->size());
+	m_sendSocketBuffer->pos(0);				// 设置位置为初始位置
 }
 
 bool MNetClientBuffer::startAsyncSend()
 {
-	if (m_sendClientBuffer->size() == 0)		// 只有缓冲区为空的时候才能拷贝数据，如果不为空，就是有数据正在发送
+	if (m_sendClientBuffer->size() > 0 && m_sendSocketBuffer->size() == 0)		// 只有缓冲区为空的时候才能拷贝数据，如果不为空，就是有数据正在发送
 	{
 		moveSendClient2SendSocket();		// 处理消息数据，等待发送
 	}
 
-	if (m_sendClientBuffer->size() == 0)		// 如果还是没有数据
+	if (m_sendSocketBuffer->size() == 0)		// 如果还是没有数据
 	{
 		return false;
 	}
@@ -173,4 +173,24 @@ void MNetClientBuffer::UnCompressAndDecryptEveryOne()
 	m_recvClientBuffer->m_pMCircularBuffer->pushBack((char*)m_recvSocketBuffer->m_pMsgBA->getStorage(), 0, m_recvSocketBuffer->m_pMsgBA->size());      // 保存消息大小字段
 
 	m_pRevMutex->unlock();
+}
+
+bool MNetClientBuffer::canSendData()
+{
+	if (m_sendSocketBuffer->size() > 0)		// 只有缓冲区为空的时候才能拷贝数据，如果不为空，就是有数据正在发送
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool MNetClientBuffer::hasSendData()
+{
+	if (m_sendClientBuffer->size() == 0)		// 如果为 0 就说明没有可以发送的数据
+	{
+		return false;
+	}
+
+	return true;
 }

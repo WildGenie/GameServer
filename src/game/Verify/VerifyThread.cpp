@@ -5,6 +5,9 @@
 #include "MNetClientBuffer.h"
 #include "WorldSocket.h"
 
+#include "Msg/HeroCardCmd.h"
+#include "NetMsgHandle/UtilMsg.h"
+
 VerifyThread::VerifyThread() :
 	m_Connections(0), m_exitFlag(false)
 {
@@ -67,6 +70,24 @@ void VerifyThread::svc()
 			{
 				MByteBuffer* pMsgBA;
 				
+				static bool canSend = true;
+
+				if (canSend)
+				{
+					canSend = false;
+
+					//Cmd::stRetMagicPointInfoUserCmd cmd;
+					//UtilMsg::sendMsg(itBegin->get(), &cmd);
+
+					Cmd::stAddBattleCardPropertyUserCmd cardCmd;
+
+					int32 idx = 0;
+					for (idx = 0; idx < 30; ++idx)
+					{
+						UtilMsg::sendMsg(itBegin->get(), &cardCmd);
+					}
+				}
+
 				while ((pMsgBA = (*itBegin)->getNetClientBuffer()->getMsg()) != nullptr)
 				{
 					((WorldSocket*)(itBegin->get()))->addSession();

@@ -90,7 +90,7 @@ bool WorldSocketMgr::OnSocketOpen( const SocketPtr& sock )
         return false;
     }
 
-    sock->SetOutgoingBufferSize( static_cast<size_t>(m_SockOutUBuff) );
+    //sock->SetOutgoingBufferSize( static_cast<size_t>(m_SockOutUBuff) );
 
 	m_pVerifyThread->AddSocket(sock);
 

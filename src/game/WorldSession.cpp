@@ -38,6 +38,8 @@
 #include "NetMsgHandle/ObjectCmd.h"
 #include "NetMsgHandle/UtilMsg.h"
 
+#include "Msg/HeroCardCmd.h"
+
 /// WorldSession constructor
 WorldSession::WorldSession(uint32 id, const boost::shared_ptr<WorldSocket>& sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale) :
      _player(NULL), m_Socket(sock),  _logoutTime(0)
@@ -90,8 +92,19 @@ bool WorldSession::Update()
 			sNetMsgHandleManager.m_pNetDispHandle->handleMsg(pMsgBA, this);
 
 			// Test 测试发送一个消息
-			Cmd::stObjectBasicCmd cmd;
+			//Cmd::stObjectBasicCmd cmd;
+			//UtilMsg::sendMsg(m_Socket.get(), &cmd);
+
+			Cmd::stRetMagicPointInfoUserCmd cmd;
 			UtilMsg::sendMsg(m_Socket.get(), &cmd);
+
+			Cmd::stAddBattleCardPropertyUserCmd cardCmd;
+
+			int32 idx = 0;
+			for (idx = 0; idx < 10; ++idx)
+			{
+				UtilMsg::sendMsg(m_Socket.get(), &cardCmd);
+			}
 		}
 
 

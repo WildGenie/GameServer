@@ -7,6 +7,7 @@ namespace Cmd
 	{
 		eNULL_USERCMD,			/// 空指令
 		eOBJECT_USERCMD,		/// 道具指令
+		eHERO_CARD_USERCMD,		/// 卡牌指令
 
 		eByCmdTotal
 	};
