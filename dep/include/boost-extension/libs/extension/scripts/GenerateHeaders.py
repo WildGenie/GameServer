@@ -27,20 +27,16 @@ class header_generator:
     }""")
       
   def template_header(self, start_string, start, count, add_void):
-    if add_void:
-      v = " = void"
-    else:
-      v = ""
-    center = ", ".join(start + ["class Param" + str(i) + v 
-                        for i in range(1, count + 1)])
-    out_str = "".join([start_string, center, ">\n"])
-    return out_str
+    v = " = void" if add_void else ""
+    center = ", ".join(
+        (start + [f"class Param{str(i)}{v}" for i in range(1, count + 1)]))
+    return "".join([start_string, center, ">\n"])
     
   def nameless_param_list(self, count, start):
-    return ", ".join(start + ["Param" + str(i) for i in range(1, count+1)])
+    return ", ".join(start + [f"Param{str(i)}" for i in range(1, count+1)])
     
   def param_names(self, count, start):
-    return ", ".join(start + ["p" + str(i) for i in range(1, count+1)])
+    return ", ".join(start + [f"p{str(i)}" for i in range(1, count+1)])
     
   def named_param_list(self, count, start):
     return ", ".join(start + ["".join(["Param", str(i), " p", str(i)]) 
@@ -303,7 +299,7 @@ public:
   static bool is_linkable_library(const char * file_name){return is_library(file_name);}
   bool open(){return (handle_ = load_shared_library(location_.c_str())) != 0;}
   bool close(){return close_shared_library(handle_);}""")
-    for i in range(0, self.max_params + 1):
+    for i in range(self.max_params + 1):
       out.write(self.template_header('  template <', 
                                      ['class ReturnValue'], 
                                      i, False))
@@ -380,7 +376,7 @@ public:
     //TODO - test for memory leaks.
   }
 """]))
-    for i in range(0, self.max_params + 1):
+    for i in range(self.max_params + 1):
       out.write("".join([self.template_header('  template <', 
                                      ['class Interface', 'class Info'], 
                                      i, False),
@@ -456,10 +452,7 @@ typedef basic_""",factory_type,"""_map<default_type_info> """,factory_type,"""_m
     
     
 def main(argv):
-  if len(argv) > 1:
-    max_params = int(argv[1])
-  else:
-    max_params = 6
+  max_params = int(argv[1]) if len(argv) > 1 else 6
   gen = header_generator(max_params)
   gen.generate()
 
